@@ -129,7 +129,7 @@ class _LogoUpload extends StatelessWidget {
                         height: 70,
                       ),
                     )
-                  : const Icon(
+                  : Icon(
                       Icons.camera_alt_outlined,
                       size: 28,
                       color: AppColors.primaryColor,
@@ -211,7 +211,7 @@ class _CategoryField extends StatelessWidget {
                     ),
                   ),
                   controller.isLoadingCategories.value
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 16,
                           height: 16,
                           child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryColor),

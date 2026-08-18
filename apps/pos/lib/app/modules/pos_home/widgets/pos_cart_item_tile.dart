@@ -34,10 +34,10 @@ class PosCartItemTile extends StatelessWidget {
                     height: 46,
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) =>
-                        const Icon(Icons.inventory_2_outlined, size: 22, color: AppColors.primaryColor),
+                        Icon(Icons.inventory_2_outlined, size: 22, color: AppColors.primaryColor),
                   ),
                 )
-              : const Icon(Icons.inventory_2_outlined, size: 22, color: AppColors.primaryColor),
+              : Icon(Icons.inventory_2_outlined, size: 22, color: AppColors.primaryColor),
         ),
         const SizedBox(width: 12),
 

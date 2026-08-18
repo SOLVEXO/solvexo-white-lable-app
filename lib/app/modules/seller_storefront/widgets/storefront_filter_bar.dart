@@ -67,7 +67,7 @@ class StorefrontFilterBar extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(horizontal: 14),
                             decoration: BoxDecoration(
                               gradient: selected
-                                  ? const LinearGradient(
+                                  ? LinearGradient(
                                       colors: [AppColors.primaryColor, AppColors.accentColor],
                                     )
                                   : null,

@@ -234,13 +234,13 @@ class _SubcategoryPane extends StatelessWidget {
                     onTap: () => controller.selectCategory(parent),
                     child: Row(
                       children: [
-                        const CustomText(
+                        CustomText(
                           text: 'View all',
                           color: AppColors.primaryColor,
                           fontSize: AppFontSize.tiny,
                           fontWeight: FontWeight.w700,
                         ),
-                        const Icon(
+                        Icon(
                           Icons.chevron_right_rounded,
                           size: 16,
                           color: AppColors.primaryColor,
@@ -412,7 +412,7 @@ class _EmptyState extends StatelessWidget {
               color: AppColors.primaryColor.withOpacity(0.08),
               borderRadius: BorderRadius.circular(BaseRadius.xxl),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.category_outlined,
               size: 40,
               color: AppColors.primaryColor,

@@ -1,3 +1,4 @@
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:book_store_app/app/network/dio_service.dart';
 import 'package:book_store_app/app/notification/fcm_background_handler.dart';
 import 'package:book_store_app/app/notification/local_notification_service.dart';
@@ -34,6 +35,10 @@ void main() async {
   await LocalNotificationService().init();
 
   await SharedPreferences.getInstance();
+  // Loads any cached branding instantly (so the very first frame already
+  // paints the right brand) and kicks off a background refresh — see
+  // BrandingService's doc comment for why this can never block startup.
+  await Get.put(BrandingService(), permanent: true).init();
   if (StripeConfig.isConfigured) {
     Stripe.publishableKey = StripeConfig.publishableKey;
     await Stripe.instance.applySettings();
@@ -53,7 +58,7 @@ class MyApp extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
           themeMode: ThemeMode.light,
           debugShowCheckedModeBanner: false,
-          title: "Solvexo",
+          title: Get.find<BrandingService>().config.value.appName,
           initialRoute: AppPages.initialRoute,
           getPages: AppPages.routes,
           // Clamp OS accessibility text scaling so extreme settings can't

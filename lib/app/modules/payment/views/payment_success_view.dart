@@ -38,7 +38,7 @@ class PaymentSuccessView extends StatelessWidget {
               minBlastForce: 10,
               gravity: 0.25,
               shouldLoop: false,
-              colors: const [
+              colors: [
                 AppColors.primaryColor,
                 AppColors.seaGreen,
                 AppColors.yellow,

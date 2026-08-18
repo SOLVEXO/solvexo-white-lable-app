@@ -49,7 +49,7 @@ class WorksheetTrialView extends GetView<WorksheetTrialController> {
             ),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.auto_awesome_rounded,
                   color: AppColors.primaryColor,
                   size: 20,

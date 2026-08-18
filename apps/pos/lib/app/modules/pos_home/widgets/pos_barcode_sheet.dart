@@ -81,7 +81,7 @@ class _PosBarcodeSheetState extends State<PosBarcodeSheet> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.primaryColor.withOpacity(0.25)),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.qr_code_scanner_rounded, color: AppColors.primaryColor, size: 20),

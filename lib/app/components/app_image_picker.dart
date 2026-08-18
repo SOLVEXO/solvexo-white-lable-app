@@ -162,7 +162,7 @@ class AppImagePicker {
           ),
           TextButton(
             onPressed: () => Get.back(result: true),
-            child: const CustomText(
+            child: CustomText(
               text: 'Allow',
               color: AppColors.primaryColor,
               fontWeight: FontWeight.w600,
@@ -201,7 +201,7 @@ class AppImagePicker {
               Get.back();
               openAppSettings();
             },
-            child: const CustomText(
+            child: CustomText(
               text: 'Open Settings',
               color: AppColors.primaryColor,
               fontWeight: FontWeight.w600,

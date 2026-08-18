@@ -416,7 +416,7 @@ class _MessageButton extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: c.isStartingChat.value
-              ? const SizedBox(
+              ? SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(
@@ -424,7 +424,7 @@ class _MessageButton extends StatelessWidget {
                     color: AppColors.primaryColor,
                   ),
                 )
-              : const SvgIcon(
+              : SvgIcon(
                   assetName: AppIcons.messageIcon,
                   size: 22,
                   color: AppColors.primaryColor,
@@ -489,7 +489,7 @@ class _FollowButton extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: following
                 ? null
-                : const LinearGradient(
+                : LinearGradient(
                     colors: [AppColors.primaryColor, AppColors.accentColor],
                   ),
             color: following ? AppColors.white : null,

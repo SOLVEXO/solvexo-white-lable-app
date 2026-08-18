@@ -100,7 +100,7 @@ class _LoadingBody extends StatelessWidget {
         children: [
           Container(
             height: topPad + 200,
-            decoration: const BoxDecoration(gradient: AppColors.appbarGradient),
+            decoration: BoxDecoration(gradient: AppColors.appbarGradient),
           ),
           Padding(
             padding: const EdgeInsets.all(AppDimen.allPadding),

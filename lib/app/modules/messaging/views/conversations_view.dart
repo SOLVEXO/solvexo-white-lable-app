@@ -190,7 +190,7 @@ class _EmptyInbox extends StatelessWidget {
               borderRadius: BorderRadius.circular(BaseRadius.xxl),
             ),
             alignment: Alignment.center,
-            child: const SvgIcon(
+            child: SvgIcon(
               assetName: AppIcons.messageIcon,
               size: 34,
               color: AppColors.primaryColor,

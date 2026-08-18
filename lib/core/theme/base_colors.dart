@@ -12,21 +12,21 @@ class BaseColors {
   BaseColors._();
 
   // ── Brand (same source of truth as AppColors) ─────────────────────────────
-  static const Color primary = AppColors.primaryColor;
+  static Color get primary => AppColors.primaryColor;
   static const Color primaryLight = AppColors.primaryColorLight;
-  static const Color accent = AppColors.accentColor;
-  static const Color secondary = AppColors.secondryColor;
+  static Color get accent => AppColors.accentColor;
+  static Color get secondary => AppColors.secondryColor;
 
-  static const Gradient primaryGradient = LinearGradient(
+  static Gradient get primaryGradient => LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [primary, accent],
   );
 
-  static const Gradient heroGradient = LinearGradient(
+  static Gradient get heroGradient => LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFFE8846A), primary, Color(0xFFB85C3F)],
+    colors: [const Color(0xFFE8846A), primary, const Color(0xFFB85C3F)],
   );
 
   // ── Semantic (light) ───────────────────────────────────────────────────────

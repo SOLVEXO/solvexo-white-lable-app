@@ -121,7 +121,7 @@ class ProductDetailsView extends StatelessWidget {
                           padding: EdgeInsets.only(top: BaseSpacing.xs),
                           child: GhostButton(
                             label: 'Preview before you buy',
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.visibility_outlined,
                               size: 18,
                               color: AppColors.primaryColor,

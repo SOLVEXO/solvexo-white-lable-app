@@ -427,7 +427,7 @@ class CartController extends BaseController {
                 color: AppColors.primaryColor.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.add_location_alt_outlined,
                 color: AppColors.primaryColor,
                 size: 32,

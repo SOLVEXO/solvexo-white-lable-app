@@ -19,7 +19,7 @@ class CustomConfirmDialog extends StatelessWidget {
   final Widget? content;
   final String confirmLabel;
   final String cancelLabel;
-  final Color confirmColor;
+  final Color? confirmColor;
   final VoidCallback? onConfirm;
 
   const CustomConfirmDialog({
@@ -29,7 +29,7 @@ class CustomConfirmDialog extends StatelessWidget {
     this.content,
     this.confirmLabel = 'Confirm',
     this.cancelLabel = 'Cancel',
-    this.confirmColor = AppColors.primaryColor,
+    this.confirmColor,
     this.onConfirm,
   }) : assert(message != null || content != null, 'Provide either message or content');
 
@@ -40,7 +40,7 @@ class CustomConfirmDialog extends StatelessWidget {
     WidgetBuilder? contentBuilder,
     String confirmLabel = 'Confirm',
     String cancelLabel = 'Cancel',
-    Color confirmColor = AppColors.primaryColor,
+    Color? confirmColor,
     VoidCallback? onConfirm,
     bool barrierDismissible = true,
   }) {
@@ -91,7 +91,7 @@ class CustomConfirmDialog extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
             decoration: BoxDecoration(
-              color: confirmColor,
+              color: confirmColor ?? AppColors.primaryColor,
               borderRadius: BorderRadius.circular(AppDimen.borderRadius),
             ),
             child: CustomText(

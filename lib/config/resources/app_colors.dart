@@ -1,18 +1,33 @@
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AppColors {
-  static const Gradient appbarGradient = LinearGradient(
+  /// Tenant-swappable — reads through `BrandingService` (see Phase 4 white-
+  /// label work); falls back to the hardcoded Solvexo terracotta before the
+  /// service is registered (e.g. very first frame, or in widget tests that
+  /// don't bootstrap it).
+  static Color get primaryColor => Get.isRegistered<BrandingService>()
+      ? Get.find<BrandingService>().config.value.primaryColor
+      : const Color(0xFFd97757);
+
+  static Color get secondryColor => Get.isRegistered<BrandingService>()
+      ? Get.find<BrandingService>().config.value.secondaryColor
+      : const Color(0xFF6FBF4A);
+
+  static Color get accentColor => Get.isRegistered<BrandingService>()
+      ? Get.find<BrandingService>().config.value.accentColor
+      : const Color(0xFFd97757);
+
+  static Gradient get appbarGradient => LinearGradient(
     colors: [AppColors.primaryColor, AppColors.lightgradianColor],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
-  static const Color primaryColor = Color(0xFFd97757);
   // static const Color primaryColor = Color(0xFF7a73ff);
   // static const Color primaryColorLight = Color.fromARGB(168, 122, 115, 255);
   static const Color primaryColorLight = Color.fromARGB(179, 234, 140, 109);
-  static const Color secondryColor = Color(0xFF6FBF4A);
   static const Color secondryColorLight = Color.fromARGB(179, 111, 191, 74);
-  static const Color accentColor = Color(0xFFd97757); // Gold
   static const Color lightgradianColor = Color.fromARGB(
     69,
     194,

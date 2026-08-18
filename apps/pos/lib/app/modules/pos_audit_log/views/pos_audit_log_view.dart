@@ -41,8 +41,8 @@ class PosAuditLogView extends StatelessWidget {
             separatorBuilder: (_, __) => const SizedBox(height: 8),
             itemBuilder: (_, i) {
               if (i >= c.logs.length) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryColor)),
                 );
               }

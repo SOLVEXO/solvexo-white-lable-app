@@ -1,4 +1,5 @@
 import 'package:book_store_app/app/data/repositories/checkout_repository.dart';
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:book_store_app/app/modules/checkout/controllers/checkout_controller.dart';
 import 'package:book_store_app/config/stripe_config.dart';
 import 'package:book_store_app/utils/toast_util.dart';
@@ -58,7 +59,7 @@ class PaymentController extends GetxController {
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: intent.clientSecret,
-          merchantDisplayName: 'Solvexo',
+          merchantDisplayName: Get.find<BrandingService>().config.value.appName,
         ),
       );
 

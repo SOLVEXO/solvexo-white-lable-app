@@ -32,8 +32,8 @@ class PosSaleDetailView extends StatelessWidget {
             if (sale == null) return const SizedBox.shrink();
             return GestureDetector(
               onTap: c.shareReceipt,
-              child: const Padding(
-                padding: EdgeInsets.only(right: 16),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16),
                 child: Icon(Icons.share_outlined, color: AppColors.primaryColor, size: 20),
               ),
             );
@@ -265,7 +265,7 @@ class _ActionsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       if (c.isProcessing.value) {
-        return const Center(child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryColor));
+        return Center(child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryColor));
       }
       final hasSelection = c.refundSelection.isNotEmpty;
       return Column(children: [

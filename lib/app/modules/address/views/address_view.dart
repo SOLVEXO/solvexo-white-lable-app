@@ -33,7 +33,7 @@ class AddressView extends StatelessWidget {
               ? Container(
                   color: AppColors.black.withOpacity(0.15),
                   alignment: Alignment.center,
-                  child: const CircularProgressIndicator(color: AppColors.primaryColor),
+                  child: CircularProgressIndicator(color: AppColors.primaryColor),
                 )
               : const SizedBox.shrink(),
         ),

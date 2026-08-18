@@ -181,6 +181,20 @@ class CommonImageView extends StatelessWidget {
         ),
       );
     } else if (imagePath != null && imagePath!.isNotEmpty) {
+      // Lets a tenant-configured logo URL (see AppImages.logoImage /
+      // BrandingService) flow through every existing `imagePath:` call site
+      // unchanged, instead of needing a separate `url:` param everywhere.
+      if (imagePath!.startsWith('http://') || imagePath!.startsWith('https://')) {
+        return CachedNetworkImage(
+          height: height,
+          width: width,
+          fit: fit,
+          imageUrl: imagePath!,
+          color: color,
+          placeholder: (context, url) => _buildPlaceholder(),
+          errorWidget: (context, url, error) => _buildPlaceholder(),
+        );
+      }
       return Image.asset(
         imagePath!,
         height: height,

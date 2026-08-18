@@ -69,7 +69,7 @@ class SettingsProfileCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppDimen.draggableBorderRadius),
               border: Border.all(color: AppColors.primaryColor.withOpacity(0.25)),
             ),
-            child: const CustomText(
+            child: CustomText(
               text: 'Buyer Account',
               fontSize: AppFontSize.tiny,
               fontWeight: FontWeight.w600,

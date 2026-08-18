@@ -67,7 +67,7 @@ class StoreServiceDetailView extends StatelessWidget {
       appBar: CustomAppBarTwo(title: controller.storeName),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
+          return Center(
             child: SizedBox(
               width: 24,
               height: 24,
@@ -152,8 +152,8 @@ class StoreServiceDetailView extends StatelessWidget {
             SizedBox(height: BaseSpacing.xs),
             Obx(() {
               if (controller.isLoadingSlots.value) {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryColor)),
                 );
               }

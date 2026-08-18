@@ -120,7 +120,7 @@ class PosCartBar extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const CustomText(
+                    CustomText(
                       text: 'View Cart',
                       color: AppColors.primaryColor,
                       fontSize: AppFontSize.verySmall,

@@ -114,7 +114,7 @@ const kSellerTypes = [
   ),
 ];
 
-const kWhatYouSell = [
+final kWhatYouSell = [
   WhatYouSellData(
     option: WhatYouSellOption.physicalProducts,
     emoji: '📦',
@@ -573,7 +573,7 @@ class _PickerSheet extends StatelessWidget {
                         : FontWeight.normal,
                   ),
                   trailing: isSelected
-                      ? const Icon(
+                      ? Icon(
                           Icons.check_rounded,
                           color: AppColors.primaryColor,
                           size: 18,

@@ -396,7 +396,7 @@ class CheckoutView extends StatelessWidget {
                     child: Row(
                       spacing: BaseSpacing.xs + 2,
                       children: [
-                        const Icon(Icons.workspace_premium_outlined, color: AppColors.primaryColor, size: 22),
+                        Icon(Icons.workspace_premium_outlined, color: AppColors.primaryColor, size: 22),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,7 +418,7 @@ class CheckoutView extends StatelessWidget {
                           ),
                         ),
                         if (hint.storeSlug.isNotEmpty)
-                          const Icon(Icons.chevron_right_rounded, color: AppColors.primaryColor, size: 20),
+                          Icon(Icons.chevron_right_rounded, color: AppColors.primaryColor, size: 20),
                       ],
                     ),
                   ),

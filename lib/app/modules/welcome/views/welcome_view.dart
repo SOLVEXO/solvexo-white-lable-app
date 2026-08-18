@@ -2,6 +2,7 @@ import 'package:book_store_app/app/components/animated_background_circles.dart';
 import 'package:book_store_app/app/components/common_image_view.dart';
 import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/components/svg_icon.dart';
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:book_store_app/app/modules/welcome/controllers/welcome_controller.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/config/resources/app_icons.dart';
@@ -33,7 +34,7 @@ class WelcomeView extends StatelessWidget {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: const BoxDecoration(gradient: AppColors.appbarGradient),
+            decoration: BoxDecoration(gradient: AppColors.appbarGradient),
           ),
           const AnimatedBackgroundCircles(),
           SafeArea(
@@ -90,6 +91,7 @@ class _LogoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final marketplaceName = Get.find<BrandingService>().config.value.marketplaceName;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -110,7 +112,7 @@ class _LogoSection extends StatelessWidget {
         ),
         SizedBox(height: BaseSpacing.lg),
         CustomText(
-          text: 'Sell on Solvexo',
+          text: 'Sell on $marketplaceName',
           color: AppColors.white,
           fontFamily: AppTextStyles.headingFontFamily,
           fontSize: AppFontSize.large,
@@ -124,7 +126,7 @@ class _LogoSection extends StatelessWidget {
         ),
         SizedBox(height: BaseSpacing.xxs - 2),
         CustomText(
-          text: 'Reach thousands of buyers already shopping on Solvexo.',
+          text: 'Reach thousands of buyers already shopping on $marketplaceName.',
           textAlign: TextAlign.center,
           color: AppColors.white.withOpacity(0.65),
           fontSize: AppFontSize.tiny,
@@ -143,6 +145,7 @@ class _BottomSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final marketplaceName = Get.find<BrandingService>().config.value.marketplaceName;
     return Container(
       margin: EdgeInsets.symmetric(horizontal: AppDimen.allPadding),
       padding: EdgeInsets.fromLTRB(
@@ -160,7 +163,7 @@ class _BottomSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomText(
-            text: 'Why sell on Solvexo?',
+            text: 'Why sell on $marketplaceName?',
             color: AppColors.black,
             fontFamily: AppTextStyles.headingFontFamily,
             fontSize: AppFontSize.small2,

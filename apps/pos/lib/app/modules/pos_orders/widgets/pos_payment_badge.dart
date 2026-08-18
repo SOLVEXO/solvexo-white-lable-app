@@ -46,7 +46,7 @@ class PosPaymentBadge extends StatelessWidget {
           border: AppColors.darkGreen,
         );
       default:
-        return const _BadgeStyle(
+        return _BadgeStyle(
           label: 'Other',
           fg: AppColors.primaryColor,
           bg: AppColors.languageBg,

@@ -24,7 +24,7 @@ class MyMembershipsView extends StatelessWidget {
       appBar: const CustomAppBarTwo(title: 'My Memberships'),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
+          return Center(
             child: SizedBox(
               width: 24,
               height: 24,

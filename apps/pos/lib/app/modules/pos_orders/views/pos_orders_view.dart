@@ -62,8 +62,8 @@ class PosOrdersView extends StatelessWidget {
                               ),
                             ),
                             if (controller.isLoadingMore.value)
-                              const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 16),
                                 child: Center(
                                   child: SizedBox(
                                     width: 20,
@@ -137,7 +137,7 @@ class _FilterHeader extends StatelessWidget {
                       color: AppColors.primaryColor,
                     ),
                     const SizedBox(width: 4),
-                    const Icon(
+                    Icon(
                       Icons.keyboard_arrow_down_rounded,
                       size: 16,
                       color: AppColors.primaryColor,
@@ -232,7 +232,7 @@ class _FilterHeader extends StatelessWidget {
                     color: AppColors.black2,
                   ),
                   trailing: controller.statusFilter.value == s
-                      ? const Icon(
+                      ? Icon(
                           Icons.check_rounded,
                           color: AppColors.primaryColor,
                         )
@@ -286,7 +286,7 @@ class _FilterHeader extends StatelessWidget {
                     color: AppColors.black2,
                   ),
                   trailing: controller.paymentFilter.value == f
-                      ? const Icon(
+                      ? Icon(
                           Icons.check_rounded,
                           color: AppColors.primaryColor,
                         )

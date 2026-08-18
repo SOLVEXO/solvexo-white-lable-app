@@ -41,7 +41,7 @@ class PackageCreditsCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(BaseRadius.sm),
                 ),
                 alignment: Alignment.center,
-                child: const Icon(Icons.card_giftcard_rounded, color: AppColors.primaryColor, size: 16),
+                child: Icon(Icons.card_giftcard_rounded, color: AppColors.primaryColor, size: 16),
               ),
               SizedBox(width: BaseSpacing.xs),
               CustomText(

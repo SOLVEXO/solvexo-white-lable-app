@@ -78,7 +78,7 @@ class BaseTheme {
         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(BaseRadius.md), borderSide: BorderSide.none),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(BaseRadius.md),
-          borderSide: const BorderSide(color: BaseColors.primary, width: 1.6),
+          borderSide: BorderSide(color: BaseColors.primary, width: 1.6),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(BaseRadius.md),

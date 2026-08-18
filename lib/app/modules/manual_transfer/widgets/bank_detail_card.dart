@@ -38,7 +38,7 @@ class BankDetailCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.account_balance_rounded, size: 18, color: AppColors.primaryColor),
+              Icon(Icons.account_balance_rounded, size: 18, color: AppColors.primaryColor),
               SizedBox(width: BaseSpacing.xs),
               CustomText(
                 text: 'Transfer to this account',
@@ -75,7 +75,7 @@ class BankDetailCard extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () => _copy(context, entry.value),
-                      child: const Icon(Icons.copy_rounded, size: 15, color: AppColors.primaryColor),
+                      child: Icon(Icons.copy_rounded, size: 15, color: AppColors.primaryColor),
                     ),
                   ],
                 ),

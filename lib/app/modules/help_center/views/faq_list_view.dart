@@ -74,7 +74,7 @@ class _ContactFooterCard extends StatelessWidget {
           SizedBox(height: BaseSpacing.md),
           OutlineButton(
             label: "Contact Support",
-            icon: const Icon(Icons.chat_bubble_outline_rounded, color: AppColors.primaryColor, size: 18),
+            icon: Icon(Icons.chat_bubble_outline_rounded, color: AppColors.primaryColor, size: 18),
             onPressed: () => Get.toNamed(Routes.contactUsView),
           ),
         ],

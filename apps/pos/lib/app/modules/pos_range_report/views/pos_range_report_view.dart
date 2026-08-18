@@ -28,8 +28,8 @@ class PosRangeReportView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(right: 16),
               child: c.isExporting.value
-                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryColor))
-                  : const Icon(Icons.ios_share_rounded, color: AppColors.primaryColor, size: 20),
+                  ? SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryColor))
+                  : Icon(Icons.ios_share_rounded, color: AppColors.primaryColor, size: 20),
             ),
           )),
         ],
@@ -95,7 +95,7 @@ class _DateRangeBar extends StatelessWidget {
             border: Border.all(color: AppColors.lightGrey2),
           ),
           child: Row(children: [
-            const Icon(Icons.calendar_today_outlined, size: 16, color: AppColors.primaryColor),
+            Icon(Icons.calendar_today_outlined, size: 16, color: AppColors.primaryColor),
             const SizedBox(width: 8),
             CustomText(
               text: '${DateFormat('MMM d').format(c.from.value)} — ${DateFormat('MMM d, y').format(c.to.value)}',

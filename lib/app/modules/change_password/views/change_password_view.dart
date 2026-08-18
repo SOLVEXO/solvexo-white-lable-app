@@ -210,7 +210,7 @@ class _SecurityHero extends StatelessWidget {
               color: AppColors.primaryColor.withOpacity(0.12),
               shape: BoxShape.circle,
             ),
-            child: const SvgIcon(assetName: AppIcons.changePassword, size: 20, color: AppColors.primaryColor),
+            child: SvgIcon(assetName: AppIcons.changePassword, size: 20, color: AppColors.primaryColor),
           ),
           SizedBox(width: BaseSpacing.sm + 2),
           Expanded(

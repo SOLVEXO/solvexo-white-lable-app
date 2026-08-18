@@ -14,13 +14,15 @@ class CustomAppSnackbar {
     required String title,
     required String soundPath,
     required String message,
-    String imagePath = AppImages.logoImage,
+    String? imagePath,
     Color textColor = AppColors.black,
     Color backgroundColor = AppColors.white,
-    Color accentColor = AppColors.accentColor,
+    Color? accentColor,
     String? actionLabel,
     VoidCallback? onAction,
   }) {
+    imagePath ??= AppImages.logoImage;
+    accentColor ??= AppColors.accentColor;
     Get.rawSnackbar(
       snackPosition: SnackPosition.TOP,
       backgroundColor: AppColors.transparent,

@@ -88,8 +88,8 @@ class SellerStorefrontView extends StatelessWidget {
               SliverToBoxAdapter(
                 child: Obx(
                   () => c.isLoadingMore.value
-                      ? const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
                           child: Center(
                             child: SizedBox(
                               width: 20,
@@ -222,7 +222,7 @@ class _EmptyState extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.storefront_outlined,
                 size: 34,
                 color: AppColors.primaryColor,
@@ -314,7 +314,7 @@ class _NotFoundState extends StatelessWidget {
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                       colors: [AppColors.primaryColor, AppColors.accentColor],
                     ),
                     borderRadius: BorderRadius.circular(12),

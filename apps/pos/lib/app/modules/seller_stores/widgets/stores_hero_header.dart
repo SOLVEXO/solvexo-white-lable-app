@@ -19,7 +19,7 @@ class StoresHeroHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final topPad = MediaQuery.of(context).padding.top;
     return Container(
-      decoration: const BoxDecoration(gradient: AppColors.appbarGradient),
+      decoration: BoxDecoration(gradient: AppColors.appbarGradient),
       padding: EdgeInsets.fromLTRB(20, topPad + 12, 20, 48),
       child: Column(
         children: [

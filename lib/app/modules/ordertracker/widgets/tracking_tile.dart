@@ -23,7 +23,7 @@ class TrackingTile extends StatelessWidget {
             Container(
               width: 25,
               height: 25,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: AppColors.primaryColor,
                 shape: BoxShape.circle,
               ),

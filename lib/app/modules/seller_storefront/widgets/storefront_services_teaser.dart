@@ -141,7 +141,7 @@ class _ServiceTeaserCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(BaseRadius.md),
               ),
               alignment: Alignment.center,
-              child: const Icon(Icons.event_available_rounded, color: AppColors.primaryColor, size: 18),
+              child: Icon(Icons.event_available_rounded, color: AppColors.primaryColor, size: 18),
             ),
             SizedBox(height: BaseSpacing.xs),
             CustomText(

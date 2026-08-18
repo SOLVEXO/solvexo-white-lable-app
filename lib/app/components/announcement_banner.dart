@@ -53,7 +53,7 @@ class AnnouncementBanner extends StatelessWidget {
                 color: AppColors.primaryColor.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.campaign_rounded,
                 size: 18,
                 color: AppColors.primaryColor,

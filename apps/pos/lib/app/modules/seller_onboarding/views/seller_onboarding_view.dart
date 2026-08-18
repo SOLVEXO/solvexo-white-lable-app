@@ -103,7 +103,7 @@ class _TopHeader extends StatelessWidget {
         children: [
           SvgIcon(assetName: AppImages.logoImage, size: 40),
           const SizedBox(width: 5),
-          const CustomText(
+          CustomText(
             text: 'SOLVEXO',
             fontFamily: AppTextStyles.headingFontFamily,
             fontSize: AppFontSize.medium,

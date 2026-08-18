@@ -20,7 +20,7 @@ class ProfileHero extends StatelessWidget {
       return Container(
         width: double.infinity,
         padding: EdgeInsets.fromLTRB(BaseSpacing.xl, topPad + BaseSpacing.xl, BaseSpacing.xl, BaseSpacing.xxl + BaseSpacing.xxl),
-        decoration: const BoxDecoration(gradient: AppColors.appbarGradient),
+        decoration: BoxDecoration(gradient: AppColors.appbarGradient),
         child: user == null ? _GuestHero(onLoginTap: controller.goToLogin) : Column(children: [
           // Avatar
           Container(

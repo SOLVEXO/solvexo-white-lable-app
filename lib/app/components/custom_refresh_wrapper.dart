@@ -161,7 +161,7 @@ class _CustomRefreshWrapperState extends State<CustomRefreshWrapper>
                     shaderCallback: (rect) => SweepGradient(
                       startAngle: 0,
                       endAngle: 6.28,
-                      colors: const [
+                      colors: [
                         AppColors.primaryColor,
                         AppColors.primaryColorLight,
                         AppColors.accentColor,

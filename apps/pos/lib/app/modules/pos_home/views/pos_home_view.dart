@@ -94,7 +94,7 @@ class _ProductGrid extends StatelessWidget {
                   color: AppColors.primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const CustomText(
+                child: CustomText(
                   text: 'Retry',
                   fontSize: AppFontSize.verySmall,
                   fontWeight: FontWeight.w600,

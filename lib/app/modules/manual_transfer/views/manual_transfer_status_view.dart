@@ -35,8 +35,8 @@ class ManualTransferStatusView extends StatelessWidget {
         final proof = controller.proof.value;
         if (proof == null) {
           return controller.isRefreshing.value
-              ? const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 80),
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 80),
                   child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryColor)),
                 )
               : Padding(

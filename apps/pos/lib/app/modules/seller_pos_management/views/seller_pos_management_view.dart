@@ -39,8 +39,8 @@ class SellerPosManagementView extends StatelessWidget {
             actions: [
               GestureDetector(
                 onTap: c.refreshData,
-                child: const Padding(
-                  padding: EdgeInsets.only(right: 16),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16),
                   child: Icon(
                     Icons.refresh_rounded,
                     color: AppColors.primaryColor,
@@ -333,7 +333,7 @@ class _SectionHeader extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   Icons.add_rounded,
                   color: AppColors.primaryColor,
                   size: 14,
@@ -1207,7 +1207,7 @@ class _ShiftsSection extends StatelessWidget {
                             color: AppColors.primaryColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.schedule_rounded,
                             color: AppColors.primaryColor,
                             size: 18,
@@ -1225,7 +1225,7 @@ class _ShiftsSection extends StatelessWidget {
                           color: AppColors.iosGrey,
                         ),
                         trailing: isProcessing
-                            ? const SizedBox(
+                            ? SizedBox(
                                 width: 18,
                                 height: 18,
                                 child: CircularProgressIndicator(

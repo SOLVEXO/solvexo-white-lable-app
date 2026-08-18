@@ -72,7 +72,7 @@ class PosProductCard extends StatelessWidget {
                           child: Container(
                             width: 20,
                             height: 20,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               color: AppColors.primaryColor,
                               shape: BoxShape.circle,
                             ),

@@ -92,7 +92,7 @@ class _TestimonialCard extends StatelessWidget {
               ),
               if (testimonial.isVerifiedPurchase) ...[
                 SizedBox(width: 4),
-                const Icon(
+                Icon(
                   Icons.verified_rounded,
                   size: 13,
                   color: AppColors.secondryColor,

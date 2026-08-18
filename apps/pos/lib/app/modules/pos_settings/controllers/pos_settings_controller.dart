@@ -414,24 +414,25 @@ class PosSettingsController extends GetxController {
 class _DialogPillButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
-  final Color color;
+  final Color? color;
   final bool loading;
 
   const _DialogPillButton({
     required this.label,
     required this.onTap,
-    this.color = AppColors.primaryColor,
+    this.color,
     this.loading = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = color ?? AppColors.primaryColor;
     return GestureDetector(
       onTap: loading ? null : onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
         decoration: BoxDecoration(
-          color: loading ? color.withOpacity(0.5) : color,
+          color: loading ? effectiveColor.withOpacity(0.5) : effectiveColor,
           borderRadius: BorderRadius.circular(AppDimen.borderRadius),
         ),
         child: loading

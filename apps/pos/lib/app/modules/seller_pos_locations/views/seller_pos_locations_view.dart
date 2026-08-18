@@ -37,7 +37,7 @@ class SellerPosLocationsView extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(color: AppColors.primaryColor),
           );
         }

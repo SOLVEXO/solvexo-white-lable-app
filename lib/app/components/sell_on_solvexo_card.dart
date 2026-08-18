@@ -1,4 +1,5 @@
 import 'package:book_store_app/app/components/custom_text.dart';
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/config/resources/app_icons.dart';
@@ -18,9 +19,10 @@ class SellOnSolvexoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final marketplaceName = Get.find<BrandingService>().config.value.marketplaceName;
     return Semantics(
       button: true,
-      label: 'Sell on Solvexo',
+      label: 'Sell on $marketplaceName',
       child: PressableScale(
         onTap: () => Get.toNamed(Routes.welcome),
         child: Container(
@@ -61,7 +63,7 @@ class SellOnSolvexoCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                     CustomText(
-                      text: 'Open your store on Solvexo',
+                      text: 'Open your store on $marketplaceName',
                       color: AppColors.grey,
                       fontSize: AppFontSize.tiny,
                     ),

@@ -50,7 +50,7 @@ class ChatView extends StatelessWidget {
                       padding: EdgeInsets.only(top: BaseSpacing.xs),
                       child: Center(
                         child: c.isLoadingOlder.value
-                            ? const SizedBox(
+                            ? SizedBox(
                                 width: 18,
                                 height: 18,
                                 child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primaryColor),

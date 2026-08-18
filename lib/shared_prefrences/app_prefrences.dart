@@ -18,6 +18,7 @@ class AppPreferences {
   static const String _storeIdKey   = 'store_id';
   static const String _storeNameKey = 'store_name';
   static const String _displayCurrencyKey = 'display_currency';
+  static const String _brandingConfigKey = 'branding_config_json';
 
   // ── POS employee / session context ────────────────────────────────────────────
   static const String _posEmployeeIdKey   = 'pos_employee_id';
@@ -361,6 +362,19 @@ class AppPreferences {
   static Future<String?> getDisplayCurrency() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_displayCurrencyKey);
+  }
+
+  // ── White-label branding cache (last successfully fetched config, so a
+  // cold start can paint the right brand instantly instead of flashing
+  // defaults first — see BrandingService) ──────────────────────────────────
+  static Future<void> saveBrandingConfigJson(String json) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_brandingConfigKey, json);
+  }
+
+  static Future<String?> getBrandingConfigJson() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_brandingConfigKey);
   }
 
   // Recently Viewed Products

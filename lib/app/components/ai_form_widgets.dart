@@ -21,7 +21,7 @@ class AiAcceptedBadge extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.check_circle, color: AppColors.secondryColor, size: 18),
+          Icon(Icons.check_circle, color: AppColors.secondryColor, size: 18),
           SizedBox(width: BaseSpacing.xxs),
           CustomText(text: 'Accepted', color: AppColors.secondryColor, fontWeight: FontWeight.w600, fontSize: AppFontSize.verySmall),
         ],

@@ -30,7 +30,7 @@ class StoreServicesView extends StatelessWidget {
       appBar: CustomAppBarTwo(title: controller.storeName),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
+          return Center(
             child: SizedBox(
               width: 24,
               height: 24,
@@ -98,7 +98,7 @@ class _ServiceListCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(BaseRadius.md),
                   ),
                   alignment: Alignment.center,
-                  child: const Icon(Icons.event_available_rounded, color: AppColors.primaryColor, size: 22),
+                  child: Icon(Icons.event_available_rounded, color: AppColors.primaryColor, size: 22),
                 ),
                 SizedBox(width: BaseSpacing.sm),
                 Expanded(

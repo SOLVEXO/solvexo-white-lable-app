@@ -240,7 +240,7 @@ class CheckoutController extends GetxController {
                 color: AppColors.primaryColor.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.local_shipping_outlined,
                 color: AppColors.primaryColor,
                 size: 32,
@@ -339,7 +339,7 @@ class CheckoutController extends GetxController {
                 color: AppColors.primaryColor.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.receipt_long_outlined,
                 color: AppColors.primaryColor,
                 size: 32,

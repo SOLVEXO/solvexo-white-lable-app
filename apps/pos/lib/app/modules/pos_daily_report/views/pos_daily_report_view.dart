@@ -24,8 +24,8 @@ class PosDailyReportView extends StatelessWidget {
         actions: [
           GestureDetector(
             onTap: c.onRefresh,
-            child: const Padding(
-              padding: EdgeInsets.only(right: 16),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
               child: Icon(Icons.refresh_rounded,
                   color: AppColors.primaryColor, size: 22),
             ),
@@ -76,7 +76,7 @@ class _EmptyState extends StatelessWidget {
             color: AppColors.primaryColor.withOpacity(0.08),
             borderRadius: BorderRadius.circular(22),
           ),
-          child: const Icon(Icons.bar_chart_rounded,
+          child: Icon(Icons.bar_chart_rounded,
               size: 40, color: AppColors.primaryColor),
         ),
         const SizedBox(height: 18),
@@ -101,7 +101,7 @@ class _EmptyState extends StatelessWidget {
               color: AppColors.primaryColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const CustomText(
+            child: CustomText(
               text: 'Retry',
               fontSize: AppFontSize.verySmall,
               fontWeight: FontWeight.w600,
@@ -249,7 +249,7 @@ class _TopProducts extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               alignment: Alignment.center,
-              child: const Icon(Icons.inventory_2_outlined, size: 18, color: AppColors.primaryColor),
+              child: Icon(Icons.inventory_2_outlined, size: 18, color: AppColors.primaryColor),
             ),
             const SizedBox(width: 10),
             Expanded(

@@ -16,7 +16,7 @@ class PreviewVideoPlayer extends StatelessWidget {
     return Obx(() {
       final chewie = controller.chewieController.value;
       if (!controller.isVideoReady.value || chewie == null) {
-        return const Center(
+        return Center(
           child: CircularProgressIndicator(color: AppColors.primaryColor),
         );
       }

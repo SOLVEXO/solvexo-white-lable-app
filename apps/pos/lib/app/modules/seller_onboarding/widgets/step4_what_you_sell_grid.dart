@@ -229,9 +229,9 @@ class _ToolsPanel extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              children: const [
-                CustomText(text: '✨', fontSize: 14),
-                SizedBox(width: 6),
+              children: [
+                const CustomText(text: '✨', fontSize: 14),
+                const SizedBox(width: 6),
                 CustomText(
                   text: "We'll activate these tools for you:",
                   fontSize: AppFontSize.verySmall,

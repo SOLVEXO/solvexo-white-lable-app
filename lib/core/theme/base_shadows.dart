@@ -29,8 +29,8 @@ class BaseShadows {
   ];
 
   /// Tinted "glow" shadow for primary CTAs — a Stripe/Linear-style accent.
-  static List<BoxShadow> glow([Color color = BaseColors.primary]) => [
-        BoxShadow(color: color.withOpacity(0.28), blurRadius: 20, offset: const Offset(0, 8)),
+  static List<BoxShadow> glow([Color? color]) => [
+        BoxShadow(color: (color ?? BaseColors.primary).withOpacity(0.28), blurRadius: 20, offset: const Offset(0, 8)),
       ];
 
   // ── 5-level elevation system ────────────────────────────────────────────

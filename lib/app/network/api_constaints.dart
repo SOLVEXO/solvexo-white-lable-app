@@ -6,6 +6,16 @@ class ApiConstants {
 
   static const String apiPrefix = "$baseUrl/api";
 
+  // ============ White-Label Branding (Phase 4) ============
+  // ⚠️ Backend does NOT implement this endpoint yet — requested from the
+  // backend team as part of the white-label transformation. Expected shape:
+  // GET, public or JWT-optional, response `{ success, data: { appName,
+  // marketplaceName, logoUrl, primaryColor, secondaryColor, accentColor,
+  // featureFlags: { [key: string]: boolean } } }`. Until it exists,
+  // `BrandingRepository` calls this, gets a 404, and silently falls back to
+  // `BrandingConfigModel.defaults()` — see that class's doc comment.
+  static const String brandingConfig = "$apiPrefix/branding/config";
+
   // Timeouts
   static const int connectTimeout = 30000; // 30 seconds
   static const int receiveTimeout = 30000;

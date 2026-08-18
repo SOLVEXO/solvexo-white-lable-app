@@ -85,7 +85,7 @@ class ChatInputBar extends StatelessWidget {
                   child: Container(
                     width: 48,
                     height: 48,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(colors: [AppColors.primaryColor, AppColors.accentColor]),
                       shape: BoxShape.circle,
                     ),

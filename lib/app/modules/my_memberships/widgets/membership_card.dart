@@ -54,7 +54,7 @@ class MembershipCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(BaseRadius.md),
               ),
               alignment: Alignment.center,
-              child: const Icon(Icons.card_membership_rounded, color: AppColors.primaryColor, size: 22),
+              child: Icon(Icons.card_membership_rounded, color: AppColors.primaryColor, size: 22),
             ),
             SizedBox(width: BaseSpacing.sm),
             Expanded(

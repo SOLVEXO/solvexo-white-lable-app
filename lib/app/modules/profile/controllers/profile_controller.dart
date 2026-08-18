@@ -4,6 +4,7 @@ import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/data/models/common_models/user_model.dart';
 import 'package:book_store_app/app/data/repositories/auth_repository.dart';
 import 'package:book_store_app/app/data/repositories/upload_repository.dart';
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:book_store_app/app/modules/auth/controller/auth_controller.dart';
 import 'package:book_store_app/app/modules/settings/controllers/settings_controller.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
@@ -75,7 +76,7 @@ class ProfileController extends GetxController {
       tiles: [
         SettingsTile(
           icon: AppIcons.cashIcon,
-          title: 'Sell on Solvexo',
+          title: 'Sell on ${Get.find<BrandingService>().config.value.marketplaceName}',
           onTap: goToSellerLanding,
         ),
       ],

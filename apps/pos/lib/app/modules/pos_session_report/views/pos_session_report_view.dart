@@ -25,8 +25,8 @@ class PosSessionReportView extends StatelessWidget {
         actions: [
           GestureDetector(
             onTap: c.refreshData,
-            child: const Padding(
-              padding: EdgeInsets.only(right: 16),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
               child: Icon(Icons.refresh_rounded, color: AppColors.primaryColor, size: 22),
             ),
           ),

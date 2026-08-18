@@ -49,7 +49,7 @@ class LocationCard extends StatelessWidget {
                     color: AppColors.primaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(BaseRadius.sm),
                   ),
-                  child: const Icon(Icons.store_mall_directory_outlined,
+                  child: Icon(Icons.store_mall_directory_outlined,
                       color: AppColors.primaryColor, size: 18),
                 ),
                 SizedBox(width: BaseSpacing.xs),

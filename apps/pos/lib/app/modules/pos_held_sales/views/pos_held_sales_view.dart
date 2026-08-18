@@ -27,8 +27,8 @@ class PosHeldSalesView extends StatelessWidget {
         actions: [
           GestureDetector(
             onTap: c.loadHeldSales,
-            child: const Padding(
-              padding: EdgeInsets.only(right: 16),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
               child: Icon(Icons.refresh_rounded,
                   color: AppColors.primaryColor, size: 22),
             ),
@@ -72,7 +72,7 @@ class _EmptyState extends StatelessWidget {
             color: AppColors.primaryColor.withOpacity(0.08),
             borderRadius: BorderRadius.circular(22),
           ),
-          child: const Icon(Icons.pause_circle_outline_rounded,
+          child: Icon(Icons.pause_circle_outline_rounded,
               size: 40, color: AppColors.primaryColor),
         ),
         const SizedBox(height: 18),
@@ -237,7 +237,7 @@ class _HeldSaleTile extends StatelessWidget {
 
         // ── Action buttons ─────────────────────────────────────────
         isProcessing
-            ? const Center(
+            ? Center(
                 child: SizedBox(
                   width: 22, height: 22,
                   child: CircularProgressIndicator(

@@ -73,7 +73,7 @@ class MyOrdersController extends BaseController {
           itemBuilder: (_, i) {
             final f = files[i];
             return ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.insert_drive_file_outlined,
                 color: AppColors.primaryColor,
               ),

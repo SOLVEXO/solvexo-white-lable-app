@@ -89,7 +89,7 @@ class MessageBubble extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: BaseSpacing.sm + 2, vertical: BaseSpacing.xs + 2),
       decoration: BoxDecoration(
-        gradient: isMine ? const LinearGradient(colors: [AppColors.primaryColor, AppColors.accentColor]) : null,
+        gradient: isMine ? LinearGradient(colors: [AppColors.primaryColor, AppColors.accentColor]) : null,
         color: isMine ? null : AppColors.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(BaseRadius.lg),

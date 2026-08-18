@@ -28,7 +28,7 @@ class ProofUploadTile extends StatelessWidget {
             alignment: Alignment.center,
             child: Column(
               children: [
-                const Icon(Icons.add_a_photo_outlined, size: 28, color: AppColors.primaryColor),
+                Icon(Icons.add_a_photo_outlined, size: 28, color: AppColors.primaryColor),
                 SizedBox(height: BaseSpacing.xs),
                 CustomText(
                   text: 'Upload screenshot or receipt',

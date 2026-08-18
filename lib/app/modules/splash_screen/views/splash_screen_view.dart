@@ -3,6 +3,7 @@ import 'package:book_store_app/app/components/animated_background_circles.dart';
 import 'package:book_store_app/app/components/common_image_view.dart';
 import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/components/svg_icon.dart';
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:book_store_app/app/modules/splash_screen/controllers/splash_screen_controller.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/config/resources/app_icons.dart';
@@ -30,7 +31,7 @@ class SplashView extends StatelessWidget {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: const BoxDecoration(gradient: AppColors.appbarGradient),
+            decoration: BoxDecoration(gradient: AppColors.appbarGradient),
           ),
 
           // ── Animated background circles ──────────────────────────────────
@@ -105,7 +106,7 @@ class SplashView extends StatelessWidget {
                         children: [
                           // Brand name
                           CustomText(
-                            text: 'Solvexo',
+                            text: Get.find<BrandingService>().config.value.appName,
                             textAlign: TextAlign.center,
                             color: AppColors.white,
                             fontFamily: AppTextStyles.headingFontFamily,

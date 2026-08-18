@@ -58,7 +58,7 @@ class PosTransactionCard extends StatelessWidget {
             const Divider(height: 1, color: AppColors.lightGrey2),
             const SizedBox(height: 12),
             isProcessing
-                ? const Center(
+                ? Center(
                     child: SizedBox(
                       width: 20, height: 20,
                       child: CircularProgressIndicator(

@@ -31,7 +31,7 @@ class CreditWalletsCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.account_balance_wallet_outlined, color: AppColors.accentColor, size: 18),
+              Icon(Icons.account_balance_wallet_outlined, color: AppColors.accentColor, size: 18),
               SizedBox(width: BaseSpacing.xs),
               CustomText(
                 text: 'My Credits',
