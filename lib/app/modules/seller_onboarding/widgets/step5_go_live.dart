@@ -1,11 +1,9 @@
 import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/modules/seller_onboarding/controllers/seller_onboarding_controller.dart';
-import 'package:book_store_app/app/routes/app_pages.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/config/resources/app_text_styles.dart';
 import 'package:book_store_app/utils/app_font_size.dart';
 import 'package:book_store_app/utils/dimens.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -298,49 +296,18 @@ class _TimelineConnector extends StatelessWidget {
 }
 
 // ── Upgrade note ──────────────────────────────────────────────────────────────
+// Plan upgrades are managed on Seller Web, not in this app — static text only.
 
-class _UpgradeNote extends StatefulWidget {
-  @override
-  State<_UpgradeNote> createState() => _UpgradeNoteState();
-}
-
-class _UpgradeNoteState extends State<_UpgradeNote> {
-  late final TapGestureRecognizer _recognizer;
-
-  @override
-  void initState() {
-    super.initState();
-    _recognizer = TapGestureRecognizer()..onTap = () => Get.toNamed(Routes.sellerPlatformPlan);
-  }
-
-  @override
-  void dispose() {
-    _recognizer.dispose();
-    super.dispose();
-  }
+class _UpgradeNote extends StatelessWidget {
+  const _UpgradeNote();
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
+    return const Text(
+      "You're on the free Starter plan. Upgrade anytime to unlock unlimited "
+      'products, AI Studio, POS, and custom domain.',
       textAlign: TextAlign.center,
-      text: TextSpan(
-        style: const TextStyle(fontSize: 11, color: AppColors.grey),
-        children: [
-          const TextSpan(text: "You're on the free Starter plan. "),
-          TextSpan(
-            text: 'Upgrade anytime',
-            style: const TextStyle(
-              color: AppColors.primaryColor,
-              fontWeight: FontWeight.w600,
-              decoration: TextDecoration.underline,
-            ),
-            recognizer: _recognizer,
-          ),
-          const TextSpan(
-            text: ' to unlock unlimited products, AI Studio, POS, and custom domain.',
-          ),
-        ],
-      ),
+      style: TextStyle(fontSize: 11, color: AppColors.grey),
     );
   }
 }

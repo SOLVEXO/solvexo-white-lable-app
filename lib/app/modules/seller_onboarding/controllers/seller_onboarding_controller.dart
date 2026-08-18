@@ -477,14 +477,9 @@ class SellerOnboardingController extends GetxController {
       await AppPreferences.saveStoreId(store.id);
       await AppPreferences.saveStoreName(store.name);
       // The store is created 'pending' and stays invisible/unable to sell
-      // until an admin approves it (see StoreService.createStore) — which
-      // itself requires the business/KYC verification submitted here first
-      // (ProductsService blocks product creation while status != 'active').
-      // Land on the dashboard underneath so Back from verification goes
-      // somewhere sane, then push straight into it rather than leaving the
-      // seller to stumble onto this requirement on their own.
+      // until an admin approves it (see StoreService.createStore); business/
+      // KYC verification is submitted on Seller Web, not in this app.
       Get.offAllNamed(Routes.sellerHome);
-      Get.toNamed(Routes.storeVerification, arguments: store.id);
     }
     // On failure, _sellerRepo already shows a toast — stay on screen.
   }

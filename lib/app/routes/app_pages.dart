@@ -7,44 +7,6 @@ import '../modules/notification_preferences/bindings/notification_preferences_bi
 import '../modules/notification_preferences/views/notification_preferences_view.dart';
 import '../modules/trending_products/bindings/trending_products_binding.dart';
 import '../modules/trending_products/views/trending_products_view.dart';
-import '../modules/add_seller_product/bindings/add_seller_product_binding.dart';
-import '../modules/add_seller_product/views/add_seller_product_view.dart';
-import '../modules/edit_seller_product/bindings/edit_seller_product_binding.dart';
-import '../modules/edit_seller_product/views/edit_seller_product_view.dart';
-import '../modules/seller_store_profile/bindings/seller_store_profile_binding.dart';
-import '../modules/seller_store_profile/views/seller_store_profile_view.dart';
-import '../modules/store_verification/bindings/store_verification_binding.dart';
-import '../modules/store_verification/views/store_verification_view.dart';
-import '../modules/seller_shipping/bindings/seller_shipping_binding.dart';
-import '../modules/seller_shipping/views/seller_shipping_view.dart';
-import '../modules/seller_notifications/bindings/seller_notifications_binding.dart';
-import '../modules/seller_notifications/views/seller_notifications_view.dart';
-import '../modules/seller_password_security/bindings/seller_password_security_binding.dart';
-import '../modules/seller_password_security/views/seller_password_security_view.dart';
-import '../modules/seller_two_factor/bindings/seller_two_factor_binding.dart';
-import '../modules/seller_two_factor/views/seller_two_factor_view.dart';
-import '../modules/seller_language/bindings/seller_language_binding.dart';
-import '../modules/seller_language/views/seller_language_view.dart';
-import '../modules/ai_studio/bindings/ai_studio_hub_binding.dart';
-import '../modules/ai_studio/views/ai_studio_hub_view.dart';
-import '../modules/ai_studio/bindings/ai_studio_history_binding.dart';
-import '../modules/ai_studio/views/ai_studio_history_view.dart';
-import '../modules/ai_studio/bindings/ai_generation_detail_binding.dart';
-import '../modules/ai_studio/views/ai_generation_detail_view.dart';
-import '../modules/ai_studio/bindings/listing_writer_binding.dart';
-import '../modules/ai_studio/views/listing_writer_view.dart';
-import '../modules/ai_studio/bindings/seo_booster_binding.dart';
-import '../modules/ai_studio/views/seo_booster_view.dart';
-import '../modules/ai_studio/bindings/email_campaign_binding.dart';
-import '../modules/ai_studio/views/email_campaign_view.dart';
-import '../modules/ai_studio/bindings/worksheet_builder_binding.dart';
-import '../modules/ai_studio/views/worksheet_builder_view.dart';
-import '../modules/ai_studio/bindings/price_optimizer_binding.dart';
-import '../modules/ai_studio/views/price_optimizer_view.dart';
-import '../modules/ai_studio/bindings/image_enhancer_binding.dart';
-import '../modules/ai_studio/views/image_enhancer_view.dart';
-import '../modules/seller_messages/bindings/seller_messages_binding.dart';
-import '../modules/seller_messages/views/seller_messages_view.dart';
 import '../modules/messaging/bindings/conversations_binding.dart';
 import '../modules/messaging/bindings/chat_binding.dart';
 import '../modules/messaging/views/conversations_view.dart';
@@ -77,29 +39,6 @@ import '../modules/seller_pos_management/bindings/seller_pos_management_binding.
 import '../modules/seller_pos_management/views/seller_pos_management_view.dart';
 import '../modules/seller_pos_locations/bindings/seller_pos_locations_binding.dart';
 import '../modules/seller_pos_locations/views/seller_pos_locations_view.dart';
-import '../modules/seller_analytics/bindings/seller_analytics_binding.dart';
-import '../modules/seller_finance/bindings/seller_finance_binding.dart';
-import '../modules/seller_finance/views/seller_finance_view.dart';
-import '../modules/seller_coupons/bindings/seller_coupons_binding.dart';
-import '../modules/seller_coupons/views/seller_coupons_view.dart';
-import '../modules/seller_loyalty/bindings/seller_loyalty_binding.dart';
-import '../modules/seller_loyalty/views/seller_loyalty_view.dart';
-import '../modules/seller_subscriptions/bindings/seller_subscriptions_binding.dart';
-import '../modules/seller_subscriptions/views/seller_subscriptions_view.dart';
-import '../modules/seller_services/bindings/seller_services_binding.dart';
-import '../modules/seller_services/views/seller_services_view.dart';
-import '../modules/seller_platform_plans/bindings/seller_platform_plans_binding.dart';
-import '../modules/seller_platform_plans/views/seller_platform_plans_view.dart';
-import '../modules/seller_seo/bindings/seller_seo_binding.dart';
-import '../modules/seller_seo/views/seller_seo_view.dart';
-import '../modules/seller_seo_products/bindings/seller_seo_products_binding.dart';
-import '../modules/seller_seo_products/views/seller_seo_products_view.dart';
-import '../modules/seller_activity_log/bindings/seller_activity_log_binding.dart';
-import '../modules/seller_activity_log/views/seller_activity_log_view.dart';
-import '../modules/seller_store_banners/bindings/seller_store_banners_binding.dart';
-import '../modules/seller_store_banners/views/seller_store_banners_view.dart';
-import '../modules/seller_promotions/bindings/seller_promotions_binding.dart';
-import '../modules/seller_promotions/views/seller_promotions_view.dart';
 import '../modules/loyalty_rewards/bindings/loyalty_rewards_binding.dart';
 import '../modules/loyalty_rewards/views/loyalty_rewards_view.dart';
 import '../modules/my_memberships/bindings/my_memberships_binding.dart';
@@ -112,21 +51,6 @@ import '../modules/my_bookings/bindings/my_bookings_binding.dart';
 import '../modules/my_bookings/views/my_bookings_view.dart';
 import '../modules/worksheet_trial/bindings/worksheet_trial_binding.dart';
 import '../modules/worksheet_trial/views/worksheet_trial_view.dart';
-import '../modules/seller_edit_profile/bindings/seller_edit_profile_binding.dart';
-import '../modules/seller_edit_profile/views/seller_edit_profile_view.dart';
-import '../modules/seller/bindings/seller_binding.dart';
-import '../modules/seller_orders/bindings/seller_order_detail_binding.dart';
-import '../modules/seller_orders/bindings/seller_orders_binding.dart';
-import '../modules/seller_orders/views/seller_order_detail_view.dart';
-import '../modules/seller_returns/bindings/seller_returns_binding.dart';
-import '../modules/seller_returns/views/seller_returns_view.dart';
-import '../modules/seller_products/bindings/seller_products_binding.dart';
-import '../modules/seller_settings/bindings/seller_settings_binding.dart';
-import '../modules/seller_analytics/views/seller_analytics_view.dart';
-import '../modules/seller/views/seller_main_view.dart';
-import '../modules/seller_orders/views/seller_orders_view.dart';
-import '../modules/seller_products/views/seller_products_view.dart';
-import '../modules/seller_settings/views/seller_settings_view.dart';
 import '../modules/about/bindings/about_binding.dart';
 import '../modules/about/views/about_view.dart';
 import '../modules/address/bindings/address_binding.dart';
@@ -430,21 +354,20 @@ class AppPages {
       page: () => SellerOnboardingView(),
       binding: SellerOnboardingBinding(),
     ),
+    // Seller-management dashboard removed (Phase 2) — this app no longer
+    // carries a seller dashboard shell. The only seller-side screens left
+    // here are POS configuration (staff/registers/locations), pending
+    // relocation into the standalone POS app in Phase 3.
     GetPage(
       name: Routes.sellerHome,
-      page: () => SellerMainView(),
-      binding: SellerBinding(),
+      page: () => SellerPosManagementView(),
+      binding: SellerPosManagementBinding(),
     ),
     GetPage(
       name: Routes.posHome,
       page: () => PosMainView(),
       binding: PosBinding(),
       middlewares: [PosAccessMiddleware(requireActiveSession: true)],
-    ),
-    GetPage(
-      name: Routes.sellerMessages,
-      page: () => SellerMessagesView(),
-      binding: SellerMessagesBinding(),
     ),
     GetPage(
       name: Routes.messagesView,
@@ -455,96 +378,6 @@ class AppPages {
       name: Routes.chatView,
       page: () => ChatView(),
       binding: ChatBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerOrders,
-      page: () => SellerOrdersView(),
-      binding: SellerOrdersBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerOrderDetail,
-      page: () => const SellerOrderDetailView(),
-      binding: SellerOrderDetailBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerReturns,
-      page: () => SellerReturnsView(),
-      binding: SellerReturnsBinding(),
-    ),
-    GetPage(
-      name: Routes.addSellerProduct,
-      page: () => AddSellerProductView(),
-      binding: AddSellerProductBinding(),
-    ),
-    GetPage(
-      name: Routes.editSellerProduct,
-      page: () => EditSellerProductView(),
-      binding: EditSellerProductBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerProducts,
-      page: () => SellerProductsView(),
-      binding: SellerProductsBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerAnalytics,
-      page: () => SellerAnalyticsView(),
-      binding: SellerAnalyticsBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerFinance,
-      page: () => SellerFinanceView(),
-      binding: SellerFinanceBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerCoupons,
-      page: () => SellerCouponsView(),
-      binding: SellerCouponsBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerLoyalty,
-      page: () => SellerLoyaltyView(),
-      binding: SellerLoyaltyBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerSubscriptionPlans,
-      page: () => SellerSubscriptionsView(),
-      binding: SellerSubscriptionsBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerServices,
-      page: () => SellerServicesView(),
-      binding: SellerServicesBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerPlatformPlan,
-      page: () => const SellerPlatformPlansView(),
-      binding: SellerPlatformPlansBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerSeo,
-      page: () => const SellerSeoView(),
-      binding: SellerSeoBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerSeoProducts,
-      page: () => const SellerSeoProductsView(),
-      binding: SellerSeoProductsBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerActivityLog,
-      page: () => SellerActivityLogView(),
-      binding: SellerActivityLogBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerStoreBanners,
-      page: () => SellerStoreBannersView(),
-      binding: SellerStoreBannersBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerPromotions,
-      page: () => const SellerPromotionsView(),
-      binding: SellerPromotionsBinding(),
     ),
     GetPage(
       name: Routes.loyaltyRewards,
@@ -575,96 +408,6 @@ class AppPages {
       name: Routes.worksheetTrial,
       page: () => const WorksheetTrialView(),
       binding: WorksheetTrialBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerEditProfile,
-      page: () => SellerEditProfileView(),
-      binding: SellerEditProfileBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerAiStudio,
-      page: () => const AiStudioHubView(),
-      binding: AiStudioHubBinding(),
-    ),
-    GetPage(
-      name: Routes.aiStudioHistory,
-      page: () => const AiStudioHistoryView(),
-      binding: AiStudioHistoryBinding(),
-    ),
-    GetPage(
-      name: Routes.aiStudioGenerationDetail,
-      page: () => const AiGenerationDetailView(),
-      binding: AiGenerationDetailBinding(),
-    ),
-    GetPage(
-      name: Routes.aiStudioListingWriter,
-      page: () => const ListingWriterView(),
-      binding: ListingWriterBinding(),
-    ),
-    GetPage(
-      name: Routes.aiStudioSeoBooster,
-      page: () => const SeoBoosterView(),
-      binding: SeoBoosterBinding(),
-    ),
-    GetPage(
-      name: Routes.aiStudioEmailCampaigns,
-      page: () => const EmailCampaignView(),
-      binding: EmailCampaignBinding(),
-    ),
-    GetPage(
-      name: Routes.aiStudioWorksheetBuilder,
-      page: () => const WorksheetBuilderView(),
-      binding: WorksheetBuilderBinding(),
-    ),
-    GetPage(
-      name: Routes.aiStudioPriceOptimizer,
-      page: () => const PriceOptimizerView(),
-      binding: PriceOptimizerBinding(),
-    ),
-    GetPage(
-      name: Routes.aiStudioImageEnhancer,
-      page: () => const ImageEnhancerView(),
-      binding: ImageEnhancerBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerSettings,
-      page: () => SellerSettingsView(),
-      binding: SellerSettingsBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerStoreProfile,
-      page: () => SellerStoreProfileView(),
-      binding: SellerStoreProfileBinding(),
-    ),
-    GetPage(
-      name: Routes.storeVerification,
-      page: () => StoreVerificationView(),
-      binding: StoreVerificationBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerShipping,
-      page: () => SellerShippingView(),
-      binding: SellerShippingBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerNotifications,
-      page: () => SellerNotificationsView(),
-      binding: SellerNotificationsBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerPasswordSecurity,
-      page: () => SellerPasswordSecurityView(),
-      binding: SellerPasswordSecurityBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerTwoFactor,
-      page: () => SellerTwoFactorView(),
-      binding: SellerTwoFactorBinding(),
-    ),
-    GetPage(
-      name: Routes.sellerLanguage,
-      page: () => SellerLanguageView(),
-      binding: SellerLanguageBinding(),
     ),
     GetPage(
       name: Routes.posOrders,

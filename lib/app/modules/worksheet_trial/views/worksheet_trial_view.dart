@@ -1,8 +1,8 @@
 import 'package:book_store_app/app/components/custom_app_bar_two.dart';
 import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/components/custom_text_field.dart';
-import 'package:book_store_app/app/modules/ai_studio/widgets/ai_form_widgets.dart';
-import 'package:book_store_app/app/modules/ai_studio/widgets/generation_output_view.dart';
+import 'package:book_store_app/app/components/ai_form_widgets.dart';
+import 'package:book_store_app/app/components/generation_output_view.dart';
 import 'package:book_store_app/app/modules/login/controller/auth_tabs_controller.dart';
 import 'package:book_store_app/app/modules/worksheet_trial/controllers/worksheet_trial_controller.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
