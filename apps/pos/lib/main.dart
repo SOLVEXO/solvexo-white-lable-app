@@ -1,3 +1,4 @@
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:book_store_app/app/network/dio_service.dart';
 import 'package:book_store_app/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,6 +21,10 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await SharedPreferences.getInstance();
+  // Same shared BrandingService the buyer app uses (from book_store_app) —
+  // not duplicated. Loads any cached branding instantly, then refreshes
+  // from the backend in the background; see BrandingService's doc comment.
+  await Get.put(BrandingService(), permanent: true).init();
 
   runApp(const MyApp());
 }
@@ -33,7 +38,7 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, screenType) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          title: "Solvexo POS",
+          title: '${Get.find<BrandingService>().config.value.appName} POS',
           initialRoute: AppPages.initialRoute,
           getPages: AppPages.routes,
           // Clamp OS accessibility text scaling so extreme settings can't

@@ -23,7 +23,7 @@ class PosProductsView extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: Column(
         children: [
-          const PosAppBar(title: 'Products', subtitle: 'EduDeen POS'),
+          const PosAppBar(title: 'Products'),
           _SearchBar(controller: controller),
           const Divider(height: 1, color: AppColors.lightGrey2),
           Expanded(

@@ -1,5 +1,6 @@
 import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/components/custom_text_field.dart';
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/core/theme/base_spacing.dart';
 import 'package:book_store_app/core/widgets/buttons/base_buttons.dart';
@@ -28,7 +29,7 @@ class PosLoginView extends StatelessWidget {
             children: [
               SizedBox(height: BaseSpacing.xxxl),
               CustomText(
-                text: 'Solvexo POS',
+                text: '${Get.find<BrandingService>().config.value.appName} POS',
                 fontSize: AppFontSize.veryLarge3,
                 fontWeight: FontWeight.w700,
                 color: AppColors.primaryColor,

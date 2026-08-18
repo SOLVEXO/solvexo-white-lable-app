@@ -1,4 +1,5 @@
 import 'package:book_store_app/app/components/custom_text.dart';
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:solvexo_pos/app/modules/seller_onboarding/controllers/seller_onboarding_controller.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/config/resources/app_text_styles.dart';
@@ -14,6 +15,7 @@ class Step5GoLive extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final marketplaceName = Get.find<BrandingService>().config.value.marketplaceName;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppDimen.allPadding),
       child: Column(
@@ -45,8 +47,8 @@ class Step5GoLive extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                const CustomText(
-                  text: 'Welcome to EduDeen. One more step: verify your business details so our team can approve your store — you can only publish products on Solvexo once it\'s approved.',
+                CustomText(
+                  text: 'Welcome to $marketplaceName. One more step: verify your business details so our team can approve your store — you can only publish products on $marketplaceName once it\'s approved.',
                   fontSize: AppFontSize.verySmall,
                   color: AppColors.grey,
                   textAlign: TextAlign.center,
@@ -77,6 +79,7 @@ class _SetupSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appName = Get.find<BrandingService>().config.value.appName;
     return Obx(
       () => Container(
         padding: const EdgeInsets.all(14),
@@ -87,8 +90,8 @@ class _SetupSummary extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CustomText(
-              text: 'Your EduDeen Setup',
+            CustomText(
+              text: 'Your $appName Setup',
               fontSize: AppFontSize.verySmall,
               fontWeight: FontWeight.bold,
               color: AppColors.black,
@@ -98,7 +101,7 @@ class _SetupSummary extends StatelessWidget {
               emoji: '🏪',
               label: 'Store',
               value: controller.storeName.value.isEmpty
-                  ? 'My EduDeen Store'
+                  ? 'My $appName Store'
                   : controller.storeName.value,
             ),
             _SummaryRow(
@@ -200,24 +203,25 @@ class _NextStepsTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final marketplaceName = Get.find<BrandingService>().config.value.marketplaceName;
     return Column(
-      children: const [
-        _TimelineStep(
+      children: [
+        const _TimelineStep(
           emoji: '📋',
           title: 'Verify your business',
           subtitle: 'Submit a few business details & documents — required next.',
         ),
-        _TimelineConnector(),
-        _TimelineStep(
+        const _TimelineConnector(),
+        const _TimelineStep(
           emoji: '✅',
           title: 'Get approved',
           subtitle: 'Our team reviews it — usually within 1–2 business days.',
         ),
-        _TimelineConnector(),
+        const _TimelineConnector(),
         _TimelineStep(
           emoji: '🛍️',
           title: 'Start selling',
-          subtitle: 'Once approved, add products and go live on Solvexo.',
+          subtitle: 'Once approved, add products and go live on $marketplaceName.',
           isLast: true,
         ),
       ],

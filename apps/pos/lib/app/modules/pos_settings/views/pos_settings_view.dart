@@ -21,7 +21,7 @@ class PosSettingsView extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: Column(
         children: [
-          const PosAppBar(title: 'Settings', subtitle: 'EduDeen POS'),
+          const PosAppBar(title: 'Settings'),
           const Divider(height: 1, color: AppColors.lightGrey2),
           Expanded(
             child: Obx(() {

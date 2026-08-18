@@ -8,6 +8,7 @@ import 'package:book_store_app/app/components/custom_text_field.dart';
 import 'package:book_store_app/app/data/models/common_models/store_model.dart';
 import 'package:book_store_app/app/data/models/pos/pos_employee_model.dart';
 import 'package:book_store_app/app/data/models/pos/pos_session_model.dart';
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:solvexo_pos/app/modules/seller_pos_management/controllers/seller_pos_management_controller.dart';
 import 'package:solvexo_pos/app/modules/seller_pos_management/widgets/seller_pos_management_shimmer.dart';
 import 'package:solvexo_pos/app/routes/app_pages.dart';
@@ -173,6 +174,9 @@ class _ReportsLinksRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // UI-level only — a tenant can hide the audit log entry point via
+    // white-label feature flags; the route/API still exist either way.
+    final showAuditLog = Get.find<BrandingService>().isFeatureEnabled('posAuditLog');
     return Row(
       children: [
         Expanded(
@@ -182,14 +186,16 @@ class _ReportsLinksRow extends StatelessWidget {
             onTap: () => Get.toNamed(Routes.posRangeReport),
           ),
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _LinkChip(
-            icon: Icons.history_rounded,
-            label: 'Activity Log',
-            onTap: () => Get.toNamed(Routes.posAuditLog),
+        if (showAuditLog) ...[
+          const SizedBox(width: 10),
+          Expanded(
+            child: _LinkChip(
+              icon: Icons.history_rounded,
+              label: 'Activity Log',
+              onTap: () => Get.toNamed(Routes.posAuditLog),
+            ),
           ),
-        ),
+        ],
         const SizedBox(width: 10),
         Expanded(
           child: _LinkChip(

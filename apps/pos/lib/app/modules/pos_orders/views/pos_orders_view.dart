@@ -24,7 +24,7 @@ class PosOrdersView extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: Column(
         children: [
-          const PosAppBar(title: 'Transactions', subtitle: 'EduDeen POS'),
+          const PosAppBar(title: 'Transactions'),
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {

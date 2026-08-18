@@ -1,21 +1,22 @@
 import 'package:book_store_app/app/components/custom_text.dart';
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/shared_prefrences/app_prefrences.dart';
 import 'package:book_store_app/utils/app_font_size.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PosAppBar extends StatelessWidget {
   final String title;
-  final String subtitle;
 
-  const PosAppBar({
-    super.key,
-    this.title = 'Quick Sale',
-    this.subtitle = 'EduDeen POS',
-  });
+  /// Defaults to "{tenant app name} POS" via BrandingService when unset.
+  final String? subtitle;
+
+  const PosAppBar({super.key, this.title = 'Quick Sale', this.subtitle});
 
   @override
   Widget build(BuildContext context) {
+    final effectiveSubtitle = subtitle ?? '${Get.find<BrandingService>().config.value.appName} POS';
     return Container(
       decoration: BoxDecoration(gradient: AppColors.appbarGradient),
       padding: EdgeInsets.only(
@@ -32,7 +33,7 @@ class PosAppBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CustomText(
-                  text: subtitle,
+                  text: effectiveSubtitle,
                   fontSize: AppFontSize.small2,
                   color: AppColors.background,
                   fontWeight: FontWeight.w400,

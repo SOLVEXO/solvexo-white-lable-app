@@ -1,5 +1,6 @@
 import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/components/svg_icon.dart';
+import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:solvexo_pos/app/modules/seller_onboarding/controllers/seller_onboarding_controller.dart';
 import 'package:solvexo_pos/app/modules/seller_onboarding/widgets/onboarding_bottom_bar.dart';
 import 'package:solvexo_pos/app/modules/seller_onboarding/widgets/onboarding_step_bar.dart';
@@ -104,7 +105,7 @@ class _TopHeader extends StatelessWidget {
           SvgIcon(assetName: AppImages.logoImage, size: 40),
           const SizedBox(width: 5),
           CustomText(
-            text: 'SOLVEXO',
+            text: Get.find<BrandingService>().config.value.appName.toUpperCase(),
             fontFamily: AppTextStyles.headingFontFamily,
             fontSize: AppFontSize.medium,
             fontWeight: FontWeight.bold,
