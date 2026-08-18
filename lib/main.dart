@@ -1,3 +1,4 @@
+import 'package:book_store_app/app/network/dio_service.dart';
 import 'package:book_store_app/app/notification/fcm_background_handler.dart';
 import 'package:book_store_app/app/notification/local_notification_service.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
@@ -15,6 +16,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  DioService.onForceLogout = () {
+    if (Get.currentRoute != Routes.mainHome) {
+      Get.offAllNamed(Routes.mainHome);
+    }
+  };
   await dotenv.load(fileName: ".env");
   // Initialize SharedPreferences
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

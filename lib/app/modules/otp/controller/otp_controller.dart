@@ -152,7 +152,10 @@ class OtpController extends BaseController {
         // back to where the guard fired instead of navigating away.
         AuthGateService.instance.resolveSuccess();
       } else if (intentRole == 'seller') {
-        Get.offAllNamed(Routes.sellerOnboarding);
+        // Seller onboarding now lives only in the standalone POS app
+        // (Phase 3) — this buyer app has nowhere to send a fresh seller
+        // signup, so fall back to the buyer guest home.
+        Get.offAllNamed(Routes.mainHome);
       } else {
         Get.offAllNamed(Routes.mainHome);
       }

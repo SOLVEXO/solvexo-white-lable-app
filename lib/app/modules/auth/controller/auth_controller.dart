@@ -448,14 +448,10 @@ class AuthController extends BaseController {
       AuthGateService.instance.resolveSuccess();
       return;
     }
-    switch (role) {
-      case 'seller':
-        // SellerStoresController handles redirect to onboarding if no stores
-        Get.offAllNamed(Routes.sellerStores);
-        break;
-      default:
-        Get.offAllNamed(Routes.mainHome);
-    }
+    // Seller stores/onboarding now live only in the standalone POS app
+    // (Phase 3) — this buyer app has no seller flow to send a 'seller'
+    // login into, so every role falls back to the buyer guest home.
+    Get.offAllNamed(Routes.mainHome);
   }
 
   /// Folds any locally-held guest cart into the now-logged-in buyer's

@@ -65,16 +65,11 @@ class RoleMiddleware extends GetMiddleware {
   }
 
   void _navigateByRole(String? role) {
-    switch (role) {
-      case 'seller':
-        Get.offAllNamed(Routes.sellerHome);
-        break;
-      case 'pos':
-        Get.offAllNamed(Routes.posHome);
-        break;
-      default:
-        Get.offAllNamed(Routes.mainHome);
-    }
+    // Seller/POS accounts now live in the standalone POS app (Phase 3) —
+    // this buyer app has no seller dashboard or POS terminal to send them
+    // to, so every role (including 'seller'/'pos') falls back to the buyer
+    // guest home.
+    Get.offAllNamed(Routes.mainHome);
   }
 }
 
@@ -116,7 +111,13 @@ class PosAccessMiddleware extends GetMiddleware {
     }
 
     if (requireActiveSession && !await AppPreferences.hasPosSession()) {
-      Get.offAllNamed(Routes.posPinLogin);
+      // The POS PIN-login screen lives only in the standalone POS app
+      // (Phase 3) — this middleware is shared/generic (imported by that
+      // app via the book_store_app path dependency) so it can't reference
+      // a `Routes.posPinLogin` constant from this app's own route table.
+      // Use the literal path instead; the POS app registers this same
+      // route string itself.
+      Get.offAllNamed('/pos/pin-login');
     }
   }
 }

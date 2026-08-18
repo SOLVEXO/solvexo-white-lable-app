@@ -125,17 +125,10 @@ class SplashScreenController extends GetxController
     // up). Never blocks navigation below.
     unawaited(FcmService().init());
 
-    final role = await AppPreferences.getUserRole();
-    switch (role) {
-      case 'seller':
-        Get.offAllNamed(Routes.sellerStores);
-        break;
-      case 'pos':
-        Get.offAllNamed(Routes.posHome);
-        break;
-      default:
-        Get.offAllNamed(Routes.mainHome);
-    }
+    // Seller/POS accounts now live in the standalone POS app (Phase 3) —
+    // this buyer app has no seller dashboard or POS terminal to send them
+    // to, so any non-buyer role falls back to the buyer guest home too.
+    Get.offAllNamed(Routes.mainHome);
   }
 
   @override

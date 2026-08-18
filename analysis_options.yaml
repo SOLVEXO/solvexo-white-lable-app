@@ -13,6 +13,12 @@ analyzer:
     constant_identifier_names: ignore
     library_prefixes: ignore
     unrelated_type_equality_checks: ignore
+  # apps/pos is a separate, independently-buildable Flutter project (its own
+  # pubspec.yaml/analysis_options.yaml) that depends on this app as a path
+  # dependency — exclude it here so each app's `flutter analyze` run stays
+  # scoped to its own package instead of being conflated together.
+  exclude:
+    - apps/**
 include: package:flutter_lints/flutter.yaml
 
 linter:

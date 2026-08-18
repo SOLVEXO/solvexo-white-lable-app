@@ -54,16 +54,6 @@ abstract class Routes {
   static const welcome = '/welcome';
   static const onboarding = '/onboarding';
 
-  // Seller setup — kept temporarily (not seller-management): POS still needs
-  // a store-picker + first-store creation flow. Slated to move into the
-  // standalone POS app in Phase 3.
-  static const sellerOnboarding = '/seller/onboarding';
-  static const sellerStores = '/seller/stores';
-
-  // Role-based homes
-  static const sellerHome = '/seller/home';
-  static const posHome = '/pos/home';
-
   // Buyer — loyalty & rewards for a specific store
   static const loyaltyRewards = '/loyalty-rewards';
 
@@ -78,26 +68,7 @@ abstract class Routes {
   // Buyer/guest — free, unauthenticated AI Worksheet Builder trial
   static const worksheetTrial = '/worksheet-trial';
 
-  // POS sub-screens
-  static const posOrders = '/pos/orders';
-  static const posProducts = '/pos/products';
-  static const posSettings = '/pos/settings';
-
-  // Seller POS management — kept temporarily, slated to move into the
-  // standalone POS app in Phase 3.
-  static const sellerPosManagement = '/seller/pos-management';
-  static const sellerPosLocations = '/seller/pos-locations';
-
-  // POS entry flow
-  static const posPinLogin = '/pos/pin-login';
-  static const posOpenRegister = '/pos/open-register';
-
-  // POS operational screens
-  static const posHeldSales = '/pos/held-sales';
-  static const posSaleDetail = '/pos/sale-detail';
-  static const posSessionReport = '/pos/session-report';
-  static const posDailyReport = '/pos/daily-report';
-  static const posSessionHistory = '/pos/session-history';
-  static const posAuditLog = '/pos/audit-log';
-  static const posRangeReport = '/pos/range-report';
+  // Seller-management (Phase 2) and POS (Phase 3) routes have all been
+  // extracted into the standalone POS app — this buyer app no longer
+  // registers any /seller/* or /pos/* routes.
 }
