@@ -1,8 +1,12 @@
 class ApiConstants {
-  // static const String baseUrl = "http://localhost:3002";
-  static const String baseUrl = "https://staging.solvexo.store";
-
-  // static const String baseUrl = "http://192.168.1.101:3002";
+  // Phase 6 (white-label build/identity separation): each app (buyer, POS)
+  // can independently target dev/staging/prod without touching this shared
+  // file — pass `--dart-define=API_BASE_URL=...` to `flutter run`/`build`.
+  // Omitting it keeps today's behavior (staging) unchanged for both apps.
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://staging.solvexo.store',
+  );
 
   static const String apiPrefix = "$baseUrl/api";
 
