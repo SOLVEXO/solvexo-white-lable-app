@@ -274,7 +274,7 @@ class ProductCard extends StatelessWidget {
   }
 }
 
-// ─── "by Seller · ⭐ rating" subtitle ────────────────────────────────────────
+// ─── "⭐ rating" subtitle ─────────────────────────────────────────────────────
 
 class _SellerRatingRow extends StatelessWidget {
   const _SellerRatingRow({required this.product});
@@ -283,31 +283,8 @@ class _SellerRatingRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rating = product.averageRating.toStringAsFixed(1);
-    final sellerName = product.sellerName?.isNotEmpty == true
-        ? product.sellerName!
-        : 'Seller';
     return Row(
       children: [
-        Flexible(
-          child: CustomText(
-            text: 'by $sellerName',
-            color: AppColors.gray600,
-            fontSize: 10.5,
-            fontWeight: FontWeight.w400,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        if (product.sellerVerified) ...[
-          SizedBox(width: BaseSpacing.xxs / 2),
-          const Icon(Icons.verified_rounded, color: AppColors.blue, size: 12),
-        ],
-        CustomText(
-          text: ' · ',
-          color: AppColors.gray600,
-          fontSize: 10.5,
-          fontWeight: FontWeight.w400,
-        ),
         SvgIcon(
           assetName: AppIcons.fillStar,
           size: 11,

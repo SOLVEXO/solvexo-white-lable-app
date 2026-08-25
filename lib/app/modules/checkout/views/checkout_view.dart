@@ -236,24 +236,6 @@ class CheckoutView extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CustomText(text: item.name, color: AppColors.black, fontSize: AppFontSize.extraSmall),
-                        if (item.sellerName?.isNotEmpty == true)
-                          Row(
-                            children: [
-                              Flexible(
-                                child: CustomText(
-                                  text: 'by ${item.sellerName!}',
-                                  color: AppColors.gray600,
-                                  fontSize: AppFontSize.tiny,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              if (item.sellerVerified) ...[
-                                const SizedBox(width: 3),
-                                const Icon(Icons.verified_rounded, color: AppColors.blue, size: 11),
-                              ],
-                            ],
-                          ),
                       ],
                     ),
                     subtitle: Wrap(

@@ -356,7 +356,7 @@ class _NoteFormState extends State<_NoteForm> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomTextField(label: 'Note for the seller (optional)', controller: _noteCtrl, isborder: true, maxLines: 2);
+    return CustomTextField(label: 'Note for the store (optional)', controller: _noteCtrl, isborder: true, maxLines: 2);
   }
 }
 

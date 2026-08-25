@@ -40,6 +40,10 @@ android {
         }
     }
 
+    // White-label model: this whole repo is duplicated per store (see
+    // STORE_ONBOARDING.md) rather than building multiple stores' flavors out
+    // of one shared repo — so there is exactly one applicationId here, which
+    // a duplicated repo changes directly for its own store.
     defaultConfig {
         applicationId = "com.solvexo.app"
         minSdk = flutter.minSdkVersion

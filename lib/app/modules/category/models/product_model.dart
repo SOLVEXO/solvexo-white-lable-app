@@ -185,9 +185,14 @@ class ProductModel {
   // digital.previewAvailable — server-derived, only meaningful when isDigital
   final bool previewAvailable;
 
-  // Seller / store. sellerName/sellerVerified are batch-attached on every
-  // listing endpoint (category, search, shaped-by-ids) as well as product
-  // detail; the store* fields remain product-detail only.
+  // Seller / store. sellerName/sellerVerified/storeId are batch-attached on
+  // every listing endpoint (category, search, shaped-by-ids) as well as
+  // product detail (verified against the live search + products-by-category
+  // responses) — storeId is what lets a single-store build client-side
+  // filter those marketplace-wide listing endpoints down to its own store
+  // (see product_controller.dart/search_controller.dart _scopeToCurrentStore).
+  // The remaining store* cosmetic fields (slug/name/logo/followers) stay
+  // product-detail only.
   final String? sellerName;
   final bool sellerVerified;
   final String? storeId;

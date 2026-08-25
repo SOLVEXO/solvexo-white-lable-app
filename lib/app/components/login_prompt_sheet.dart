@@ -10,18 +10,17 @@ import 'package:flutter/material.dart';
 
 /// Shown by `AuthGateService` whenever a guest taps a protected action
 /// (add to wishlist, message a seller, checkout, ...). Not a full navigation
-/// redirect — just a nudge with a way in and a way out.
+/// redirect — just a nudge with a way in and a way out. Google Sign-In is
+/// simultaneously login-or-signup, so there is only one way in.
 class LoginPromptSheet extends StatelessWidget {
   final String message;
-  final VoidCallback onLogin;
-  final VoidCallback onSignUp;
+  final VoidCallback onContinueWithGoogle;
   final VoidCallback onClose;
 
   const LoginPromptSheet({
     super.key,
     required this.message,
-    required this.onLogin,
-    required this.onSignUp,
+    required this.onContinueWithGoogle,
     required this.onClose,
   });
 
@@ -95,9 +94,10 @@ class LoginPromptSheet extends StatelessWidget {
               fontSize: AppFontSize.verySmall,
             ),
             SizedBox(height: BaseSpacing.xl),
-            PrimaryButton(label: 'Log In', onPressed: onLogin),
-            SizedBox(height: BaseSpacing.sm),
-            OutlineButton(label: 'Sign Up', onPressed: onSignUp),
+            PrimaryButton(
+              label: 'Continue with Google',
+              onPressed: onContinueWithGoogle,
+            ),
           ],
         ),
       ),

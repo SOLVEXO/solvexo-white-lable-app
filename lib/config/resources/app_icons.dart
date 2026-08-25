@@ -2,10 +2,8 @@ class AppIcons {
   static const String _baseIconsPath = "assets/icons/";
   static const String appLogoSvg = '${_baseIconsPath}favicon.svg';
   static const String googleIcon = '${_baseIconsPath}google.png';
-  static const String facebookIcon = '${_baseIconsPath}facebook.png';
   static const String uploadImageIcon =
       '${_baseIconsPath}upload_photo_icon.svg';
-  static const String appleIcon = '${_baseIconsPath}apple.svg';
   static const String assistantIcon = '${_baseIconsPath}assistant.svg';
   static const String bankIcon = '${_baseIconsPath}bankicon.svg';
   static const String refreshIcon = '${_baseIconsPath}refresh.svg';
@@ -54,8 +52,6 @@ class AppIcons {
   static const String addToCartIcon = '${_baseIconsPath}add-cart.svg';
   static const String logoutIcon = '${_baseIconsPath}Logout.svg';
   static const String languageIcon = '${_baseIconsPath}global.svg';
-  static const String changePassword = '${_baseIconsPath}lock.svg';
-  static const String lockPassword = '${_baseIconsPath}lockpassword.svg';
   static const String privacy = '${_baseIconsPath}privacy.svg';
   static const String cross = '${_baseIconsPath}cross.svg';
   static const String deleteIcon = '${_baseIconsPath}trash.svg';
@@ -67,8 +63,6 @@ class AppIcons {
   static const String rightArrow = '${_baseIconsPath}arrow-right.svg';
   static const String behaviour = '${_baseIconsPath}behaviour.svg';
   static const String locationIcon = '${_baseIconsPath}locationicon.svg';
-  static const String showPassword = '${_baseIconsPath}show_password.svg';
-  static const String hidePassword = '${_baseIconsPath}password_visible.svg';
   static const String listViewIcon = '${_baseIconsPath}listview-white.svg';
   static const String gridViewIcon = '${_baseIconsPath}gridview-white.svg';
   static const String more = '${_baseIconsPath}moreicon.svg';

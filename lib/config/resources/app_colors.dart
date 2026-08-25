@@ -172,9 +172,6 @@ class AppColors {
   static const Color categoryBg3 = Color(0xFFF4DFDF);
   static const Color categoryBg4 = Color(0xFFF2E8DC);
 
-  // Social / brand colors
-  static const Color facebookBlue = Color(0xFF1877F2);
-
   // Material color equivalents
   static const Color materialAmber = Color(0xFFFFC107);
 }

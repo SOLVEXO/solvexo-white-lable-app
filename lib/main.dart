@@ -1,4 +1,5 @@
 import 'package:book_store_app/app/data/services/branding_service.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/network/dio_service.dart';
 import 'package:book_store_app/app/notification/fcm_background_handler.dart';
 import 'package:book_store_app/app/notification/local_notification_service.dart';
@@ -39,6 +40,10 @@ void main() async {
   // paints the right brand) and kicks off a background refresh — see
   // BrandingService's doc comment for why this can never block startup.
   await Get.put(BrandingService(), permanent: true).init();
+  // Resolves this build's one store in the background — every screen that
+  // needs it (Home, Search, Category, the store info page, direct-chat)
+  // awaits the same cached result instead of each re-resolving its own.
+  Get.put(CurrentStoreService(), permanent: true).ensureResolved();
   if (StripeConfig.isConfigured) {
     Stripe.publishableKey = StripeConfig.publishableKey;
     await Stripe.instance.applySettings();

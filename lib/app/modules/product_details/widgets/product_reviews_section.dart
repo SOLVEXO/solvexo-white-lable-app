@@ -235,7 +235,7 @@ class _ReviewTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    text: 'Seller response',
+                    text: 'Store response',
                     color: AppColors.primaryColor,
                     fontSize: AppFontSize.tiny,
                     fontWeight: FontWeight.w700,

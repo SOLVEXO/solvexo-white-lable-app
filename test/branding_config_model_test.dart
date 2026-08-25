@@ -87,4 +87,43 @@ void main() {
     expect(roundTripped.accentColor, original.accentColor);
     expect(roundTripped.isFeatureEnabled('wishlist'), false);
   });
+
+  group('BrandingConfigModel.fromStoreConfig', () {
+    test('uses the store-config values when all are present', () {
+      final config = BrandingConfigModel.fromStoreConfig(
+        appName: 'Acme',
+        marketplaceName: 'Acme Market',
+        primaryColorHex: '#112233',
+        secondaryColorHex: '#AABBCC',
+        accentColorHex: '#FF00FF',
+      );
+
+      expect(config.appName, 'Acme');
+      expect(config.marketplaceName, 'Acme Market');
+      // Logo is never sourced from store config — always the bundled
+      // AppImages.logoImage asset, regardless of build.
+      expect(config.logoUrl, '');
+      expect(config.primaryColor, const Color(0xFF112233));
+      expect(config.secondaryColor, const Color(0xFFAABBCC));
+      expect(config.accentColor, const Color(0xFFFF00FF));
+    });
+
+    test('falls back to defaults field-by-field for an unconfigured build (blank strings/null colors)', () {
+      final config = BrandingConfigModel.fromStoreConfig(
+        appName: '',
+        marketplaceName: '',
+        primaryColorHex: null,
+        secondaryColorHex: null,
+        accentColorHex: null,
+      );
+      final defaults = BrandingConfigModel.defaults();
+
+      expect(config.appName, defaults.appName);
+      expect(config.marketplaceName, defaults.marketplaceName);
+      expect(config.logoUrl, '');
+      expect(config.primaryColor, defaults.primaryColor);
+      expect(config.secondaryColor, defaults.secondaryColor);
+      expect(config.accentColor, defaults.accentColor);
+    });
+  });
 }

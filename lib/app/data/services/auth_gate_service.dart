@@ -34,15 +34,10 @@ class AuthGateService {
     await Get.bottomSheet(
       LoginPromptSheet(
         message: message,
-        onLogin: () {
+        onContinueWithGoogle: () {
           proceeding = true;
           Get.back();
-          _goToAuth(initialTab: 0);
-        },
-        onSignUp: () {
-          proceeding = true;
-          Get.back();
-          _goToAuth(initialTab: 1);
+          _goToAuth();
         },
         onClose: () {
           proceeding = true;
@@ -62,12 +57,11 @@ class AuthGateService {
     return result;
   }
 
-  Future<void> _goToAuth({required int initialTab}) async {
-    // Guarded actions are always buyer-side — force the intent so a stale
-    // 'seller' intent left over from a "Sell on Solvexo" visit never leaks
-    // into this login/signup.
+  Future<void> _goToAuth() async {
+    // Guarded actions are always buyer-side — this app only ever signs
+    // anyone in as a buyer, so force that intent explicitly.
     await AppPreferences.saveIntentRole('user');
-    Get.toNamed(Routes.authTabView, arguments: {'initialTab': initialTab});
+    Get.toNamed(Routes.authTabView);
   }
 
   /// Called by the auth flow once login/signup actually succeeds.

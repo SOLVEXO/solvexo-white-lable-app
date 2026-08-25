@@ -6,7 +6,6 @@ import 'package:book_store_app/app/modules/seller_storefront/controllers/seller_
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/config/resources/app_icons.dart';
 import 'package:book_store_app/config/resources/app_text_styles.dart';
-import 'package:book_store_app/core/theme/base_animations.dart';
 import 'package:book_store_app/core/theme/base_shadows.dart';
 import 'package:book_store_app/core/theme/base_spacing.dart';
 import 'package:book_store_app/utils/app_font_size.dart';
@@ -122,13 +121,7 @@ class StorefrontHeader extends StatelessWidget {
               SizedBox(height: BaseSpacing.md),
 
               // ── Actions ───────────────────────────────────────────────────
-              Row(
-                children: [
-                  Expanded(child: _FollowButton(c: c)),
-                  SizedBox(width: BaseSpacing.sm),
-                  _MessageButton(c: c),
-                ],
-              ),
+              _MessageButton(c: c),
             ],
           ),
         ),
@@ -407,27 +400,47 @@ class _MessageButton extends StatelessWidget {
       () => GestureDetector(
         onTap: c.isStartingChat.value ? null : c.messageStore,
         child: Container(
-          width: 46,
+          width: double.infinity,
           height: 46,
           decoration: BoxDecoration(
-            color: AppColors.white,
+            gradient: LinearGradient(
+              colors: [AppColors.primaryColor, AppColors.accentColor],
+            ),
             borderRadius: BorderRadius.circular(BaseRadius.md),
-            border: Border.all(color: AppColors.lightGrey2),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryColor.withOpacity(0.28),
+                blurRadius: 12,
+                offset: const Offset(0, 5),
+              ),
+            ],
           ),
           alignment: Alignment.center,
           child: c.isStartingChat.value
               ? SizedBox(
-                  width: 16,
-                  height: 16,
+                  width: 17,
+                  height: 17,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: AppColors.primaryColor,
+                    color: AppColors.white,
                   ),
                 )
-              : SvgIcon(
-                  assetName: AppIcons.messageIcon,
-                  size: 22,
-                  color: AppColors.primaryColor,
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgIcon(
+                      assetName: AppIcons.messageIcon,
+                      size: 20,
+                      color: AppColors.white,
+                    ),
+                    SizedBox(width: BaseSpacing.xxs + 2),
+                    CustomText(
+                      text: 'Message Us',
+                      color: AppColors.white,
+                      fontSize: AppFontSize.tiny,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ],
                 ),
         ),
       ),
@@ -472,75 +485,3 @@ class _Pill extends StatelessWidget {
   }
 }
 
-class _FollowButton extends StatelessWidget {
-  final SellerStorefrontController c;
-  const _FollowButton({required this.c});
-
-  @override
-  Widget build(BuildContext context) {
-    return Obx(() {
-      final following = c.isFollowing.value;
-      final loading = c.isFollowLoading.value;
-      return GestureDetector(
-        onTap: loading ? null : c.toggleFollow,
-        child: AnimatedContainer(
-          duration: BaseMotion.normal,
-          height: 46,
-          decoration: BoxDecoration(
-            gradient: following
-                ? null
-                : LinearGradient(
-                    colors: [AppColors.primaryColor, AppColors.accentColor],
-                  ),
-            color: following ? AppColors.white : null,
-            borderRadius: BorderRadius.circular(BaseRadius.md),
-            border: Border.all(
-              color: following ? AppColors.primaryColor : Colors.transparent,
-              width: 1.5,
-            ),
-            boxShadow: following
-                ? null
-                : [
-                    BoxShadow(
-                      color: AppColors.primaryColor.withOpacity(0.28),
-                      blurRadius: 12,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-          ),
-          alignment: Alignment.center,
-          child: loading
-              ? SizedBox(
-                  width: 17,
-                  height: 17,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: following ? AppColors.primaryColor : AppColors.white,
-                  ),
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      following ? Icons.check_rounded : Icons.add_rounded,
-                      size: 17,
-                      color: following
-                          ? AppColors.primaryColor
-                          : AppColors.white,
-                    ),
-                    SizedBox(width: BaseSpacing.xxs + 2),
-                    CustomText(
-                      text: following ? 'Following' : 'Follow Store',
-                      color: following
-                          ? AppColors.primaryColor
-                          : AppColors.white,
-                      fontSize: AppFontSize.tiny,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ],
-                ),
-        ),
-      );
-    });
-  }
-}

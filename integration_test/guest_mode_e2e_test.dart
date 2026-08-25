@@ -5,28 +5,22 @@
 // guest cart merges into the account cart -> logout returns to guest Home
 // -> the seller path lands on the seller shell, never buyer Home.
 //
-// Uses two pre-verified throwaway accounts (created via curl against the
-// same backend instance this test targets) so the OTP-entry screen itself
-// isn't part of what's under test here — Phases 2-6 didn't touch OTP entry,
-// they touched the guard/resume/merge/routing logic, which a plain login
-// exercises identically to a signup.
-//
-// Run against a backend whose baseUrl matches ApiConstants.baseUrl, with
-// these two accounts already registered+verified:
-//   BUYER_EMAIL / BUYER_PASSWORD  (role: user)
-//   SELLER_EMAIL / SELLER_PASSWORD (role: seller)
+// Phase 10 removed email/password (and Facebook/Apple) auth entirely —
+// Google Sign-In is now the only way in, via a native account-chooser UI
+// that this widget-test harness can't drive headlessly. This test is kept
+// (and its UI lookups updated to the Google-only login screen) as living
+// documentation of the guard/resume/merge/routing behavior it exercises,
+// but it's marked `skip` below since it can no longer complete a real
+// sign-in without a device-linked Google account.
 
 import 'package:book_store_app/app/bottom_bar/controllers/bottom_navbar_controller.dart';
 import 'package:book_store_app/app/components/wishlist_heart_button.dart';
-import 'package:book_store_app/app/modules/auth/controller/auth_controller.dart';
 import 'package:book_store_app/app/modules/cart/controllers/cart_controller.dart';
 import 'package:book_store_app/app/modules/home/controllers/home_controller.dart';
 import 'package:book_store_app/app/modules/home/widgets/icon_badge.dart';
 import 'package:book_store_app/app/modules/home/widgets/product_card.dart';
-import 'package:book_store_app/app/modules/home/widgets/products_grid.dart';
 import 'package:book_store_app/app/modules/wishlist/controllers/wishlist_controller.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
-import 'package:book_store_app/core/widgets/buttons/base_buttons.dart';
 import 'package:book_store_app/shared_prefrences/app_prefrences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -35,11 +29,6 @@ import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:book_store_app/main.dart' as app;
-
-const _buyerEmail = 'e2e-buyer-1786517506@example.com';
-const _buyerPassword = 'Test1234!';
-const _sellerEmail = 'e2e-seller-1786517527@example.com';
-const _sellerPassword = 'Test1234!';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -68,9 +57,10 @@ void main() {
     }
   }
 
-  testWidgets('guest flow: onboarding, browse, protected-action resume, merge, logout, seller path', (
-    tester,
-  ) async {
+  testWidgets(
+    'guest flow: onboarding, browse, protected-action resume, merge, logout, seller path',
+    skip: true, // Google Sign-In's native account chooser can't be driven headlessly — see header comment.
+    (tester) async {
     // ── Fresh install simulation ────────────────────────────────────────────
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
@@ -80,27 +70,21 @@ void main() {
 
     // ── Splash (5.2s, plus real cold-start overhead for Firebase/dotenv
     // init before the splash controller's own timer even starts) →
-    // first-launch onboarding carousel, IF the backend has slides configured
-    // (OnboardingController.finish()'s auto-skip-when-empty means an
-    // environment with zero seeded slides — like staging at the time of
-    // writing — goes straight to Home instead; both are correct, this test
-    // is about guard/resume/merge/routing (Phases 2-6), not slide content,
-    // so it tolerates either) ───────────────────────────────────────────────
+    // first-launch onboarding carousel. Onboarding content is hardcoded
+    // (`lib/config/onboarding_content.dart`, no backend call), so a fresh
+    // install always shows it — no more "backend might have zero slides"
+    // tolerance needed. ─────────────────────────────────────────────────────
     await pumpUntil(
       tester,
-      () => Get.currentRoute == Routes.onboarding || Get.currentRoute == Routes.mainHome,
+      () => Get.currentRoute == Routes.onboarding,
       timeout: const Duration(seconds: 30),
     );
-    if (Get.currentRoute == Routes.onboarding) {
+    await tester.pump(const Duration(milliseconds: 500));
+    if (find.text('Skip').evaluate().isNotEmpty) {
+      await tester.tap(find.text('Skip'));
       await tester.pump(const Duration(milliseconds: 500));
-      if (find.text('Skip').evaluate().isNotEmpty) {
-        await tester.tap(find.text('Skip'));
-        await tester.pump(const Duration(milliseconds: 500));
-      }
-      print('✅ Onboarding carousel shown on first launch (backend had slides configured)');
-    } else {
-      print('ℹ️ No onboarding slides configured on this backend — app correctly auto-skipped to Home');
     }
+    print('✅ Onboarding carousel shown on first launch');
 
     // ── Guest-mode Home — no login wall ─────────────────────────────────────
     print('… waiting for mainHome route');
@@ -115,11 +99,9 @@ void main() {
       );
     } catch (e) {
       print(
-        '❌ DIAGNOSTIC: filteredProducts=${homeController.filteredProducts.length} '
-        'products=${homeController.products.length} '
+        '❌ DIAGNOSTIC: products=${homeController.products.length} '
         'isLoading=${homeController.isLoading.value} '
         'isFetchingProducts=${homeController.isFetchingProducts.value} '
-        'ProductsGrid found=${find.byType(ProductsGrid).evaluate().length} '
         'GridView found=${find.byType(GridView).evaluate().length}',
       );
       rethrow;
@@ -164,22 +146,20 @@ void main() {
     await tester.tap(find.descendant(of: firstCard, matching: find.byType(WishlistHeartButton)));
     await tester.pump(const Duration(milliseconds: 600));
     expect(
-      find.text('Log In'),
+      find.text('Continue with Google'),
       findsOneWidget,
       reason: 'a protected action (wishlist) should surface the login prompt sheet',
     );
-    expect(find.text('Sign Up'), findsOneWidget);
     print('✅ Protected action (wishlist) surfaced the login bottom sheet, not a hard redirect');
 
-    await tester.tap(find.text('Log In'));
+    await tester.tap(find.text('Continue with Google'));
     await tester.pump(const Duration(milliseconds: 500));
     await pumpUntil(tester, () => Get.currentRoute == Routes.authTabView);
 
-    final authController = Get.find<AuthController>();
-    authController.loginEmailController.text = _buyerEmail;
-    authController.loginPasswordController.text = _buyerPassword;
-    await tester.pump();
-    await tester.tap(find.widgetWithText(PrimaryButton, 'Log in'));
+    // NOTE: from here on, completing sign-in requires the native Google
+    // account chooser, which this harness can't drive — hence `skip: true`
+    // on this whole test. Left in place as documentation of the flow.
+    await tester.tap(find.text('Continue with Google'));
 
     await pumpUntil(tester, () => Get.currentRoute == Routes.mainHome, timeout: const Duration(seconds: 15));
     await pumpFor(tester, const Duration(seconds: 2));
@@ -223,41 +203,17 @@ void main() {
     expect(await AppPreferences.isLoggedIn(), false);
     print('✅ Logout returns to guest-mode Home, not a login wall');
 
-    // ── Seller path: Sell on Solvexo -> seller landing -> seller login ──────
-    // Post-Phase-3 (POS extraction): seller-management and the seller shell
-    // no longer exist in this app at all — they live only in the standalone
-    // POS app now. A seller logging in here has nowhere seller-specific to
-    // go, so `AuthController._navigateByRole` intentionally falls back to
-    // the buyer guest Home for every role (see that method's own comment).
-    Get.find<BottomNavController>().changeTab(4);
-    await pumpFor(tester, const Duration(seconds: 1));
-    await tester.tap(find.text('Sell on Solvexo'));
-    await pumpUntil(tester, () => Get.currentRoute == Routes.welcome);
-    print('✅ "Sell on Solvexo" opens the seller landing screen');
-
-    await tester.tap(find.text('Get Started'));
-    await pumpUntil(tester, () => Get.currentRoute == Routes.authTabView);
-
-    final authController2 = Get.find<AuthController>();
-    authController2.loginEmailController.text = _sellerEmail;
-    authController2.loginPasswordController.text = _sellerPassword;
-    await tester.pump();
-    await tester.tap(find.widgetWithText(PrimaryButton, 'Log in'));
-
-    await pumpUntil(
-      tester,
-      () => Get.currentRoute != Routes.authTabView,
-      timeout: const Duration(seconds: 15),
-    );
-    await pumpFor(tester, const Duration(seconds: 2));
-
-    expect(
-      Get.currentRoute,
-      Routes.mainHome,
-      reason: 'seller-management moved to the standalone POS app (Phase 3) — '
-          'a seller login in this app now falls back to buyer guest Home '
-          'like any other role, since there is no seller shell left here',
-    );
-    print('✅ Seller login falls back to buyer guest Home (${Get.currentRoute}) — no seller shell left in this app');
+    // NOTE (Phase 9 — single-store conversion): this test previously ended
+    // with a "Seller path" section that tapped a "Sell on Solvexo" button
+    // (`SellOnSolvexoCard`, shown on Home for guests) to reach the seller
+    // landing screen and confirm a seller login falls back to buyer Home.
+    // `SellOnSolvexoCard` was deleted in Phase 9 (a single-store app has no
+    // marketplace "become a seller" entry point), so that button no longer
+    // exists anywhere in the app and the section was removed rather than
+    // left tapping dead UI. The underlying routing behavior it exercised
+    // (`AuthController._navigateByRole` falling back to buyer Home for every
+    // role, since the seller shell moved to the standalone POS app in Phase
+    // 3) is unrelated to this deletion and still holds — it just has no
+    // reachable UI entry point left in this app to test from.
   });
 }

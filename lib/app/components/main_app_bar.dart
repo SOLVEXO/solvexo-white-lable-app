@@ -4,6 +4,7 @@ import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/components/svg_icon.dart';
 import 'package:book_store_app/app/components/unread_count_badge.dart';
 import 'package:book_store_app/app/data/services/branding_service.dart';
+import 'package:book_store_app/app/data/services/store_chat_launcher.dart';
 import 'package:book_store_app/app/modules/messaging/controllers/messaging_badge_controller.dart';
 import 'package:book_store_app/app/modules/notifications/controllers/notifications_badge_controller.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
@@ -79,7 +80,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 _logoPill(),
                 const Spacer(),
                 GestureDetector(
-                  onTap: () => Get.toNamed(Routes.messagesView),
+                  onTap: () => StoreChatLauncher.open(),
                   child: _iconButton(
                     child: Obx(
                       () => UnreadCountBadge(

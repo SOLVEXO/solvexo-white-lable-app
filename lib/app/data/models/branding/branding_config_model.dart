@@ -48,6 +48,32 @@ class BrandingConfigModel {
     featureFlags: {},
   );
 
+  /// Builds branding from this app build's compile-time [StoreConfig] values
+  /// (Phase 8 of the white-label conversion — one app binary per store).
+  /// Blank strings/unparseable colors fall back to [defaults] field-by-field,
+  /// same rule as [fromJson], so an unconfigured build renders identically
+  /// to today's app. No logo param — the app logo is always the bundled
+  /// `AppImages.logoImage` asset now, never runtime config (see
+  /// STORE_ONBOARDING.md); a new store's logo is set by replacing that file.
+  factory BrandingConfigModel.fromStoreConfig({
+    required String appName,
+    required String marketplaceName,
+    required String? primaryColorHex,
+    required String? secondaryColorHex,
+    required String? accentColorHex,
+  }) {
+    final defaults = BrandingConfigModel.defaults();
+    return BrandingConfigModel(
+      appName: appName.trim().isNotEmpty ? appName : defaults.appName,
+      marketplaceName: marketplaceName.trim().isNotEmpty ? marketplaceName : defaults.marketplaceName,
+      logoUrl: defaults.logoUrl,
+      primaryColor: _parseColor(primaryColorHex) ?? defaults.primaryColor,
+      secondaryColor: _parseColor(secondaryColorHex) ?? defaults.secondaryColor,
+      accentColor: _parseColor(accentColorHex) ?? defaults.accentColor,
+      featureFlags: const {},
+    );
+  }
+
   factory BrandingConfigModel.fromJson(Map<String, dynamic> json) {
     final defaults = BrandingConfigModel.defaults();
     return BrandingConfigModel(

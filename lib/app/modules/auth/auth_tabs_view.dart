@@ -2,29 +2,29 @@ import 'package:book_store_app/app/components/common_image_view.dart';
 import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/data/services/auth_gate_service.dart';
 import 'package:book_store_app/app/data/services/branding_service.dart';
-import 'package:book_store_app/app/modules/login/controller/auth_tabs_controller.dart';
 import 'package:book_store_app/app/modules/login/login_view.dart';
-import 'package:book_store_app/app/modules/signup/sign_up_view.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/config/resources/app_images.dart';
 import 'package:book_store_app/config/resources/app_text_styles.dart';
-import 'package:book_store_app/core/theme/base_animations.dart';
 import 'package:book_store_app/core/theme/base_spacing.dart';
 import 'package:book_store_app/core/widgets/base_view_screen.dart';
 import 'package:book_store_app/utils/app_font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+/// The single "continue with Google" entry point — Google Sign-In is
+/// simultaneously login-or-signup, so there is no separate tab/step to
+/// switch between. The route name (`Routes.authTabView`) and class name
+/// stay put since many other screens already navigate here.
 class AuthTabsView extends StatelessWidget {
   const AuthTabsView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<AuthTabsController>();
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        // Backing out of a login/signup that was opened to resume a
-        // protected guest action (wishlist, message seller, ...) counts as
+        // Backing out of a login that was opened to resume a protected
+        // guest action (wishlist, message seller, ...) counts as
         // "declined" — unblock the guard instead of leaving it hanging.
         if (didPop && AuthGateService.instance.isAwaitingResume) {
           AuthGateService.instance.resolveCancelled();
@@ -43,26 +43,7 @@ class AuthTabsView extends StatelessWidget {
             children: [
               const _TopBrand(),
               SizedBox(height: BaseSpacing.xl),
-              _TabToggle(controller: controller),
-              SizedBox(height: BaseSpacing.xs),
-              Obx(
-                () => AnimatedSwitcher(
-                  duration: BaseMotion.normal,
-                  transitionBuilder: (child, anim) => FadeTransition(
-                    opacity: anim,
-                    child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0.04, 0),
-                        end: Offset.zero,
-                      ).animate(anim),
-                      child: child,
-                    ),
-                  ),
-                  child: controller.tabIndex.value == 0
-                      ? const LoginView(key: ValueKey(0))
-                      : const SignUpView(key: ValueKey(1)),
-                ),
-              ),
+              const LoginView(),
             ],
           ),
         ),
@@ -101,74 +82,6 @@ class _TopBrand extends StatelessWidget {
           fontSize: AppFontSize.small2,
         ),
       ],
-    );
-  }
-}
-
-// ── Pill tab toggle ──────────────────────────────────────────────────────────
-
-class _TabToggle extends StatelessWidget {
-  const _TabToggle({required this.controller});
-  final AuthTabsController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(BaseSpacing.xxs),
-      decoration: BoxDecoration(
-        color: AppColors.lightGrey10,
-        borderRadius: BorderRadius.circular(BaseRadius.pill),
-      ),
-      child: Row(
-        children: [
-          _TabButton(label: 'Log in', index: 0, controller: controller),
-          _TabButton(label: 'Sign up', index: 1, controller: controller),
-        ],
-      ),
-    );
-  }
-}
-
-class _TabButton extends StatelessWidget {
-  const _TabButton({
-    required this.label,
-    required this.index,
-    required this.controller,
-  });
-  final String label;
-  final int index;
-  final AuthTabsController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Semantics(
-        button: true,
-        selected: controller.tabIndex.value == index,
-        label: label,
-        child: GestureDetector(
-          onTap: () => controller.switchTab(index),
-          child: Obx(() {
-            final active = controller.tabIndex.value == index;
-            return AnimatedContainer(
-              duration: BaseMotion.normal,
-              curve: BaseMotion.standard,
-              constraints: const BoxConstraints(minHeight: 44),
-              decoration: BoxDecoration(
-                color: active ? AppColors.white : AppColors.transparent,
-                borderRadius: BorderRadius.circular(BaseRadius.pill),
-              ),
-              alignment: Alignment.center,
-              child: CustomText(
-                text: label,
-                color: active ? AppColors.black2 : AppColors.gray600,
-                fontSize: AppFontSize.small,
-                fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-              ),
-            );
-          }),
-        ),
-      ),
     );
   }
 }

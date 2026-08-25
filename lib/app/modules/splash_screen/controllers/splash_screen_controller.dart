@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
 
 const _kSlogans = [
-  'Discover · Buy · Sell',
-  'Your Marketplace, Redefined',
-  'Shop Smart. Sell More.',
+  'Discover · Shop · Enjoy',
+  'Your Store, Redefined',
+  'Shop Smart, Shop Here',
 ];
 
 class SplashScreenController extends GetxController

@@ -24,40 +24,23 @@ class ApiConstants {
   static const int connectTimeout = 30000; // 30 seconds
   static const int receiveTimeout = 30000;
 
-  // OTP
-  // static const String sendOtp = "$apiPrefix/auth/send";
-  static const String verifyOtp = "$apiPrefix/auth/verifyOtp";
-  static const String resendOtp = "$apiPrefix/auth/resend-otp";
-
   // ============ Auth Endpoints ============
-  static const String register = "$apiPrefix/auth/register";
+  // Google Sign-In is the only auth method (Phase 10 of the white-label
+  // conversion) — email/password register/login/OTP/forgot/reset-password
+  // endpoints were removed along with their Dart call sites.
   static const String socialLogin = '$apiPrefix/auth/social-login';
-  static const String login = "$apiPrefix/auth/login";
   static const String getMe = "$apiPrefix/auth/getprofile";
   static const String logout = "$apiPrefix/auth/logout";
-  // static const String verifyEmail = "$apiPrefix/auth/verify-email";
-  // static const String resendVerification =
-  //     "$apiPrefix/auth/resend-verification";
-  static const String forgotPassword = "$apiPrefix/auth/forgot-password";
-  static const String resetPassword = "$apiPrefix/auth/reset-password";
 
   static const String faqs = '$apiPrefix/faqs';
   static const String contactUs = '$apiPrefix/contact';
-  // OAuth endpoints
-  static const String googleAuth = "$apiPrefix/auth/google";
-  static const String facebookAuth = "$apiPrefix/auth/facebook";
-  static const String appleAuth = "$apiPrefix/auth/apple";
 
   // ============ User Profile Endpoints ============
   static const String getUserProfile = "$apiPrefix/auth/getprofile";
   static const String editProfile = "$apiPrefix/auth/edit-profile";
   static const String updateUserProfile = "$apiPrefix/users/profile";
   static const String deleteUserAccount = "$apiPrefix/users/profile";
-  static const String changePassword = "$apiPrefix/users/change-password";
   static const String banners = "$apiPrefix/banners";
-
-  // ============ Onboarding Slides (public) ============
-  static const String onboardingSlides = "$apiPrefix/onboarding-slides";
 
   // ============ Category Endpoints ============
   static const String categories = "$apiPrefix/categories/category-tree";
@@ -256,17 +239,6 @@ class ApiConstants {
       "$apiPrefix/store/public/$storeId/products";
   static String publicStoreFilters(String storeId) =>
       "$apiPrefix/store/public/$storeId/filters";
-  static String followStore(String storeId) =>
-      "$apiPrefix/store/$storeId/follow";
-  static String storeFollowStatus(String storeId) =>
-      "$apiPrefix/store/$storeId/follow-status";
-
-  // ============ Stores Browse / Search Endpoints ============
-  // Buyer-facing store discovery — browse/sort (?page&limit&sort&category&q),
-  // home-row top stores, and keyword search under api/search/* (SearchController).
-  static const String publicStores = '$apiPrefix/store/public';
-  static const String topStores = '$apiPrefix/store/public/top';
-  static const String searchStores = '$apiPrefix/search/stores';
 
   // ============ Seller / Product Endpoints ============
   static const String addPhysicalProduct =

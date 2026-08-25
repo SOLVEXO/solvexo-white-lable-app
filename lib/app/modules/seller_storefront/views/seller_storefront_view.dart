@@ -70,7 +70,7 @@ class SellerStorefrontView extends StatelessWidget {
               // "curated by the seller", so they lead; the rest follow in a
               // discovery-oriented order. Each hides itself when empty.
               SliverToBoxAdapter(
-                child: ProductHorizontalSection(title: 'Handpicked by the Seller', products: c.pinnedProducts),
+                child: ProductHorizontalSection(title: 'Handpicked for You', products: c.pinnedProducts),
               ),
               SliverToBoxAdapter(
                 child: ProductHorizontalSection(title: 'New Arrivals', products: c.newArrivals),

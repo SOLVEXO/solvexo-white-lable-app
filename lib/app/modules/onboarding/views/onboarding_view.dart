@@ -1,7 +1,6 @@
-import 'package:book_store_app/app/components/common_image_view.dart';
 import 'package:book_store_app/app/components/custom_text.dart';
-import 'package:book_store_app/app/data/models/onboarding_slide_model.dart';
 import 'package:book_store_app/app/modules/onboarding/controllers/onboarding_controller.dart';
+import 'package:book_store_app/config/onboarding_content.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/config/resources/app_text_styles.dart';
 import 'package:book_store_app/core/theme/base_shadows.dart';
@@ -22,76 +21,68 @@ class OnboardingView extends StatelessWidget {
       backgroundColor: AppColors.blackColor,
       useSafeArea: false,
       child: SafeArea(
-        child: Obx(() {
-          if (controller.isLoading.value) {
-            return Center(
-              child: CircularProgressIndicator(color: AppColors.primaryColor),
-            );
-          }
-
-          return Column(
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    AppDimen.allPadding,
-                    BaseSpacing.sm,
-                    AppDimen.allPadding,
-                    0,
-                  ),
-                  child: TextButton(
-                    onPressed: controller.skip,
-                    child: CustomText(
-                      text: 'Skip',
-                      color: AppColors.white.withOpacity(0.6),
-                      fontSize: AppFontSize.verySmall,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: PageView.builder(
-                  controller: controller.pageController,
-                  onPageChanged: controller.onPageChanged,
-                  itemCount: controller.slides.length,
-                  itemBuilder: (_, i) =>
-                      _OnboardingSlide(slide: controller.slides[i]),
-                ),
-              ),
-              Padding(
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
                 padding: EdgeInsets.fromLTRB(
-                  AppDimen.allPadding * 1.6,
+                  AppDimen.allPadding,
+                  BaseSpacing.sm,
+                  AppDimen.allPadding,
                   0,
-                  AppDimen.allPadding * 1.6,
-                  BaseSpacing.xl,
                 ),
-                child: Row(
-                  children: [
-                    Obx(
-                      () => Row(
-                        children: List.generate(
-                          controller.slides.length,
-                          (i) => _PageIndicator(
-                            isActive: i == controller.currentPage.value,
-                          ),
+                child: TextButton(
+                  onPressed: controller.skip,
+                  child: CustomText(
+                    text: 'Skip',
+                    color: AppColors.white.withOpacity(0.6),
+                    fontSize: AppFontSize.verySmall,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: PageView.builder(
+                controller: controller.pageController,
+                onPageChanged: controller.onPageChanged,
+                itemCount: controller.slides.length,
+                itemBuilder: (_, i) =>
+                    _OnboardingSlide(slide: controller.slides[i]),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                AppDimen.allPadding * 1.6,
+                0,
+                AppDimen.allPadding * 1.6,
+                BaseSpacing.xl,
+              ),
+              child: Row(
+                children: [
+                  Obx(
+                    () => Row(
+                      children: List.generate(
+                        controller.slides.length,
+                        (i) => _PageIndicator(
+                          isActive: i == controller.currentPage.value,
                         ),
                       ),
                     ),
-                    const Spacer(),
-                    Obx(
-                      () => _NextButton(
-                        isLastPage: controller.isLastPage,
-                        onTap: controller.next,
-                      ),
+                  ),
+                  const Spacer(),
+                  Obx(
+                    () => _NextButton(
+                      isLastPage: controller.isLastPage,
+                      onTap: controller.next,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          );
-        }),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -100,7 +91,7 @@ class OnboardingView extends StatelessWidget {
 // ── Slide content — admin-uploaded image + title/subtitle ─────────────────
 
 class _OnboardingSlide extends StatelessWidget {
-  final OnboardingSlideModel slide;
+  final OnboardingSlideContent slide;
   const _OnboardingSlide({required this.slide});
 
   @override
@@ -119,7 +110,11 @@ class _OnboardingSlide extends StatelessWidget {
               Expanded(
                 flex: 5,
                 child: Center(
-                  child: _HeroGraphic(imageUrl: slide.imageUrl, size: heroSize),
+                  child: _HeroGraphic(
+                    icon: slide.icon,
+                    imageAsset: slide.imageAsset,
+                    size: heroSize,
+                  ),
                 ),
               ),
               Expanded(
@@ -158,14 +153,20 @@ class _OnboardingSlide extends StatelessWidget {
 // slide image, echoing the tag-corner notch motif used elsewhere in the app ─
 
 class _HeroGraphic extends StatelessWidget {
-  final String imageUrl;
+  final IconData icon;
+  final String? imageAsset;
   final double size;
-  const _HeroGraphic({required this.imageUrl, required this.size});
+  const _HeroGraphic({
+    required this.icon,
+    this.imageAsset,
+    required this.size,
+  });
 
   @override
   Widget build(BuildContext context) {
     final panelSize = size * 0.82;
     const nodeSize = 14.0;
+    final asset = imageAsset;
 
     return SizedBox(
       width: size,
@@ -184,16 +185,19 @@ class _HeroGraphic extends StatelessWidget {
             height: panelSize,
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
+              color: AppColors.primaryColor.withOpacity(0.12),
               borderRadius: BorderRadius.circular(BaseRadius.xxl),
               boxShadow: BaseShadows.glow(AppColors.primaryColor),
             ),
-            child: CommonImageView(
-              url: imageUrl,
-              height: panelSize,
-              width: panelSize,
-              fit: BoxFit.cover,
-              radius: BorderRadius.circular(BaseRadius.xxl),
-            ),
+            alignment: Alignment.center,
+            child: (asset != null && asset.isNotEmpty)
+                ? Image.asset(
+                    asset,
+                    height: panelSize,
+                    width: panelSize,
+                    fit: BoxFit.cover,
+                  )
+                : Icon(icon, size: panelSize * 0.45, color: AppColors.primaryColor),
           ),
           for (final alignment in const [
             Alignment.topLeft,

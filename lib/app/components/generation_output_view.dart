@@ -370,7 +370,7 @@ class _PriceOptimizerOutput extends StatelessWidget {
           SizedBox(height: BaseSpacing.sm),
         ],
         CustomText(
-          text: 'Based on $sampleSize comparable listing${sampleSize == 1 ? '' : 's'} on this marketplace',
+          text: 'Based on $sampleSize comparable listing${sampleSize == 1 ? '' : 's'}',
           color: AppColors.gray600,
           fontSize: AppFontSize.tiny,
         ),

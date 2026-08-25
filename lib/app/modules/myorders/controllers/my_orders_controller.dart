@@ -175,7 +175,7 @@ class MyOrdersController extends BaseController {
     CustomConfirmDialog.show(
       context,
       title: 'Cancel this order?',
-      message: 'This can\'t be undone. The seller will be notified.',
+      message: 'This can\'t be undone. The store will be notified.',
       confirmLabel: 'Cancel Order',
       confirmColor: AppColors.red,
       onConfirm: () => cancelOrder(orderId),

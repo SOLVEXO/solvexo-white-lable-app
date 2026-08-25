@@ -271,11 +271,6 @@ class _StoreSection extends StatelessWidget {
     }
   }
 
-  String get _sellerInitial {
-    final name = store.sellerName?.trim();
-    return (name != null && name.isNotEmpty) ? name[0].toUpperCase() : '?';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -286,40 +281,7 @@ class _StoreSection extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(BaseSpacing.md, BaseSpacing.sm, BaseSpacing.md, BaseSpacing.xxs),
           child: Row(
             children: [
-              if (store.sellerName?.isNotEmpty == true) ...[
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryColor.withOpacity(0.12),
-                    shape: BoxShape.circle,
-                  ),
-                  alignment: Alignment.center,
-                  child: CustomText(
-                    text: _sellerInitial,
-                    color: AppColors.primaryColor,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SizedBox(width: BaseSpacing.xxs + 2),
-                Flexible(
-                  child: CustomText(
-                    text: store.sellerName!,
-                    color: AppColors.black2,
-                    fontSize: AppFontSize.tiny,
-                    fontWeight: FontWeight.w600,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (store.sellerVerified) ...[
-                  const SizedBox(width: 3),
-                  const Icon(Icons.verified_rounded, color: AppColors.blue, size: 12),
-                ],
-                const Spacer(),
-              ] else
-                const Spacer(),
+              const Spacer(),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: BaseSpacing.xxs + 2, vertical: 2),
                 decoration: BoxDecoration(

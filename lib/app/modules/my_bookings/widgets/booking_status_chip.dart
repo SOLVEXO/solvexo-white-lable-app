@@ -25,7 +25,7 @@ class BookingStatusChip extends StatelessWidget {
         'confirmed' => 'Confirmed',
         'completed' => 'Completed',
         'cancelled_by_buyer' => 'Cancelled',
-        'cancelled_by_seller' => 'Cancelled by Seller',
+        'cancelled_by_seller' => 'Cancelled by Store',
         'no_show' => 'No Show',
         _ => status,
       };

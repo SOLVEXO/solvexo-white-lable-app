@@ -164,25 +164,6 @@ class _WishlistCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 3),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: CustomText(
-                          text: 'by ${product.sellerName?.isNotEmpty == true ? product.sellerName! : 'Seller'}',
-                          fontSize: AppFontSize.verySmall,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.gray600,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (product.sellerVerified) ...[
-                        const SizedBox(width: 3),
-                        const Icon(Icons.verified_rounded, color: AppColors.blue, size: 12),
-                      ],
-                    ],
-                  ),
                   const SizedBox(height: 5),
                   if (variant != null && variant.options.isNotEmpty)
                     Wrap(

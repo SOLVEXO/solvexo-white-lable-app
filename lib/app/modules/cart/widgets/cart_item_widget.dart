@@ -66,24 +66,6 @@ class CartItemWidget extends StatelessWidget {
                       fontSize: AppFontSize.tiny,
                       fontWeight: FontWeight.bold,
                     ),
-                    if (item.sellerName?.isNotEmpty == true)
-                      Row(
-                        children: [
-                          Flexible(
-                            child: CustomText(
-                              text: 'by ${item.sellerName!}',
-                              color: AppColors.gray600,
-                              fontSize: AppFontSize.tiny,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          if (item.sellerVerified) ...[
-                            const SizedBox(width: 3),
-                            const Icon(Icons.verified_rounded, color: AppColors.blue, size: 12),
-                          ],
-                        ],
-                      ),
                     if (item.options.isNotEmpty)
                       CustomText(
                         text: item.options.map((o) => '${o.name}: ${o.value}').join('  ·  '),

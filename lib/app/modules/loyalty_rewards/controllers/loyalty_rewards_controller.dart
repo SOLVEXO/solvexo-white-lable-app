@@ -1,6 +1,7 @@
 import 'package:book_store_app/app/data/models/loyalty/my_loyalty_balance_model.dart';
 import 'package:book_store_app/app/data/models/loyalty/reward_model.dart';
 import 'package:book_store_app/app/data/repositories/loyalty_repository.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:get/get.dart';
 
 class LoyaltyRewardsController extends GetxController {
@@ -17,9 +18,27 @@ class LoyaltyRewardsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // Prefers whatever storeId/storeName the caller passed (e.g. the
+    // storefront's plans teaser, a push-notification deep link) — falling
+    // back to this app's own resolved store (`CurrentStoreService`, already
+    // resolved in the background since app launch by the time a buyer has
+    // navigated this deep) so this screen also works as a standalone entry
+    // point without every caller having to look the store up itself first.
+    // Read synchronously (not awaited) so `storeId`/`storeName` are always
+    // set before this method returns — `late final` fields the view reads
+    // unconditionally in its AppBar, not behind an `isLoading` guard.
     final args = Get.arguments as Map<String, dynamic>?;
-    storeId = args?['storeId'] as String? ?? '';
-    storeName = args?['storeName'] as String? ?? 'Store';
+    var id = args?['storeId'] as String? ?? '';
+    var name = args?['storeName'] as String? ?? '';
+
+    if (id.isEmpty) {
+      final currentStore = Get.find<CurrentStoreService>();
+      id = currentStore.storeId ?? '';
+      name = currentStore.storeName ?? '';
+    }
+
+    storeId = id;
+    storeName = name.isNotEmpty ? name : 'Store';
     _load();
   }
 

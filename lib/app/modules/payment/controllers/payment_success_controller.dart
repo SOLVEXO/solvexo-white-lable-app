@@ -56,10 +56,10 @@ class PaymentSuccessController extends GetxController {
 
     // Home sits underneath so the back arrow from order tracking / my-orders
     // lands somewhere sensible — but it must actually finish mounting (which
-    // is what registers HomeController via HomeBinding/HomeView's guard)
-    // before we stack another route on top of it, otherwise Home's own tab
-    // widgets (ProductsGrid etc.) crash with a "controller not found" the
-    // first time the user navigates back into it.
+    // is what registers HomeController via HomeBinding's guard) before we
+    // stack another route on top of it, otherwise Home's own tab widgets
+    // (ProductCard etc., still built on HomeController) crash with a
+    // "controller not found" the first time the user navigates back into it.
     Get.offAllNamed(Routes.mainHome);
     await WidgetsBinding.instance.endOfFrame;
     if (index != -1) {

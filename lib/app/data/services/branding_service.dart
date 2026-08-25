@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:book_store_app/app/data/models/branding/branding_config_model.dart';
 import 'package:book_store_app/app/data/repositories/branding_repository.dart';
+import 'package:book_store_app/config/store_config.dart';
 import 'package:book_store_app/shared_prefrences/app_prefrences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -17,11 +18,13 @@ import 'package:get/get.dart';
 class BrandingService extends GetxController {
   final BrandingRepository _repository = BrandingRepository();
 
-  final Rx<BrandingConfigModel> config = Rx<BrandingConfigModel>(BrandingConfigModel.defaults());
+  final Rx<BrandingConfigModel> config = Rx<BrandingConfigModel>(StoreConfig.toBrandingConfig());
 
-  /// Loads the last cached config (if any) for an instant, correct-brand
-  /// first paint, then refreshes from the backend in the background —
-  /// silently keeping the cache/defaults on any failure (see
+  /// Seeds from this build's compile-time [StoreConfig] first (so the very
+  /// first frame already paints the right store's brand, synchronously, no
+  /// network involved), then layers a previously-cached backend override on
+  /// top if one exists, then refreshes from the backend in the background —
+  /// silently keeping whatever's already showing on any failure (see
   /// `BrandingRepository`, the endpoint doesn't exist yet).
   Future<void> init() async {
     final cachedJson = await AppPreferences.getBrandingConfigJson();

@@ -3,23 +3,17 @@ import 'package:book_store_app/app/components/custom_refresh_wrapper.dart';
 import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/components/dynamic_shimmer.dart';
 import 'package:book_store_app/app/components/no_signal_view.dart';
-import 'package:book_store_app/app/components/sell_on_solvexo_card.dart';
 import 'package:book_store_app/app/components/shimmer/banner_shimmer.dart';
 import 'package:book_store_app/app/components/svg_icon.dart';
 import 'package:book_store_app/app/data/services/network_controller.dart';
 import 'package:book_store_app/app/modules/category/controllers/category_controller.dart';
 import 'package:book_store_app/app/modules/home/controllers/home_controller.dart';
 import 'package:book_store_app/app/modules/home/widgets/banner_carousel.dart';
-import 'package:book_store_app/app/modules/home/widgets/campaigns_section.dart';
 import 'package:book_store_app/app/modules/home/widgets/categories_grid.dart';
 import 'package:book_store_app/app/modules/home/widgets/home_greeting_header.dart';
 import 'package:book_store_app/app/modules/home/widgets/home_search_filter_row.dart';
 import 'package:book_store_app/app/modules/home/widgets/home_section_header.dart';
-import 'package:book_store_app/app/modules/home/widgets/platform_stats_strip.dart';
 import 'package:book_store_app/app/modules/home/widgets/products_grid.dart';
-import 'package:book_store_app/app/modules/home/widgets/testimonials_carousel.dart';
-import 'package:book_store_app/app/modules/home/widgets/top_stores_row.dart';
-import 'package:book_store_app/app/modules/home/widgets/worksheet_trial_promo_card.dart';
 import 'package:book_store_app/app/modules/profile/controllers/profile_controller.dart';
 import 'package:book_store_app/app/modules/profile/widgets/login_signup_card.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
@@ -145,13 +139,6 @@ class HomeView extends BaseView<HomeController> {
                   // ── Greeting ──────────────────────────────────────────
                   const HomeGreetingHeader(),
 
-                  // ── Active marketing campaigns ─────────────────────────
-                  CampaignsSection(),
-                  SizedBox(height: BaseSpacing.xs),
-
-                  // ── Platform trust stats ──────────────────────────────
-                  PlatformStatsStrip(),
-
                   SizedBox(height: BaseSpacing.lg),
                   // ── Promotional banner ───────────────────────────────
                   isLoading ? BannerShimmer() : BannerCarousel(),
@@ -162,18 +149,6 @@ class HomeView extends BaseView<HomeController> {
                   // ── Browse by Category ───────────────────────────────
                   const HomeSectionHeader(title: 'Browse by Category'),
                   CategoriesGrid(),
-
-                  // SizedBox(height: BaseSpacing.sm),
-
-                  // ── Top Stores ────────────────────────────────────────
-                  HomeSectionHeader(
-                    title: 'Top Stores',
-                    viewMore: true,
-                    onViewMore: () => Get.toNamed(Routes.storesView),
-                  ),
-
-                  // SizedBox(height: BaseSpacing.sm),
-                  TopStoresRow(),
 
                   SizedBox(height: BaseSpacing.sm),
 
@@ -197,36 +172,7 @@ class HomeView extends BaseView<HomeController> {
                   // const HomeStaffPicks(),
 
                   // SizedBox(height: BaseSpacing.lg),
-
-                  // ── What buyers say ───────────────────────────────────
-                  Obx(
-                    () => controller.testimonials.isEmpty
-                        ? const SizedBox.shrink()
-                        : const HomeSectionHeader(title: 'What buyers say'),
-                  ),
-                  TestimonialsCarousel(),
-
                   SizedBox(height: BaseSpacing.lg),
-
-                  // ── Free AI Worksheet Builder trial promo ─────────────
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppDimen.allPadding,
-                    ),
-                    child: const WorksheetTrialPromoCard(),
-                  ),
-
-                  // ── "Sell on Solvexo" — guests only, deliberately below
-                  // the fold so it never competes with the login banner ───
-                  if (profileController.user.isNull) ...[
-                    SizedBox(height: BaseSpacing.lg),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppDimen.allPadding,
-                      ),
-                      child: const SellOnSolvexoCard(),
-                    ),
-                  ],
 
                   // Lets the last card scroll fully clear of the floating
                   // nav bar instead of resting permanently tucked behind it.

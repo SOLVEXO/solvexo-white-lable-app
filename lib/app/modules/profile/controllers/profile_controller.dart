@@ -60,11 +60,6 @@ class ProfileController extends GetxController {
             onTap: () => Get.toNamed(Routes.addressView),
           ),
           SettingsTile(
-            icon: AppIcons.changePassword,
-            title: 'Change Password',
-            onTap: () => Get.toNamed(Routes.CHANGE_PASSWORD),
-          ),
-          SettingsTile(
             icon: AppIcons.notificationIcon,
             title: 'Notification Preferences',
             onTap: () => Get.toNamed(Routes.notificationPreferences),
@@ -72,18 +67,13 @@ class ProfileController extends GetxController {
         ],
       ),
     SettingsSection(
-      header: 'SELLING',
-      tiles: [
-        SettingsTile(
-          icon: AppIcons.cashIcon,
-          title: 'Sell on ${Get.find<BrandingService>().config.value.marketplaceName}',
-          onTap: goToSellerLanding,
-        ),
-      ],
-    ),
-    SettingsSection(
       header: 'SUPPORT',
       tiles: [
+        SettingsTile(
+          icon: AppIcons.shoppingBag,
+          title: 'About ${Get.find<BrandingService>().config.value.marketplaceName}',
+          onTap: () => Get.toNamed(Routes.sellerStorefront),
+        ),
         SettingsTile(
           icon: AppIcons.phoneIcon,
           title: 'Help Center',
@@ -126,14 +116,8 @@ class ProfileController extends GetxController {
       ),
   ];
 
-  /// Entry point into the seller-only landing screen (Welcome, repurposed).
-  /// Available to both guests and logged-in buyers — a buyer account and a
-  /// seller account are separate identities backend-side.
-  void goToSellerLanding() => Get.toNamed(Routes.welcome);
-
-  /// Guest CTA — explicitly tags the intent as buyer so a stale 'seller'
-  /// intent left over from a previous "Sell on Solvexo" visit never leaks
-  /// into a plain buyer login/signup.
+  /// Guest CTA — explicitly tags the intent as buyer, matching the only
+  /// role this single-store app ever signs anyone in as.
   Future<void> goToLogin() async {
     await AppPreferences.saveIntentRole('user');
     Get.toNamed(Routes.authTabView);
@@ -172,21 +156,8 @@ class ProfileController extends GetxController {
   final TextEditingController addressController = TextEditingController();
   final RxString currencyPreference = ''.obs; // 'PKR' | 'USD'
 
-  // Password change controllers
-  final TextEditingController currentPasswordController =
-      TextEditingController();
-  final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
-
-  // Password visibility
-  RxBool showCurrentPassword = false.obs;
-  RxBool showNewPassword = false.obs;
-  RxBool showConfirmPassword = false.obs;
-
   // Form keys
   final GlobalKey<FormState> profileFormKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> passwordFormKey = GlobalKey<FormState>();
   @override
   void onInit() {
     super.onInit();
@@ -202,9 +173,6 @@ class ProfileController extends GetxController {
     emailController.dispose();
     phoneController.dispose();
     addressController.dispose();
-    currentPasswordController.dispose();
-    newPasswordController.dispose();
-    confirmPasswordController.dispose();
     super.onClose();
   }
 
@@ -434,200 +402,6 @@ class ProfileController extends GetxController {
     } finally {
       isUpdating.value = false;
     }
-  }
-
-  /// Change password
-  Future<void> changePassword() async {
-    if (!passwordFormKey.currentState!.validate()) {
-      return;
-    }
-
-    if (newPasswordController.text != confirmPasswordController.text) {
-      ToastUtil.showToast('Passwords do not match');
-      return;
-    }
-
-    isUpdating.value = true;
-
-    try {
-      final token = await AppPreferences.getAccessTokenAsync();
-
-      if (token == null || token.isEmpty) {
-        ToastUtil.showToast('Session expired. Please login again');
-        return;
-      }
-
-      final success = await _authRepository.changePassword(
-        token: token,
-        currentPassword: currentPasswordController.text,
-        newPassword: newPasswordController.text,
-      );
-
-      if (success) {
-        // Clear password fields
-        currentPasswordController.clear();
-        newPasswordController.clear();
-        confirmPasswordController.clear();
-
-        Get.back(); // Close password dialog
-
-        ToastUtil.showToast('Password changed successfully');
-      } else {
-        ToastUtil.showToast('Failed to change password');
-      }
-    } catch (e) {
-      debugPrint('Error changing password: $e');
-      ToastUtil.showToast('Failed to change password');
-    } finally {
-      isUpdating.value = false;
-    }
-  }
-
-  /// Show change password dialog
-  void showChangePasswordDialog() {
-    Get.dialog(
-      Dialog(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          child: Form(
-            key: passwordFormKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CustomText(
-                  text: 'Change Password',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-                SizedBox(height: 20),
-
-                // Current Password
-                Obx(
-                  () => TextFormField(
-                    controller: currentPasswordController,
-                    obscureText: !showCurrentPassword.value,
-                    decoration: InputDecoration(
-                      labelText: 'Current Password',
-                      border: OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          showCurrentPassword.value
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: () => showCurrentPassword.toggle(),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter current password';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-
-                SizedBox(height: 16),
-
-                // New Password
-                Obx(
-                  () => TextFormField(
-                    controller: newPasswordController,
-                    obscureText: !showNewPassword.value,
-                    decoration: InputDecoration(
-                      labelText: 'New Password',
-                      border: OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          showNewPassword.value
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: () => showNewPassword.toggle(),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter new password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-
-                SizedBox(height: 16),
-
-                // Confirm Password
-                Obx(
-                  () => TextFormField(
-                    controller: confirmPasswordController,
-                    obscureText: !showConfirmPassword.value,
-                    decoration: InputDecoration(
-                      labelText: 'Confirm Password',
-                      border: OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          showConfirmPassword.value
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: () => showConfirmPassword.toggle(),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please confirm password';
-                      }
-                      if (value != newPasswordController.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-
-                SizedBox(height: 24),
-
-                // Buttons
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Get.back(),
-                        child: CustomText(text: 'Cancel'),
-                      ),
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: Obx(
-                        () => ElevatedButton(
-                          onPressed: isUpdating.value ? null : changePassword,
-                          child: isUpdating.value
-                              ? SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation(
-                                      AppColors.white,
-                                    ),
-                                  ),
-                                )
-                              : CustomText(text: 'Change'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   /// Logout

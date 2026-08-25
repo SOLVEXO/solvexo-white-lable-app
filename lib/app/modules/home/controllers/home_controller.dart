@@ -4,16 +4,13 @@ import 'package:book_store_app/app/data/repositories/announcements_repository.da
 import 'package:book_store_app/app/data/repositories/banners_repository.dart';
 import 'package:book_store_app/app/data/repositories/cart_repository.dart';
 import 'package:book_store_app/app/data/repositories/category_repository.dart';
-import 'package:book_store_app/app/data/repositories/marketing_repository.dart';
 import 'package:book_store_app/app/data/repositories/product_repository.dart';
 import 'package:book_store_app/app/data/repositories/promotions_repository.dart';
-import 'package:book_store_app/app/data/repositories/stores_repository.dart';
+import 'package:book_store_app/app/data/repositories/storefront_repository.dart';
 import 'package:book_store_app/app/data/services/auth_gate_service.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/data/models/announcement_model.dart';
-import 'package:book_store_app/app/data/models/marketing/public_campaign_model.dart';
-import 'package:book_store_app/app/data/models/storefront/store_list_item_model.dart';
-import 'package:book_store_app/app/data/models/store/platform_stats_model.dart';
-import 'package:book_store_app/app/data/models/store/testimonial_model.dart';
+import 'package:book_store_app/config/store_config.dart';
 import 'package:book_store_app/app/modules/category/controllers/category_controller.dart';
 import 'package:book_store_app/app/modules/category/models/category_model.dart';
 import 'package:book_store_app/app/modules/category/models/product_model.dart';
@@ -34,8 +31,7 @@ class HomeController extends BaseController {
     CategoryRepository? categoryRepository,
     BannersRepository? bannersRepository,
     CartRepository? cartRepository,
-    StoresRepository? storesRepository,
-    MarketingRepository? marketingRepository,
+    StorefrontRepository? storefrontRepository,
     AnnouncementsRepository? announcementsRepository,
     WishlistController? wishlistController,
     CategoryController? categoryController,
@@ -43,8 +39,7 @@ class HomeController extends BaseController {
        _categoryRepository = categoryRepository ?? CategoryRepository(),
        _bannersRepository = bannersRepository ?? BannersRepository(),
        _cartRepository = cartRepository ?? CartRepository(),
-       _storesRepository = storesRepository ?? StoresRepository(),
-       _marketingRepository = marketingRepository ?? MarketingRepository(),
+       _storefrontRepository = storefrontRepository ?? StorefrontRepository(),
        _announcementsRepository =
            announcementsRepository ?? AnnouncementsRepository(),
        wishlistController =
@@ -62,9 +57,12 @@ class HomeController extends BaseController {
   final CategoryRepository _categoryRepository;
   final BannersRepository _bannersRepository;
   final CartRepository _cartRepository;
-  final StoresRepository _storesRepository;
-  final MarketingRepository _marketingRepository;
+  final StorefrontRepository _storefrontRepository;
   final AnnouncementsRepository _announcementsRepository;
+
+  // This build's one store — resolved once, shared app-wide. See
+  // `CurrentStoreService`'s doc comment.
+  CurrentStoreService get _currentStore => Get.find<CurrentStoreService>();
 
   // ─── UI State ─────────────────────────────────────────────────────────────
   final RxList<BannerModel> banners = <BannerModel>[].obs;
@@ -96,16 +94,6 @@ class HomeController extends BaseController {
   // CategoryModel from getAllCategoryTrees — may have nested children
   final RxList<CategoryModel> categories = <CategoryModel>[].obs;
 
-  // Home's "Top Stores" row — shimmer is gated by the shared `isLoading`
-  // flag (see initializeHome/refreshHome), same as Banner/Products, so every
-  // section's shimmer appears and disappears together instead of each
-  // section flickering independently as its own fetch happens to finish.
-  final RxList<StoreListItemModel> topStores = <StoreListItemModel>[].obs;
-
-  // ─── Public marketing/homepage content (unauthenticated, additive) ───────
-  final RxList<PublicCampaignModel> campaigns = <PublicCampaignModel>[].obs;
-  final Rx<PlatformStatsModel?> platformStats = Rx<PlatformStatsModel?>(null);
-  final RxList<TestimonialModel> testimonials = <TestimonialModel>[].obs;
   final RxList<AnnouncementModel> announcements = <AnnouncementModel>[].obs;
   // Local-only UI state — dismissal isn't persisted, it just hides the
   // banner until the next time this screen is built.
@@ -187,37 +175,10 @@ class HomeController extends BaseController {
     }
   }
 
-  // ─── 1b. Top Stores ───────────────────────────────────────────────────────
-
-  Future<void> fetchTopStores() async {
-    try {
-      final result = await _storesRepository.getTopStores(limit: 10);
-      if (result != null) topStores.assignAll(result);
-      debugPrint('✅ Top stores loaded: ${topStores.length}');
-    } catch (e) {
-      debugPrint('❌ Error loading top stores: $e');
-      topStores.clear();
-    }
-  }
-
   // ─── 1c. Public marketing/homepage content (unauthenticated, additive) ────
-  // Each fetch swallows its own errors (repository-level) and simply leaves
-  // its list/value empty on failure — the corresponding widget renders
-  // nothing in that case, never a broken section or an error toast.
-
-  Future<void> fetchCampaigns() async {
-    final result = await _marketingRepository.getActiveCampaigns();
-    campaigns.assignAll(result);
-  }
-
-  Future<void> fetchPlatformStats() async {
-    platformStats.value = await _storesRepository.getPlatformStats();
-  }
-
-  Future<void> fetchTestimonials() async {
-    final result = await _storesRepository.getTestimonials(limit: 6);
-    testimonials.assignAll(result);
-  }
+  // Swallows its own errors (repository-level) and simply leaves the list
+  // empty on failure — the corresponding widget renders nothing in that
+  // case, never a broken section or an error toast.
 
   Future<void> fetchAnnouncements() async {
     final result = await _announcementsRepository.getActive('buyers');
@@ -226,25 +187,20 @@ class HomeController extends BaseController {
 
   void dismissAnnouncement() => announcementDismissed.value = true;
 
-  /// Runs all 4 non-critical homepage fetches in parallel — called from
+  /// Runs the non-critical homepage fetches in parallel — called from
   /// [onInit] and again on pull-to-refresh, alongside (not blocking) the
   /// core [initializeHome]/banners fetches.
-  Future<void> fetchHomeExtras() => Future.wait([
-    fetchCampaigns(),
-    fetchPlatformStats(),
-    fetchTestimonials(),
-    fetchAnnouncements(),
-  ]);
+  Future<void> fetchHomeExtras() => Future.wait([fetchAnnouncements()]);
 
   // ─── 2. Initialize ────────────────────────────────────────────────────────
 
   Future<void> initializeHome() async {
     isLoading.value = true;
     try {
+      await _currentStore.ensureResolved();
       await fetchCategories();
       await fetchFeaturedProducts();
       await fetchProducts();
-      await fetchTopStores();
     } catch (e) {
       debugPrint('❌ Error initializing home: $e');
     } finally {
@@ -283,7 +239,11 @@ class HomeController extends BaseController {
   }
 
   // ─── 5. Products ──────────────────────────────────────────────────────────
-  // Uses getProductsByCategory() — same endpoint as SubCategoryController.
+  // A configured build (`StoreConfig.isConfigured`) shows only this app's
+  // one store's catalog, via the same per-store endpoint `seller_storefront`
+  // uses (`StorefrontRepository.getStoreProducts`). An unconfigured/default
+  // build falls back to the original marketplace-wide `getProductsByCategory`
+  // (same endpoint as `SubCategoryController`), unchanged from before.
   // When tab is "All Products" no categoryId is sent and the backend returns
   // everything. When a tab is selected the root category ID is passed.
 
@@ -300,8 +260,48 @@ class HomeController extends BaseController {
     isFetchingProducts.value = true;
 
     try {
-      // Resolve category ID from the selected tab
       final String? categoryId = _categoryIdForCurrentTab();
+
+      if (StoreConfig.isConfigured) {
+        await _currentStore.ensureResolved();
+        final storeId = _currentStore.storeId;
+        if (storeId == null || storeId.isEmpty) {
+          if (!loadMore) products.clear();
+          totalProductsCount.value = 0;
+          hasMoreProducts.value = false;
+          _applyLocalFilters();
+          return;
+        }
+
+        final result = await _storefrontRepository.getStoreProducts(
+          storeId: storeId,
+          page: currentPage.value,
+          limit: 10,
+          categoryId: categoryId,
+          sort: selectedSort.value,
+        );
+
+        if (loadMore) {
+          products.addAll(result.products);
+        } else {
+          products.assignAll(result.products);
+        }
+
+        totalPages.value = result.totalPages;
+        totalProductsCount.value = result.total;
+        hasMoreProducts.value = result.hasMore;
+
+        _updateFavouriteMap(result.products);
+        // getStoreProducts has no price/rating params — applied client-side
+        // over whatever page(s) are already loaded (see _applyLocalFilters).
+        _applyLocalFilters();
+
+        debugPrint(
+          '✅ Fetched ${result.products.length} store products '
+          '(page ${currentPage.value})',
+        );
+        return;
+      }
 
       final response = await _productRepository.getProductsByCategory(
         categoryId: categoryId,
@@ -354,25 +354,34 @@ class HomeController extends BaseController {
     return null;
   }
 
-  // ─── 6. Local filtering (search only) ─────────────────────────────────────
+  // ─── 6. Local filtering ───────────────────────────────────────────────────
   // Applied after every fetch so the displayed list is always up to date.
-  // Price/rating/sort are handled server-side (see fetchProducts) — this
-  // only narrows the already-fetched, already-sorted page by search text.
-
+  // Search is always client-side. Price/rating are handled server-side for
+  // an unconfigured/marketplace build (see fetchProducts) — reapplying them
+  // here is then a harmless no-op. For a store-configured build,
+  // `getStoreProducts` has no price/rating params, so this is the only place
+  // they're enforced — meaning they only narrow whatever page(s) are already
+  // loaded, not the store's full catalog, until the backend adds support.
   void _applyLocalFilters() {
     final query = searchQuery.value.trim().toLowerCase();
-    if (query.isEmpty) {
-      filteredProducts.assignAll(products);
-      return;
+
+    Iterable<ProductModel> result = products;
+    if (query.isNotEmpty) {
+      result = result.where(
+        (p) => p.name.toLowerCase().contains(query) || p.description.toLowerCase().contains(query),
+      );
+    }
+    if (currentMinFilter.value > priceBoundMin) {
+      result = result.where((p) => p.price >= currentMinFilter.value);
+    }
+    if (currentMaxFilter.value < priceBoundMax) {
+      result = result.where((p) => p.price <= currentMaxFilter.value);
+    }
+    if (selectedRating.value > 0) {
+      result = result.where((p) => p.averageRating >= selectedRating.value);
     }
 
-    filteredProducts.assignAll(
-      products.where(
-        (p) =>
-            p.name.toLowerCase().contains(query) ||
-            p.description.toLowerCase().contains(query),
-      ),
-    );
+    filteredProducts.assignAll(result);
     debugPrint('🔍 Filtered to ${filteredProducts.length} products');
   }
 
@@ -523,8 +532,7 @@ class HomeController extends BaseController {
     categoryController.isLoading.value = true;
 
     try {
-      // Run both refreshes in parallel — initializeHome() already chains
-      // fetchTopStores() internally, so it isn't listed again here.
+      // Run both refreshes in parallel.
       await Future.wait([
         initializeHome(),
         categoryController.refresh(),

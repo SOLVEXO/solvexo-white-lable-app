@@ -6,6 +6,7 @@ import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/components/recommended_product_list.dart';
 import 'package:book_store_app/app/components/svg_icon.dart';
 import 'package:book_store_app/app/data/repositories/product_repository.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/modules/category/models/category_model.dart'
     as BackendModel;
 import 'package:book_store_app/app/modules/category/models/product_model.dart'
@@ -14,6 +15,7 @@ import 'package:book_store_app/app/modules/category/models/product_model.dart';
 import 'package:book_store_app/app/modules/product_details/controller/product_detail_controller.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
 import 'package:book_store_app/config/resources/app_sounds.dart';
+import 'package:book_store_app/config/store_config.dart';
 import 'package:book_store_app/utils/app_font_size.dart';
 import 'package:book_store_app/utils/toast_util.dart';
 import 'package:flutter/material.dart';
@@ -98,10 +100,12 @@ class ProductController extends GetxController {
       );
 
       if (response != null) {
+        // Stopgap store scoping — see _scopeToCurrentStore below.
+        final scoped = _scopeToCurrentStore(response.products);
         if (loadMore) {
-          products.addAll(response.products);
+          products.addAll(scoped);
         } else {
-          products.assignAll(response.products);
+          products.assignAll(scoped);
         }
 
         totalPages.value = response.pages;
@@ -288,8 +292,10 @@ class ProductController extends GetxController {
         limit: 50,
       );
       if (response != null) {
-        products.assignAll(response.products);
-        debugPrint('Search found ${response.products.length} products');
+        // Stopgap store scoping — see _scopeToCurrentStore below.
+        final scoped = _scopeToCurrentStore(response.products);
+        products.assignAll(scoped);
+        debugPrint('Search found ${scoped.length} products');
       }
     } catch (e) {
       debugPrint('Error searching products: $e');
@@ -306,5 +312,24 @@ class ProductController extends GetxController {
 
   Future<void> refreshData() async {
     await initializeData();
+  }
+
+  // ─── Helpers ──────────────────────────────────────────────────────────────
+  // Both `getProductsByCategory` (category browsing) and `getProducts`
+  // (search) are marketplace-wide endpoints — neither has a storeId param,
+  // so on a single-store build they can hand back other stores' products
+  // too. Until the backend adds a storeId filter to both, scope results
+  // down to this build's one store client-side. This only narrows whatever
+  // page the server already returned — it does not fix that page's
+  // reported totals/hasMore, which still reflect the unfiltered
+  // marketplace result set (same stopgap-limitation pattern as
+  // HomeController's _applyLocalFilters comment for getStoreProducts).
+  List<BackendModel.ProductModel> _scopeToCurrentStore(
+    List<BackendModel.ProductModel> list,
+  ) {
+    if (!StoreConfig.isConfigured) return list;
+    final storeId = Get.find<CurrentStoreService>().storeId;
+    if (storeId == null) return list;
+    return list.where((p) => p.storeId == storeId).toList();
   }
 }

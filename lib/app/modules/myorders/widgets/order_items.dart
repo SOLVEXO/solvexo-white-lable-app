@@ -50,24 +50,6 @@ class OrderItems extends StatelessWidget {
                               fontSize: AppFontSize.extraSmall,
                               fontWeight: FontWeight.w700,
                             ),
-                            if (orderDetail.sellerName?.isNotEmpty == true)
-                              Row(
-                                children: [
-                                  Flexible(
-                                    child: CustomText(
-                                      text: 'by ${orderDetail.sellerName!}',
-                                      color: AppColors.gray600,
-                                      fontSize: AppFontSize.tiny,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  if (orderDetail.sellerVerified) ...[
-                                    const SizedBox(width: 3),
-                                    const Icon(Icons.verified_rounded, color: AppColors.blue, size: 11),
-                                  ],
-                                ],
-                              ),
                             CustomText(text: "Qty: ${orderDetail.quantity}", color: AppColors.gray600, fontSize: AppFontSize.extraSmall),
                           ],
                         ),

@@ -1,21 +1,19 @@
 import 'package:book_store_app/app/data/models/storefront/storefront_model.dart';
 import 'package:book_store_app/app/data/models/store_banner/store_banner_model.dart';
-import 'package:book_store_app/app/data/repositories/messaging_repository.dart';
-import 'package:book_store_app/app/data/services/auth_gate_service.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
+import 'package:book_store_app/app/data/services/store_chat_launcher.dart';
 import 'package:book_store_app/app/data/repositories/promotions_repository.dart';
 import 'package:book_store_app/app/data/repositories/store_banner_repository.dart';
 import 'package:book_store_app/app/data/repositories/storefront_repository.dart';
 import 'package:book_store_app/app/modules/category/models/product_model.dart';
-import 'package:book_store_app/app/modules/profile/controllers/profile_controller.dart';
-import 'package:book_store_app/app/routes/app_pages.dart';
-import 'package:book_store_app/utils/toast_util.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
+/// This app's single "About this Store" page — the storefront screen only
+/// ever describes the one store this build serves.
 class SellerStorefrontController extends GetxController {
   final _repo = StorefrontRepository();
-  final _messagingRepo = MessagingRepository();
   final _storeBannerRepo = StoreBannerRepository();
   final RxBool isStartingChat = false.obs;
 
@@ -26,8 +24,6 @@ class SellerStorefrontController extends GetxController {
   // ── Store profile ───────────────────────────────────────────────────────
   final Rx<StorefrontModel?> store = Rx(null);
   final RxBool isLoading = true.obs;
-  final RxBool isFollowLoading = false.obs;
-  final RxBool isFollowing = false.obs;
 
   // ── Products ─────────────────────────────────────────────────────────────
   final RxList<ProductModel> products = <ProductModel>[].obs;
@@ -105,12 +101,24 @@ class SellerStorefrontController extends GetxController {
   // ── Store profile ────────────────────────────────────────────────────────
 
   Future<void> _loadStore() async {
-    if (storeSlug.isEmpty) {
-      isLoading.value = false;
-      return;
+    // Reuse the app-wide resolved store instead of hitting the same
+    // `getStoreBySlug` endpoint a second time — Home's controller already
+    // triggers that resolve at startup. Only fall back to our own
+    // slug-based lookup if `CurrentStoreService` hasn't resolved yet (or
+    // failed to), so this screen still works if opened before that
+    // background resolve finishes.
+    final currentStore = Get.find<CurrentStoreService>();
+    StorefrontModel? result = currentStore.store.value;
+
+    if (result == null) {
+      if (storeSlug.isEmpty) {
+        isLoading.value = false;
+        return;
+      }
+      isLoading.value = true;
+      result = await _repo.getStoreBySlug(storeSlug);
     }
-    isLoading.value = true;
-    final result = await _repo.getStoreBySlug(storeSlug);
+
     store.value = result;
     isLoading.value = false;
 
@@ -118,7 +126,6 @@ class SellerStorefrontController extends GetxController {
       await Future.wait([
         loadProducts(reset: true),
         _loadFilterTags(),
-        _loadFollowStatus(),
         _loadStoreBanners(),
         _loadMerchandisingSections(),
       ]);
@@ -152,12 +159,6 @@ class SellerStorefrontController extends GetxController {
     final storeId = store.value?.storeId;
     if (storeId == null || storeId.isEmpty) return;
     filterTags.assignAll(await _repo.getStoreFilterTags(storeId));
-  }
-
-  Future<void> _loadFollowStatus() async {
-    final storeId = store.value?.storeId;
-    if (storeId == null || storeId.isEmpty) return;
-    isFollowing.value = await _repo.getFollowStatus(storeId);
   }
 
   // ── Products ─────────────────────────────────────────────────────────────
@@ -215,77 +216,15 @@ class SellerStorefrontController extends GetxController {
     loadProducts(reset: true);
   }
 
-  // ── Follow / unfollow ────────────────────────────────────────────────────
-
-  Future<void> toggleFollow() async {
-    final s = store.value;
-    if (s == null || isFollowLoading.value) return;
-
-    final profile = _resolveProfileController();
-    if (profile.user.value == null) {
-      ToastUtil.showToast('Please log in to follow this store.');
-      Get.toNamed(Routes.authTabView);
-      return;
-    }
-
-    isFollowLoading.value = true;
-    final wasFollowing = isFollowing.value;
-    // Optimistic update
-    isFollowing.value = !wasFollowing;
-    store.value = StorefrontModel(
-      storeId: s.storeId,
-      sellerId: s.sellerId,
-      name: s.name,
-      slug: s.slug,
-      logo: s.logo,
-      coverImage: s.coverImage,
-      description: s.description,
-      followersCount: s.followersCount + (wasFollowing ? -1 : 1),
-      sellerType: s.sellerType,
-      badges: s.badges,
-      pinnedProductIds: s.pinnedProductIds,
-      announcementBar: s.announcementBar,
-    );
-
-    final following = await _repo.toggleFollow(s.storeId);
-    isFollowLoading.value = false;
-
-    if (following == null) {
-      // Revert on failure
-      isFollowing.value = wasFollowing;
-      store.value = s;
-      ToastUtil.showToast('Could not update follow status. Please try again.');
-    }
-  }
-
-  ProfileController _resolveProfileController() {
-    if (Get.isRegistered<ProfileController>()) {
-      return Get.find<ProfileController>();
-    }
-    return Get.put(ProfileController(), permanent: true);
-  }
-
-  // ── Message seller ───────────────────────────────────────────────────────
+  // ── Message us ───────────────────────────────────────────────────────────
 
   Future<void> messageStore() async {
-    final s = store.value;
-    if (s == null || isStartingChat.value) return;
-
-    final allowed = await AuthGateService.instance.requireAuth(
-      message: 'Login to message ${s.name}.',
-    );
-    if (!allowed) return;
-
+    if (isStartingChat.value) return;
     isStartingChat.value = true;
-    final conversation = await _messagingRepo.startConversation(s.storeId);
-    isStartingChat.value = false;
-
-    if (conversation != null) {
-      Get.toNamed(Routes.chatView, arguments: {
-        'conversationId': conversation.id,
-        'peerName': s.name,
-        'peerAvatar': s.logo,
-      });
+    try {
+      await StoreChatLauncher.open();
+    } finally {
+      isStartingChat.value = false;
     }
   }
 

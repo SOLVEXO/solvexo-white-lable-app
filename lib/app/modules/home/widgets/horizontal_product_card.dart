@@ -80,24 +80,6 @@ class HorizontalProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(text: prod.name, color: AppColors.black, fontSize: AppFontSize.extraSmall, fontWeight: FontWeight.w600),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: CustomText(
-                          text: 'by ${prod.sellerName?.isNotEmpty == true ? prod.sellerName! : 'Seller'}',
-                          color: AppColors.black54,
-                          fontSize: AppFontSize.tiny,
-                          fontWeight: FontWeight.w400,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (prod.sellerVerified) ...[
-                        SizedBox(width: BaseSpacing.xxs / 2),
-                        const Icon(Icons.verified_rounded, color: AppColors.blue, size: 11),
-                      ],
-                    ],
-                  ),
                   CustomText(
                     text: prod.description,
                     maxLines: 2,

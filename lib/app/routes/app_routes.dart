@@ -5,17 +5,12 @@ abstract class Routes {
   static const mainHome = '/home';
   static const splashScreen = '/splash_screen';
   static const authTabView = '/auth/tabs_view';
-  // static const signUpView = '/auth/signup';
-  // static const loginView = '/auth/login';
-  static const otpView = '/auth/otp';
-  static const getNotified = '/auth/otp/get_notified';
   static const categoryView = '/category';
   static const categoryScreen = '/category_screen';
   static const subCategoryView = '/category/sub_category';
   static const productDetailsView = '/category/product_details';
   static const productPreviewView = '/category/product_details/preview';
   static const sellerStorefront = '/store/storefront';
-  static const storesView = '/store/stores';
   static const searchView = '/search';
   static const cartView = '/cart';
   static const checkoutView = '/checkout';
@@ -36,10 +31,7 @@ abstract class Routes {
   static const contactUsView = '/profile/contact-us';
   static const mapPickerView = '/map_picker';
   static const editProfileView = '/edit-profile';
-  static const forgetPasswordView = '/forget-password';
-  static const newPasswordView = '/new-password';
   static const SETTINGS = '/settings';
-  static const CHANGE_PASSWORD = '/change-password';
   static const PRIVACY_POLICY = '/privacy-policy';
   static const ABOUT = '/about';
   static const CHAT = '/chat';
@@ -47,11 +39,9 @@ abstract class Routes {
   static const notifications = '/notifications';
   static const notificationPreferences = '/notifications/preferences';
   static const trendingProducts = '/trending-products';
-  static const messagesView = '/messages';
   static const chatView = '/messages/chat';
 
   // Entry
-  static const welcome = '/welcome';
   static const onboarding = '/onboarding';
 
   // Buyer — loyalty & rewards for a specific store
@@ -64,9 +54,6 @@ abstract class Routes {
   static const storeServices = '/store/services';
   static const storeServiceDetail = '/store/services/detail';
   static const myBookings = '/my-bookings';
-
-  // Buyer/guest — free, unauthenticated AI Worksheet Builder trial
-  static const worksheetTrial = '/worksheet-trial';
 
   // Seller-management (Phase 2) and POS (Phase 3) routes have all been
   // extracted into the standalone POS app — this buyer app no longer

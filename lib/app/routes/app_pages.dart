@@ -7,12 +7,8 @@ import '../modules/notification_preferences/bindings/notification_preferences_bi
 import '../modules/notification_preferences/views/notification_preferences_view.dart';
 import '../modules/trending_products/bindings/trending_products_binding.dart';
 import '../modules/trending_products/views/trending_products_view.dart';
-import '../modules/messaging/bindings/conversations_binding.dart';
 import '../modules/messaging/bindings/chat_binding.dart';
-import '../modules/messaging/views/conversations_view.dart';
 import '../modules/messaging/views/chat_view.dart';
-import '../modules/welcome/views/welcome_view.dart';
-import '../modules/welcome/bindings/welcome_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/loyalty_rewards/bindings/loyalty_rewards_binding.dart';
@@ -25,8 +21,6 @@ import '../modules/store_services/views/store_services_view.dart';
 import '../modules/store_services/views/store_service_detail_view.dart';
 import '../modules/my_bookings/bindings/my_bookings_binding.dart';
 import '../modules/my_bookings/views/my_bookings_view.dart';
-import '../modules/worksheet_trial/bindings/worksheet_trial_binding.dart';
-import '../modules/worksheet_trial/views/worksheet_trial_view.dart';
 import '../modules/about/bindings/about_binding.dart';
 import '../modules/about/views/about_view.dart';
 import '../modules/address/bindings/address_binding.dart';
@@ -37,16 +31,12 @@ import '../modules/cart/bindings/cart_binding.dart';
 import '../modules/cart/views/cart_view.dart';
 import '../modules/category/bindings/category_binding.dart';
 import '../modules/category/views/category_view.dart';
-import '../modules/change_password/bindings/change_password_binding.dart';
-import '../modules/change_password/views/change_password_view.dart';
 import '../modules/ai_assistant_chat/bindings/ai_assistant_chat_binding.dart';
 import '../modules/ai_assistant_chat/views/ai_assistant_chat_view.dart';
 import '../modules/checkout/bindings/checkout_binding.dart';
 import '../modules/checkout/views/checkout_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
 import '../modules/edit_profile/views/edit_profile_view.dart';
-import '../modules/forget_password/bindings/forget_password_binding.dart';
-import '../modules/forget_password/views/forget_password_view.dart';
 import '../modules/help_center/bindings/faq_binding.dart';
 import '../modules/help_center/views/faq_detail_view.dart';
 import '../modules/help_center/views/faq_list_view.dart';
@@ -61,9 +51,6 @@ import '../modules/myorders/views/my_orders_view.dart';
 import '../modules/myorders/views/reviews_view.dart';
 import '../modules/ordertracker/bindings/order_tracker_binding.dart';
 import '../modules/ordertracker/views/tracker_order_view.dart';
-import '../modules/otp/binding/otp_binding.dart';
-import '../modules/otp/views/get_notified.dart';
-import '../modules/otp/views/otp_view.dart';
 import '../modules/payment/views/payment_success_view.dart';
 import '../modules/manual_transfer/bindings/manual_transfer_binding.dart';
 import '../modules/manual_transfer/bindings/manual_transfer_status_binding.dart';
@@ -77,14 +64,10 @@ import '../modules/product_preview/binding/product_preview_binding.dart';
 import '../modules/product_preview/views/product_preview_view.dart';
 import '../modules/seller_storefront/bindings/seller_storefront_binding.dart';
 import '../modules/seller_storefront/views/seller_storefront_view.dart';
-import '../modules/stores/bindings/stores_binding.dart';
-import '../modules/stores/views/stores_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/refund_request/bindings/refund_request_binding.dart';
 import '../modules/refund_request/views/refund_request_view.dart';
-import '../modules/reset_password/bindings/new_password_binding.dart';
-import '../modules/reset_password/views/new_password_view.dart';
 import '../modules/search/bindings/search_binding.dart';
 import '../modules/search/views/search_view.dart';
 import '../modules/splash_screen/bindings/splash_screen_binding.dart';
@@ -110,11 +93,6 @@ class AppPages {
       binding: SplashScreenBinding(),
     ),
     GetPage(
-      name: Routes.welcome,
-      page: () => const WelcomeView(),
-      binding: WelcomeBinding(),
-    ),
-    GetPage(
       name: Routes.onboarding,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
@@ -124,14 +102,6 @@ class AppPages {
       page: () => AuthTabsView(),
       binding: LoginBinding(),
     ),
-    GetPage(name: Routes.otpView, page: () => OtpView(), binding: OtpBinding()),
-    GetPage(
-      name: Routes.getNotified,
-      page: () => GetNotified(),
-      binding: OtpBinding(),
-    ),
-    // GetPage(name: Routes.signUpView, page: () => SignUpView()),
-    // GetPage(name: Routes.loginView, page: () => LoginView()),
     GetPage(
       name: Routes.categoryView,
       page: () => CategoryView(),
@@ -156,11 +126,6 @@ class AppPages {
       name: Routes.sellerStorefront,
       page: () => SellerStorefrontView(),
       binding: SellerStorefrontBinding(),
-    ),
-    GetPage(
-      name: Routes.storesView,
-      page: () => StoresView(),
-      binding: StoresBinding(),
     ),
     GetPage(
       name: Routes.searchView,
@@ -268,26 +233,11 @@ class AppPages {
       page: () => const EditProfileView(),
       binding: EditProfileBinding(),
     ),
-    GetPage(
-      name: Routes.forgetPasswordView,
-      page: () => const ForgetPasswordView(),
-      binding: ForgetPasswordBinding(),
-    ),
-    GetPage(
-      name: Routes.newPasswordView,
-      page: () => const NewPasswordView(),
-      binding: NewPasswordBinding(),
-    ),
     // GetPage(
     //   name: Routes.SETTINGS,
     //   page: () => const SettingsView(),
     //   binding: SettingsBinding(),
     // ),
-    GetPage(
-      name: Routes.CHANGE_PASSWORD,
-      page: () => ChangePasswordView(),
-      binding: ChangePasswordBinding(),
-    ),
     GetPage(
       name: Routes.PRIVACY_POLICY,
       page: () => const PrivacyPolicyView(),
@@ -312,11 +262,6 @@ class AppPages {
     // been extracted out of this buyer app — sellers/POS terminals now use
     // the standalone POS app, which depends on this app as a path
     // dependency for its shared network/data/UI layers.
-    GetPage(
-      name: Routes.messagesView,
-      page: () => ConversationsView(),
-      binding: ConversationsBinding(),
-    ),
     GetPage(
       name: Routes.chatView,
       page: () => ChatView(),
@@ -346,11 +291,6 @@ class AppPages {
       name: Routes.myBookings,
       page: () => MyBookingsView(),
       binding: MyBookingsBinding(),
-    ),
-    GetPage(
-      name: Routes.worksheetTrial,
-      page: () => const WorksheetTrialView(),
-      binding: WorksheetTrialBinding(),
     ),
     GetPage(
       name: Routes.notifications,

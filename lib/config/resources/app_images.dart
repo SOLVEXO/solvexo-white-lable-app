@@ -1,20 +1,12 @@
-import 'package:book_store_app/app/data/services/branding_service.dart';
-import 'package:get/get.dart';
-
 class AppImages {
   static const String _baseImagePath = "assets/images/";
   static const String userImage = '${_baseImagePath}account.jpeg';
 
-  /// Tenant-swappable — returns the configured logo URL if one's been set
-  /// via `BrandingService` (fed into `CommonImageView`, which loads http(s)
-  /// paths as a network image), else the bundled Solvexo asset.
-  static String get logoImage {
-    if (Get.isRegistered<BrandingService>()) {
-      final url = Get.find<BrandingService>().config.value.logoUrl;
-      if (url.isNotEmpty) return url;
-    }
-    return '${_baseImagePath}logo.png';
-  }
+  /// This app's logo — always this bundled asset, never a network URL. A new
+  /// store sets its own logo by replacing this file directly (see
+  /// STORE_ONBOARDING.md), not through runtime config — every screen that
+  /// shows the logo (splash, app bar, login, toasts) reads this one constant.
+  static const String logoImage = '${_baseImagePath}logo.png';
 
   static const String transparentLogo = '${_baseImagePath}Logo-transparent.png';
   static const String placeHolderImage =

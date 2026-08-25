@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launcher label. A store's own repo copy edits this directly — see
+         STORE_ONBOARDING.md. -->
+    <string name="app_name">Solvexo</string>
+</resources>

@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:book_store_app/app/data/models/storefront/store_list_item_model.dart';
 import 'package:book_store_app/app/data/repositories/search_repository.dart';
-import 'package:book_store_app/app/data/repositories/stores_repository.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/modules/category/models/product_model.dart';
+import 'package:book_store_app/config/store_config.dart';
 import 'package:book_store_app/shared_prefrences/app_prefrences.dart';
 import 'package:book_store_app/utils/toast_util.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,6 @@ import 'package:get/get.dart';
 
 class SearchBarController extends GetxController {
   final SearchRepository _searchRepository = SearchRepository();
-  final StoresRepository _storesRepository = StoresRepository();
   final TextEditingController textController = TextEditingController();
 
   /// Backend history is used when logged in; guests keep the old
@@ -29,14 +28,6 @@ class SearchBarController extends GetxController {
   final RxList<ProductModel> allProducts = <ProductModel>[].obs;
   final RxList<ProductModel> filteredProducts = <ProductModel>[].obs;
   final RxList<ProductModel> suggestions = <ProductModel>[].obs;
-
-  // ─── Stores tab ───────────────────────────────────────────────────────────
-  // 0 = Products, 1 = Stores — both are fetched together on every search so
-  // switching tabs is instant (see performSearch's Future.wait below).
-  final RxInt searchTab = 0.obs;
-  final RxList<StoreListItemModel> storeResults = <StoreListItemModel>[].obs;
-
-  void switchSearchTab(int index) => searchTab.value = index;
 
   // ─── Favourites ───────────────────────────────────────────────────────────
   final RxMap<String, bool> favouriteMap = <String, bool>{}.obs;
@@ -91,12 +82,10 @@ class SearchBarController extends GetxController {
       );
     }
 
-    // Debounced API call — 400ms feels natural for search. Products and
-    // stores are searched together so switching tabs is instant.
+    // Debounced API call — 400ms feels natural for search.
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 400), () {
       performSearch(value);
-      performStoreSearch(value);
     });
   }
 
@@ -118,9 +107,12 @@ class SearchBarController extends GetxController {
         limit: 50,
       );
 
-      if (response != null && response.products.isNotEmpty) {
-        final matched = response.products;
+      // Stopgap store scoping — see _scopeToCurrentStore below.
+      final matched = response != null
+          ? _scopeToCurrentStore(response.products)
+          : <ProductModel>[];
 
+      if (matched.isNotEmpty) {
         filteredProducts.assignAll(matched);
         allProducts.assignAll(matched); // cache for instant suggestions
 
@@ -158,22 +150,6 @@ class SearchBarController extends GetxController {
     }
   }
 
-  /// Store keyword search (`api/search/stores`) — kept independent of
-  /// [performSearch]'s loading/showResults flags so a slow store search never
-  /// blocks the (usually faster) product results tab.
-  Future<void> performStoreSearch(String query) async {
-    final trimmed = query.trim();
-    if (trimmed.isEmpty) return;
-
-    try {
-      final result = await _storesRepository.searchStores(q: trimmed, page: 1, limit: 20);
-      storeResults.assignAll(result.stores);
-    } catch (e) {
-      debugPrint('❌ Store search error: $e');
-      storeResults.clear();
-    }
-  }
-
   // ─── 3. Select a suggestion ───────────────────────────────────────────────
 
   void selectSuggestion(ProductModel product) {
@@ -181,7 +157,6 @@ class SearchBarController extends GetxController {
     searchText.value = product.name;
     showSuggestions.value = false;
     performSearch(product.name);
-    performStoreSearch(product.name);
   }
 
   // ─── 4. Clear ─────────────────────────────────────────────────────────────
@@ -197,8 +172,6 @@ class SearchBarController extends GetxController {
     suggestions.clear();
     showResults.value = false;
     showSuggestions.value = false;
-    storeResults.clear();
-    searchTab.value = 0;
   }
 
   // ─── 5. Filters ───────────────────────────────────────────────────────────
@@ -405,5 +378,20 @@ class SearchBarController extends GetxController {
     for (final p in list) {
       favouriteMap.putIfAbsent(p.id, () => false);
     }
+  }
+
+  // `GET /api/search/products` is a marketplace-wide endpoint — it has no
+  // storeId param at all, so on a single-store build it can hand back other
+  // stores' products too. Until the backend adds a storeId filter, scope
+  // results down to this build's one store client-side. This only narrows
+  // whatever page the server already returned — it does not fix that page's
+  // reported counts, which still reflect the unfiltered marketplace result
+  // set (same stopgap-limitation pattern as HomeController's
+  // _applyLocalFilters comment for getStoreProducts).
+  List<ProductModel> _scopeToCurrentStore(List<ProductModel> list) {
+    if (!StoreConfig.isConfigured) return list;
+    final storeId = Get.find<CurrentStoreService>().storeId;
+    if (storeId == null) return list;
+    return list.where((p) => p.storeId == storeId).toList();
   }
 }

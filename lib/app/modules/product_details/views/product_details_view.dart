@@ -9,7 +9,6 @@ import 'package:book_store_app/app/modules/product_details/widgets/product_ratin
 import 'package:book_store_app/app/modules/product_details/widgets/product_reviews_section.dart';
 import 'package:book_store_app/app/modules/product_details/widgets/product_section_title.dart';
 import 'package:book_store_app/app/modules/product_details/widgets/product_variant_selector.dart';
-import 'package:book_store_app/app/modules/product_details/widgets/seller_store_card.dart';
 import 'package:book_store_app/app/modules/profile/controllers/profile_controller.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
@@ -100,10 +99,6 @@ class ProductDetailsView extends StatelessWidget {
                     spacing: BaseSpacing.xs,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // ── Seller / store row ──────────────────────────────
-                      if (product.sellerId.isNotEmpty)
-                        SellerStoreCard(product: product),
-
                       // ── Name ─────────────────────────────────────────────
                       CustomText(
                         text: product.name,

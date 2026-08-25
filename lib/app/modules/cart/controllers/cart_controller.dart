@@ -357,7 +357,7 @@ class CartController extends BaseController {
 
     // Checkout is login-only. If this was a guest, a successful login here
     // also merges the local cart into the account cart and refreshes
-    // `cartItems` (see AuthController/OtpController) before this resumes.
+    // `cartItems` (see AuthController.signInWithGoogle) before this resumes.
     final allowed = await AuthGateService.instance.requireAuth(
       message: 'Login to place your order.',
     );

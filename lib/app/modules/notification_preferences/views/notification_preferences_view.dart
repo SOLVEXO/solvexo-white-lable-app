@@ -76,8 +76,8 @@ class NotificationPreferencesView extends StatelessWidget {
                       tiles: [
                         _NotifItem(
                           emoji: AppIcons.messageIcon,
-                          title: 'Seller Messages',
-                          subtitle: 'New messages from sellers',
+                          title: 'Store Messages',
+                          subtitle: 'New messages from the store',
                           obs: c.messages,
                           onChanged: () => c.toggle(c.messages, 'messages'),
                         ),

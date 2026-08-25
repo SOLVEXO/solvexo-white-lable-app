@@ -127,45 +127,4 @@ class StorefrontRepository {
     }
   }
 
-  // ─── POST /api/store/:storeId/follow ───────────────────────────────────────
-
-  /// Toggles follow state. Returns the new `following` value, or null on
-  /// failure (e.g. not logged in as a buyer).
-  Future<bool?> toggleFollow(String storeId) async {
-    try {
-      final response = await _client.post(ApiConstants.followStore(storeId));
-      if (response.data['success'] == true) {
-        return (response.data['data'] as Map<String, dynamic>?)?['following'] as bool?;
-      }
-      return null;
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return null;
-    } catch (e) {
-      debugPrint('❌ toggleFollow error: $e');
-      return null;
-    }
-  }
-
-  // ─── GET /api/store/:storeId/follow-status ─────────────────────────────────
-
-  Future<bool> getFollowStatus(String storeId) async {
-    try {
-      final response = await _client.get(
-        ApiConstants.storeFollowStatus(storeId),
-        requiresAuth: true,
-      );
-      if (response.data['success'] == true) {
-        return (response.data['data'] as Map<String, dynamic>)['following'] as bool? ?? false;
-      }
-      return false;
-    } on DioException catch (e) {
-      // A 401 here just means the buyer isn't logged in — not worth a toast.
-      if (e.response?.statusCode != 401) DioExceptionHandler.handleDioException(e);
-      return false;
-    } catch (e) {
-      debugPrint('❌ getFollowStatus error: $e');
-      return false;
-    }
-  }
 }

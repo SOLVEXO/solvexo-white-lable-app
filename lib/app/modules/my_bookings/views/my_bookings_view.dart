@@ -7,7 +7,6 @@ import 'package:book_store_app/app/modules/my_bookings/controllers/my_bookings_c
 import 'package:book_store_app/app/modules/my_bookings/widgets/booking_card.dart';
 import 'package:book_store_app/app/modules/my_bookings/widgets/booking_details_sheet.dart';
 import 'package:book_store_app/app/modules/my_bookings/widgets/package_credits_card.dart';
-import 'package:book_store_app/app/routes/app_pages.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/config/resources/app_icons.dart';
 import 'package:book_store_app/core/theme/base_animations.dart';
@@ -117,8 +116,6 @@ class MyBookingsView extends StatelessWidget {
                             title: 'No bookings yet',
                             subtitle:
                                 'Book an appointment or a package with a store to see it here.',
-                            actionLabel: 'Explore Stores',
-                            onAction: () => Get.toNamed(Routes.storesView),
                           ),
                         ],
                       )

@@ -321,7 +321,7 @@ class RefundRequestView extends StatelessWidget {
         const SizedBox(height: 8),
         CustomTextField(
           controller: controller.messageController,
-          hintText: "Tell the seller more about the issue",
+          hintText: "Tell us more about the issue",
           maxLines: 4,
           isborder: true,
           borderRadius: BorderRadius.circular(12),
@@ -412,7 +412,7 @@ class RefundRequestView extends StatelessWidget {
               r.resolutionNotes!.isNotEmpty) ...[
             const SizedBox(height: 6),
             CustomText(
-              text: 'Seller note: ${r.resolutionNotes}',
+              text: 'Store note: ${r.resolutionNotes}',
               fontSize: AppFontSize.verySmall,
               color: AppColors.grey,
             ),
