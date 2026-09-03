@@ -7,6 +7,12 @@ class SocialLoginModel {
   final String? fcmToken;
   final String? token;
 
+  // This app build's own store (CurrentStoreService.storeId) — makes this a
+  // genuinely separate, store-scoped buyer account server-side (see backend
+  // AuthService.emailScope), not the legacy apex-wide account. Omitted only
+  // on an unconfigured/default build where CurrentStoreService never resolves.
+  final String? storeId;
+
   SocialLoginModel({
     required this.authProvider,
     required this.socialId,
@@ -15,6 +21,7 @@ class SocialLoginModel {
     this.image,
     this.fcmToken,
     this.token,
+    this.storeId,
   });
 
   Map<String, dynamic> toJson() {
@@ -26,6 +33,7 @@ class SocialLoginModel {
       if (image != null) 'image': image,
       if (fcmToken != null) 'fcmToken': fcmToken,
       if (token != null) 'token': token,
+      if (storeId != null) 'storeId': storeId,
     };
   }
 }

@@ -62,7 +62,7 @@ class _StorefrontPlansTeaserState extends State<StorefrontPlansTeaser> {
   Future<void> _subscribe(BuyerStorePlanModel plan) async {
     if (_subscribingPlanId.isNotEmpty) return;
     setState(() => _subscribingPlanId = plan.id);
-    final subscription = await _repo.subscribe(planId: plan.id, billingInterval: 'monthly');
+    final subscription = await _repo.subscribe(planId: plan.id, billingInterval: 'monthly', storeId: widget.storeId);
     if (!mounted) return;
     setState(() => _subscribingPlanId = '');
     if (subscription != null) await _load();

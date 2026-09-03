@@ -130,7 +130,7 @@ class EditProfileView extends StatelessWidget {
                   CustomText(
                     text: 'Used to price your checkouts.',
                     fontSize: AppFontSize.tiny,
-                    color: AppColors.grey,
+                    color: AppColors.greyDefault,
                   ),
                   SizedBox(height: 12),
                   Obx(

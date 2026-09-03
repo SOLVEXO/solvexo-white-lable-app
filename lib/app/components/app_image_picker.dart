@@ -56,7 +56,7 @@ class AppImagePicker {
               }
             : null,
       ),
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       isScrollControlled: true,
     );
   }
@@ -152,13 +152,13 @@ class AppImagePicker {
         content: CustomText(
           text: 'This app needs access to your $permissionName to let you upload photos.',
           fontSize: 14,
-          color: AppColors.grey,
+          color: AppColors.greyDefault,
           height: 1.5,
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
-            child: const CustomText(text: 'Not Now', color: AppColors.grey),
+            child: const CustomText(text: 'Not Now', color: AppColors.greyDefault),
           ),
           TextButton(
             onPressed: () => Get.back(result: true),
@@ -188,13 +188,13 @@ class AppImagePicker {
         content: CustomText(
           text: '$permissionName access was denied. Please enable it in your device settings to upload photos.',
           fontSize: 14,
-          color: AppColors.grey,
+          color: AppColors.greyDefault,
           height: 1.5,
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const CustomText(text: 'Cancel', color: AppColors.grey),
+            child: const CustomText(text: 'Cancel', color: AppColors.greyDefault),
           ),
           TextButton(
             onPressed: () {

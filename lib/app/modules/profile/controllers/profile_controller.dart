@@ -4,9 +4,8 @@ import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/data/models/common_models/user_model.dart';
 import 'package:book_store_app/app/data/repositories/auth_repository.dart';
 import 'package:book_store_app/app/data/repositories/upload_repository.dart';
-import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:book_store_app/app/modules/auth/controller/auth_controller.dart';
-import 'package:book_store_app/app/modules/settings/controllers/settings_controller.dart';
+import 'package:book_store_app/app/modules/settings/models/settings_section_model.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/config/resources/app_icons.dart';
@@ -26,29 +25,13 @@ class ProfileController extends GetxController {
   List<SettingsSection> get sections => [
     if (isLoggedIn)
       SettingsSection(
-        header: 'MY ORDERS',
+        header: 'ACCOUNT',
         tiles: [
           SettingsTile(
             icon: AppIcons.billsIcon,
             title: 'My Orders',
             onTap: () => Get.toNamed(Routes.myOrdersView),
           ),
-          SettingsTile(
-            icon: AppIcons.cardIcon,
-            title: 'My Memberships',
-            onTap: () => Get.toNamed(Routes.myMemberships),
-          ),
-          SettingsTile(
-            icon: AppIcons.calenderIcon,
-            title: 'My Bookings',
-            onTap: () => Get.toNamed(Routes.myBookings),
-          ),
-        ],
-      ),
-    if (isLoggedIn)
-      SettingsSection(
-        header: 'ACCOUNT',
-        tiles: [
           SettingsTile(
             icon: AppIcons.editIcon,
             title: 'Edit Profile',
@@ -69,11 +52,11 @@ class ProfileController extends GetxController {
     SettingsSection(
       header: 'SUPPORT',
       tiles: [
-        SettingsTile(
-          icon: AppIcons.shoppingBag,
-          title: 'About ${Get.find<BrandingService>().config.value.marketplaceName}',
-          onTap: () => Get.toNamed(Routes.sellerStorefront),
-        ),
+        // SettingsTile(
+        //   icon: AppIcons.shoppingBag,
+        //   title: 'About ${Get.find<BrandingService>().config.value.storeDisplayName}',
+        //   onTap: () => Get.toNamed(Routes.sellerStorefront),
+        // ),
         SettingsTile(
           icon: AppIcons.phoneIcon,
           title: 'Help Center',
@@ -386,7 +369,9 @@ class ProfileController extends GetxController {
             ? null
             : addressController.text.trim(),
         profileImage: imageUrl ?? user.value?.profileImage,
-        currencyPreference: currencyPreference.value.isEmpty ? null : currencyPreference.value,
+        currencyPreference: currencyPreference.value.isEmpty
+            ? null
+            : currencyPreference.value,
       );
 
       if (updatedUser != null) {

@@ -66,8 +66,8 @@ class ProofUploadTile extends StatelessWidget {
               onTap: onRemove,
               child: Container(
                 padding: EdgeInsets.all(BaseSpacing.xxs),
-                decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
-                child: const Icon(Icons.close_rounded, size: 16, color: Colors.white),
+                decoration: const BoxDecoration(color: AppColors.black54, shape: BoxShape.circle),
+                child: const Icon(Icons.close_rounded, size: 16, color: AppColors.white),
               ),
             ),
           ),

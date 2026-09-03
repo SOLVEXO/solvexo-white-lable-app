@@ -15,8 +15,6 @@ class AppPreferences {
   static const String _guestCartKey = 'guest_cart_items';
   static const String _recentSearchesKey = 'recent_searches';
   static const String _recentlyViewedKey = 'recently_viewed_products';
-  static const String _storeIdKey   = 'store_id';
-  static const String _storeNameKey = 'store_name';
   static const String _displayCurrencyKey = 'display_currency';
   static const String _brandingConfigKey = 'branding_config_json';
 
@@ -94,16 +92,16 @@ class AppPreferences {
   }
 
   // Clear refresh token
-  static Future<void> clearRefreshToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_refreshTokenKey);
-  }
-
-  // Clear both tokens
-  static Future<void> clearTokens() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_accessTokenKey);
-    await prefs.remove(_refreshTokenKey);
+  /// Full local session wipe (tokens, user identity, cached search/store
+  /// data — everything a logout clears) except the device-level
+  /// onboarding-seen flag, which must survive. Route guards (AuthMiddleware
+  /// et al.) that find no token present use this so stale
+  /// user_id/name/role/email don't linger for whichever account logs in next
+  /// (e.g. FcmService.subscribeToUserId reads user_id straight from prefs).
+  static Future<void> clearSessionPreservingOnboarding() async {
+    final hasSeenOnboarding = await getHasSeenOnboarding();
+    await clearPreference();
+    await setHasSeenOnboarding(hasSeenOnboarding);
   }
 
   // Save user data
@@ -214,38 +212,6 @@ class AppPreferences {
     return token != null && token.isNotEmpty;
   }
 
-  // ── Store ID ──────────────────────────────────────────────────────────────────
-  static Future<void> saveStoreId(String id) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_storeIdKey, id);
-  }
-
-  static Future<String?> getStoreId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_storeIdKey);
-  }
-
-  static Future<void> clearStoreId() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_storeIdKey);
-  }
-
-  // ── Store Name ────────────────────────────────────────────────────────────────
-  static Future<void> saveStoreName(String name) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_storeNameKey, name);
-  }
-
-  static Future<String?> getStoreName() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_storeNameKey);
-  }
-
-  static Future<void> clearStoreName() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_storeNameKey);
-  }
-
   // Recent Searches
   static Future<void> saveRecentSearches(List<String> searches) async {
     final prefs = await SharedPreferences.getInstance();
@@ -255,6 +221,16 @@ class AppPreferences {
   static Future<List<String>?> getRecentSearches() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getStringList(_recentSearchesKey);
+  }
+
+  /// Recent-searches and recently-viewed are keyed generically, not per
+  /// user_id — call this before a different account's tokens/user data get
+  /// written (see `AuthRepository.socialLogin`) so one account never inherits
+  /// another's local search history on a shared device.
+  static Future<void> clearLocalSearchHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_recentSearchesKey);
+    await prefs.remove(_recentlyViewedKey);
   }
 
   // ── POS employee context ──────────────────────────────────────────────────────

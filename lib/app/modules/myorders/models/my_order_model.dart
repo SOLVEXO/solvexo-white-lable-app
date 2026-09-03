@@ -1,5 +1,6 @@
 import 'package:book_store_app/app/modules/myorders/models/order_item_model.dart';
 import 'package:book_store_app/app/modules/myorders/models/shipping_address_model.dart';
+import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/utils/currency_formatter.dart';
 import 'package:flutter/material.dart';
 
@@ -123,12 +124,12 @@ class OrderModel {
 
   Color get statusColor {
     switch (orderStatus) {
-      case 'completed':         return const Color(0xFF22C55E);
+      case 'completed':         return AppColors.statusCompleted;
       case 'shipped':
-      case 'partially_shipped': return const Color(0xFF3B82F6);
-      case 'processing':        return const Color(0xFFF59E0B);
-      case 'cancelled':         return const Color(0xFFEF4444);
-      default:                  return const Color(0xFF6B7280);
+      case 'partially_shipped': return AppColors.statusShipped;
+      case 'processing':        return AppColors.statusProcessing;
+      case 'cancelled':         return AppColors.statusCancelled;
+      default:                  return AppColors.statusDefault;
     }
   }
 
@@ -153,12 +154,12 @@ class OrderModel {
 
   Color get paymentStatusColor {
     switch (paymentStatus) {
-      case 'pending_verification': return const Color(0xFFF59E0B);
-      case 'paid':                 return const Color(0xFF22C55E);
-      case 'failed':                return const Color(0xFFEF4444);
-      case 'refunded':              return const Color(0xFF6B7280);
+      case 'pending_verification': return AppColors.statusProcessing;
+      case 'paid':                 return AppColors.statusCompleted;
+      case 'failed':                return AppColors.statusCancelled;
+      case 'refunded':              return AppColors.statusDefault;
       case 'unpaid':
-      default:                      return const Color(0xFFDE8147);
+      default:                      return AppColors.orange;
     }
   }
 

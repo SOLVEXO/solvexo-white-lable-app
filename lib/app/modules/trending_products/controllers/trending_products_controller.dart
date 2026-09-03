@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:book_store_app/app/data/repositories/product_repository.dart';
 import 'package:book_store_app/app/data/repositories/search_repository.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/modules/category/models/product_model.dart';
+import 'package:book_store_app/config/store_config.dart';
 import 'package:book_store_app/utils/toast_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -52,16 +54,31 @@ class TrendingProductsController extends GetxController {
     }
 
     try {
+      if (!StoreConfig.isConfigured) {
+        products.clear();
+        hasMore.value = false;
+        return;
+      }
+      await Get.find<CurrentStoreService>().ensureResolved();
+      final storeId = Get.find<CurrentStoreService>().storeId;
+      if (storeId == null || storeId.isEmpty) {
+        products.clear();
+        hasMore.value = false;
+        return;
+      }
+
       final query = searchQuery.value.trim();
       final response = query.isEmpty
           ? await _productRepository.getProductsByCategory(
               page: currentPage.value,
               limit: 20,
+              storeId: storeId,
             )
           : await _searchRepository.searchProducts(
               query,
               page: currentPage.value,
               limit: 20,
+              storeId: storeId,
             );
 
       if (response != null) {

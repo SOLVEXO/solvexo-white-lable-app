@@ -92,21 +92,21 @@ class CustomTextField extends StatelessWidget {
                   padding: const EdgeInsets.all(12.0),
                   child: prefixIcon,
                 ),
-          prefixIconColor: AppColors.grey,
+          prefixIconColor: AppColors.greyDefault,
           labelText: label,
           labelStyle: TextStyle(
-            color: AppColors.grey,
+            color: AppColors.greyDefault,
             fontSize: isTablet ? 18 : 14,
           ),
           hintText: "$hintText".tr,
-          hintStyle: TextStyle(color: AppColors.grey),
+          hintStyle: TextStyle(color: AppColors.greyDefault),
           suffixIcon: suffixIcon == null
               ? null
               : Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: suffixIcon,
                 ),
-          suffixIconColor: AppColors.grey,
+          suffixIconColor: AppColors.greyDefault,
           filled: filled,
           fillColor: fillColor,
           contentPadding: contentPadding ??

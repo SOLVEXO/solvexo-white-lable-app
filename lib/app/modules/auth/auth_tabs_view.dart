@@ -12,10 +12,10 @@ import 'package:book_store_app/utils/app_font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// The single "continue with Google" entry point — Google Sign-In is
-/// simultaneously login-or-signup, so there is no separate tab/step to
-/// switch between. The route name (`Routes.authTabView`) and class name
-/// stay put since many other screens already navigate here.
+/// The single auth entry point — email/password (with a Login/Sign-up
+/// toggle, see `LoginView`) and "Continue with Google" underneath it. The
+/// route name (`Routes.authTabView`) and class name stay put since many
+/// other screens already navigate here.
 class AuthTabsView extends StatelessWidget {
   const AuthTabsView({super.key});
 
@@ -68,16 +68,18 @@ class _TopBrand extends StatelessWidget {
           child: CommonImageView(imagePath: AppImages.logoImage),
         ),
         SizedBox(height: BaseSpacing.sm),
-        CustomText(
-          text: Get.find<BrandingService>().config.value.appName,
-          color: AppColors.black2,
-          fontFamily: AppTextStyles.headingFontFamily,
-          fontSize: AppFontSize.large,
-          fontWeight: FontWeight.bold,
+        Obx(
+          () => CustomText(
+            text: Get.find<BrandingService>().config.value.appName,
+            color: AppColors.black2,
+            fontFamily: AppTextStyles.headingFontFamily,
+            fontSize: AppFontSize.large,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         SizedBox(height: BaseSpacing.xxs / 2),
         CustomText(
-          text: 'Buy and sell, made simple',
+          text: 'Sign in to continue',
           color: AppColors.gray600,
           fontSize: AppFontSize.small2,
         ),

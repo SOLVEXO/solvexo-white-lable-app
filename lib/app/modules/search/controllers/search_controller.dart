@@ -16,6 +16,8 @@ class SearchBarController extends GetxController {
   /// SharedPreferences behaviour.
   bool _isLoggedIn = false;
 
+  String? get _storeId => Get.find<CurrentStoreService>().storeId;
+
   // ─── UI state ──────────────────────────────────────────────────────────────
   final RxString searchText = ''.obs;
   final RxBool showResults = false.obs;
@@ -101,16 +103,29 @@ class SearchBarController extends GetxController {
     showResults.value = true;
 
     try {
+      if (!StoreConfig.isConfigured) {
+        filteredProducts.clear();
+        suggestions.clear();
+        showResults.value = false;
+        return;
+      }
+      await Get.find<CurrentStoreService>().ensureResolved();
+      final storeId = Get.find<CurrentStoreService>().storeId;
+      if (storeId == null || storeId.isEmpty) {
+        filteredProducts.clear();
+        suggestions.clear();
+        showResults.value = false;
+        return;
+      }
+
       final response = await _searchRepository.searchProducts(
         trimmed,
         page: 1,
         limit: 50,
+        storeId: storeId,
       );
 
-      // Stopgap store scoping — see _scopeToCurrentStore below.
-      final matched = response != null
-          ? _scopeToCurrentStore(response.products)
-          : <ProductModel>[];
+      final matched = response?.products ?? <ProductModel>[];
 
       if (matched.isNotEmpty) {
         filteredProducts.assignAll(matched);
@@ -255,7 +270,7 @@ class SearchBarController extends GetxController {
   Future<void> loadRecentSearches() async {
     try {
       if (_isLoggedIn) {
-        final entries = await _searchRepository.getRecentSearches();
+        final entries = await _searchRepository.getRecentSearches(storeId: _storeId);
         if (entries != null) {
           _searchIdByQuery
             ..clear()
@@ -299,7 +314,7 @@ class SearchBarController extends GetxController {
     recentSearches.remove(value);
     if (_isLoggedIn) {
       final id = _searchIdByQuery.remove(value.toLowerCase());
-      if (id != null) unawaited(_searchRepository.deleteRecentSearch(id));
+      if (id != null) unawaited(_searchRepository.deleteRecentSearch(id, storeId: _storeId));
       return;
     }
     _saveRecentSearches();
@@ -311,7 +326,7 @@ class SearchBarController extends GetxController {
     recentSearches.clear();
     if (_isLoggedIn) {
       _searchIdByQuery.clear();
-      unawaited(_searchRepository.clearRecentSearches());
+      unawaited(_searchRepository.clearRecentSearches(storeId: _storeId));
       return;
     }
     _saveRecentSearches();
@@ -332,7 +347,7 @@ class SearchBarController extends GetxController {
       return;
     }
     try {
-      final products = await _searchRepository.getRecentlyViewed(limit: 10);
+      final products = await _searchRepository.getRecentlyViewed(limit: 10, storeId: _storeId);
       if (products != null) lastSeenProducts.assignAll(products);
     } catch (e) {
       debugPrint('❌ Error loading recently viewed: $e');
@@ -342,7 +357,7 @@ class SearchBarController extends GetxController {
   /// Records locally + on the backend (via SearchRepository) and refreshes
   /// the strip so the tapped product surfaces immediately.
   Future<void> addToRecentlyViewed(String productId) async {
-    await _searchRepository.recordProductView(productId);
+    await _searchRepository.recordProductView(productId, storeId: _storeId);
     unawaited(loadRecentlyViewed());
   }
 
@@ -378,20 +393,5 @@ class SearchBarController extends GetxController {
     for (final p in list) {
       favouriteMap.putIfAbsent(p.id, () => false);
     }
-  }
-
-  // `GET /api/search/products` is a marketplace-wide endpoint — it has no
-  // storeId param at all, so on a single-store build it can hand back other
-  // stores' products too. Until the backend adds a storeId filter, scope
-  // results down to this build's one store client-side. This only narrows
-  // whatever page the server already returned — it does not fix that page's
-  // reported counts, which still reflect the unfiltered marketplace result
-  // set (same stopgap-limitation pattern as HomeController's
-  // _applyLocalFilters comment for getStoreProducts).
-  List<ProductModel> _scopeToCurrentStore(List<ProductModel> list) {
-    if (!StoreConfig.isConfigured) return list;
-    final storeId = Get.find<CurrentStoreService>().storeId;
-    if (storeId == null) return list;
-    return list.where((p) => p.storeId == storeId).toList();
   }
 }

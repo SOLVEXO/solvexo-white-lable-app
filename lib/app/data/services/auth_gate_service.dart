@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:book_store_app/app/components/login_prompt_sheet.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
 import 'package:book_store_app/shared_prefrences/app_prefrences.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:book_store_app/config/resources/app_colors.dart';
 
 /// The single reusable "require auth" gate for guest-allowed screens that
 /// still have a handful of protected actions (add to wishlist, message a
@@ -46,7 +46,7 @@ class AuthGateService {
         },
       ),
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
     );
 
     // Swiped down / tapped the backdrop without picking an option.

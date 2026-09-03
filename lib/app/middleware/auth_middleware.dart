@@ -25,7 +25,7 @@ class AuthMiddleware extends GetMiddleware {
   Future<void> _checkAuth() async {
     final token = await AppPreferences.getAccessTokenAsync();
     if (token == null || token.isEmpty) {
-      await AppPreferences.clearTokens();
+      await AppPreferences.clearSessionPreservingOnboarding();
       Get.offAllNamed(Routes.authTabView);
     }
   }
@@ -52,7 +52,7 @@ class RoleMiddleware extends GetMiddleware {
 
     // No token → kick to auth
     if (token == null || token.isEmpty) {
-      await AppPreferences.clearTokens();
+      await AppPreferences.clearSessionPreservingOnboarding();
       Get.offAllNamed(Routes.authTabView);
       return;
     }
@@ -99,7 +99,7 @@ class PosAccessMiddleware extends GetMiddleware {
   Future<void> _check() async {
     final token = await AppPreferences.getAccessTokenAsync();
     if (token == null || token.isEmpty) {
-      await AppPreferences.clearTokens();
+      await AppPreferences.clearSessionPreservingOnboarding();
       Get.offAllNamed(Routes.authTabView);
       return;
     }

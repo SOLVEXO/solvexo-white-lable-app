@@ -288,7 +288,7 @@ class _SellerRatingRow extends StatelessWidget {
         SvgIcon(
           assetName: AppIcons.fillStar,
           size: 11,
-          color: const Color(0xFFFACC15),
+          color: AppColors.ratingStar,
         ),
         SizedBox(width: BaseSpacing.xxs / 2),
         CustomText(

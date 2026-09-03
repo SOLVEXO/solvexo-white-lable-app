@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:book_store_app/app/components/app_image_picker.dart';
 import 'package:book_store_app/app/data/models/payment/manual_payment_model.dart';
 import 'package:book_store_app/app/data/repositories/manual_transfer_repository.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/utils/toast_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,7 +37,7 @@ class ManualTransferStatusController extends GetxController {
 
   Future<void> _loadById(String proofId) async {
     isRefreshing.value = true;
-    proof.value = await _repository.getProofStatus(proofId);
+    proof.value = await _repository.getProofStatus(proofId, storeId: Get.find<CurrentStoreService>().storeId);
     isRefreshing.value = false;
   }
 
@@ -45,7 +46,7 @@ class ManualTransferStatusController extends GetxController {
     final id = proof.value?.id;
     if (id == null || id.isEmpty || isRefreshing.value) return;
     isRefreshing.value = true;
-    final updated = await _repository.getProofStatus(id);
+    final updated = await _repository.getProofStatus(id, storeId: Get.find<CurrentStoreService>().storeId);
     if (updated != null) proof.value = updated;
     isRefreshing.value = false;
   }

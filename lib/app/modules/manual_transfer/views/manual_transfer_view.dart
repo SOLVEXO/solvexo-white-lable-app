@@ -102,7 +102,7 @@ class _AmountToTransferCard extends StatelessWidget {
         padding: EdgeInsets.all(BaseSpacing.md),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF0D1117), Color(0xFF1C2333)],
+            colors: [AppColors.transferCardGradientStart, AppColors.transferCardGradientEnd],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -144,7 +144,7 @@ class _BottomBar extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(BaseSpacing.xl, BaseSpacing.sm + 2, BaseSpacing.xl, BaseSpacing.xxl - 8),
         decoration: BoxDecoration(
           color: AppColors.white,
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, -3))],
+          boxShadow: [BoxShadow(color: AppColors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, -3))],
         ),
         child: PrimaryButton(
           label: controller.isSubmitting.value ? 'Submitting...' : "I've Made the Transfer",

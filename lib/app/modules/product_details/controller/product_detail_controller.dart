@@ -6,6 +6,7 @@ import 'package:book_store_app/app/data/repositories/cart_repository.dart';
 import 'package:book_store_app/app/data/repositories/product_repository.dart';
 import 'package:book_store_app/app/data/repositories/rating_repository.dart';
 import 'package:book_store_app/app/data/repositories/search_repository.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/modules/category/models/product_model.dart';
 import 'package:book_store_app/app/modules/cart/controllers/cart_controller.dart';
 import 'package:book_store_app/app/modules/cart/models/cart_response_model.dart';
@@ -99,7 +100,10 @@ class ProductDetailController extends GetxController {
     isLoading.value = true;
 
     try {
-      final response = await _productRepository.getProductDetailById(productId);
+      final response = await _productRepository.getProductDetailById(
+        productId,
+        storeId: Get.find<CurrentStoreService>().storeId,
+      );
 
       if (response != null) {
         product.value = response.product;
@@ -126,7 +130,10 @@ class ProductDetailController extends GetxController {
 
         // Feed the "Recently Viewed" strip (local prefs + backend when
         // logged in) — fire-and-forget, never blocks the screen.
-        unawaited(SearchRepository().recordProductView(productId));
+        unawaited(SearchRepository().recordProductView(
+          productId,
+          storeId: Get.find<CurrentStoreService>().storeId,
+        ));
       } else {
         ToastUtil.showToast('Product not found');
         Get.back();
@@ -189,7 +196,10 @@ class ProductDetailController extends GetxController {
   Future<void> fetchVariantById(String variantId) async {
     isLoadingVariant.value = true;
     try {
-      final response = await _productRepository.getVariantById(variantId);
+      final response = await _productRepository.getVariantById(
+        variantId,
+        storeId: Get.find<CurrentStoreService>().storeId,
+      );
       if (response != null) {
         selectedVariant.value = response.variant;
         // Reset qty so it doesn't exceed new variant stock

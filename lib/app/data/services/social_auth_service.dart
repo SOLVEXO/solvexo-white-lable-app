@@ -27,7 +27,7 @@ class SocialAuthService {
   // GOOGLE SIGN IN
   // ─────────────────────────────────────────
 
-  Future<SocialLoginModel?> signInWithGoogle() async {
+  Future<SocialLoginModel?> signInWithGoogle({String? storeId}) async {
     try {
       debugPrint('🔄 Starting Google Sign In...');
 
@@ -46,6 +46,7 @@ class SocialAuthService {
         image: account.photoUrl,
         fcmToken: fcmToken,
         token: auth.idToken,
+        storeId: storeId,
       );
     } catch (e) {
       debugPrint('❌ Google Sign In error: $e');

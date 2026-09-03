@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 class ProductContextBuilder {
   static String build(List<ProductModel> products) {
-    final storeName = Get.find<BrandingService>().config.value.marketplaceName;
+    final storeName = Get.find<BrandingService>().config.value.storeDisplayName;
     final buffer = StringBuffer();
     buffer.writeln(
       'You are a helpful shopping assistant for $storeName. '

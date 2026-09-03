@@ -90,7 +90,7 @@ class LoginPromptSheet extends StatelessWidget {
             CustomText(
               text: message,
               textAlign: TextAlign.center,
-              color: AppColors.grey,
+              color: AppColors.greyDefault,
               fontSize: AppFontSize.verySmall,
             ),
             SizedBox(height: BaseSpacing.xl),

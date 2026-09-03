@@ -371,6 +371,7 @@ class BookingsRepository {
     String? packagePurchaseId,
     Map<String, dynamic>? serviceAddress,
     String? buyerNote,
+    String? storeId,
   }) async {
     try {
       final response = await _client.post(
@@ -383,6 +384,7 @@ class BookingsRepository {
           if (packagePurchaseId != null) 'packagePurchaseId': packagePurchaseId,
           if (serviceAddress != null) 'serviceAddress': serviceAddress,
           if (buyerNote != null) 'buyerNote': buyerNote,
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
         },
         headers: _idempotencyHeader,
         requiresAuth: true,
@@ -402,11 +404,13 @@ class BookingsRepository {
     }
   }
 
-  Future<PackagePurchaseModel?> purchasePackage(String packageId) async {
+  Future<PackagePurchaseModel?> purchasePackage(String packageId, {String? storeId}) async {
     try {
       final response = await _client.post(
         ApiConstants.purchasePackage(packageId),
-        data: {},
+        data: {
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
         headers: _idempotencyHeader,
         requiresAuth: true,
       );
@@ -425,35 +429,21 @@ class BookingsRepository {
     }
   }
 
-  // ─── Buyer — My Bookings / My Packages ──────────────────────────────────
+  // ─── Buyer — My Packages ──────────────────────────────────────────────────
+  // (The "My Bookings" list/detail/cancel/reschedule management screen was
+  // removed — this app has no bookings-management surface any more, only
+  // the book-a-service/buy-a-package flow on the service detail page, which
+  // still needs to know which packages this buyer already owns.)
 
-  Future<({List<BookingModel> bookings, int total, int pages})> listMyBookings({int page = 1, int limit = 20, String? status}) async {
+  Future<List<PackagePurchaseModel>> listMyPackages({String? storeId}) async {
     try {
       final response = await _client.get(
-        ApiConstants.myBookings,
-        queryParameters: {'page': page, 'limit': limit, if (status != null) 'status': status},
+        ApiConstants.myPackages,
+        queryParameters: {
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
         requiresAuth: true,
       );
-      if (response.data['success'] == true) {
-        final data = response.data['data'] as Map<String, dynamic>;
-        final pagination = data['pagination'] as Map<String, dynamic>;
-        final bookings = (data['bookings'] as List).cast<Map<String, dynamic>>().map(BookingModel.fromJson).toList();
-        return (bookings: bookings, total: pagination['total'] as int? ?? 0, pages: pagination['pages'] as int? ?? 1);
-      }
-      return (bookings: <BookingModel>[], total: 0, pages: 1);
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return (bookings: <BookingModel>[], total: 0, pages: 1);
-    } catch (e) {
-      debugPrint('❌ listMyBookings error: $e');
-      ToastUtil.showToast('Failed to load your bookings.');
-      return (bookings: <BookingModel>[], total: 0, pages: 1);
-    }
-  }
-
-  Future<List<PackagePurchaseModel>> listMyPackages() async {
-    try {
-      final response = await _client.get(ApiConstants.myPackages, requiresAuth: true);
       if (response.data['success'] == true) {
         return (response.data['data'] as List? ?? []).cast<Map<String, dynamic>>().map(PackagePurchaseModel.fromJson).toList();
       }
@@ -465,67 +455,6 @@ class BookingsRepository {
       debugPrint('❌ listMyPackages error: $e');
       ToastUtil.showToast('Failed to load your packages.');
       return [];
-    }
-  }
-
-  Future<BookingModel?> getMyBookingById(String id) async {
-    try {
-      final response = await _client.get(ApiConstants.myBookingById(id), requiresAuth: true);
-      if (response.data['success'] == true) {
-        return BookingModel.fromJson(response.data['data'] as Map<String, dynamic>);
-      }
-      return null;
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return null;
-    } catch (e) {
-      debugPrint('❌ getMyBookingById error: $e');
-      ToastUtil.showToast('Failed to load booking details.');
-      return null;
-    }
-  }
-
-  Future<bool> cancelMyBooking(String id, {String? reason}) async {
-    try {
-      final response = await _client.patch(
-        ApiConstants.myBookingCancel(id),
-        data: {if (reason != null) 'reason': reason},
-        requiresAuth: true,
-      );
-      if (response.data['success'] == true) {
-        ToastUtil.showToast(response.data['message'] ?? 'Booking cancelled');
-        return true;
-      }
-      return false;
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return false;
-    } catch (e) {
-      debugPrint('❌ cancelMyBooking error: $e');
-      ToastUtil.showToast('Failed to cancel booking.');
-      return false;
-    }
-  }
-
-  Future<bool> rescheduleMyBooking(String id, {required String date, required String startTime}) async {
-    try {
-      final response = await _client.patch(
-        ApiConstants.myBookingReschedule(id),
-        data: {'date': date, 'startTime': startTime},
-        requiresAuth: true,
-      );
-      if (response.data['success'] == true) {
-        ToastUtil.showToast(response.data['message'] ?? 'Booking rescheduled');
-        return true;
-      }
-      return false;
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return false;
-    } catch (e) {
-      debugPrint('❌ rescheduleMyBooking error: $e');
-      ToastUtil.showToast('Failed to reschedule booking.');
-      return false;
     }
   }
 }

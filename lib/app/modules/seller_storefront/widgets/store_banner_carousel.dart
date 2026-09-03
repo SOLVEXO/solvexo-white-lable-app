@@ -48,7 +48,7 @@ class _StoreBannerCarouselState extends State<StoreBannerCarousel> {
 
   Future<void> _onBannerTap(StoreBannerModel banner) async {
     PromotionAttributionService.instance.capture('store_banner', banner.id);
-    PromotionsRepository().trackClick(entityType: 'store_banner', entityId: banner.id);
+    PromotionsRepository().trackClick(entityType: 'store_banner', entityId: banner.id, storeId: banner.storeId);
 
     final target = banner.linkTarget;
     switch (banner.linkType) {

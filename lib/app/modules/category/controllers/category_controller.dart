@@ -1,4 +1,5 @@
 import 'package:book_store_app/app/data/repositories/category_repository.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/modules/category/models/category_model.dart';
 import 'package:book_store_app/app/modules/category/models/category_with_children_response.dart';
 import 'package:book_store_app/app/routes/app_pages.dart';
@@ -74,7 +75,9 @@ class CategoryController extends GetxController {
   Future<void> fetchAllCategories() async {
     try {
       isLoading.value = true;
-      final trees = await _categoryRepo.getAllCategoryTrees();
+      await Get.find<CurrentStoreService>().ensureResolved();
+      final storeId = Get.find<CurrentStoreService>().storeId;
+      final trees = await _categoryRepo.getAllCategoryTrees(storeId: storeId);
       categoryTrees.assignAll(trees);
 
       // Re-resolve the rail selection against the fresh instances so a
@@ -105,7 +108,10 @@ class CategoryController extends GetxController {
   Future<void> fetchCategoryDetails(String categoryId) async {
     try {
       isLoadingDetails.value = true;
-      final details = await _categoryRepo.getCategoryById(categoryId);
+      final details = await _categoryRepo.getCategoryById(
+        categoryId,
+        storeId: Get.find<CurrentStoreService>().storeId,
+      );
       if (details != null) {
         categoryWithChildren.value = details;
         debugPrint(
@@ -132,7 +138,8 @@ class CategoryController extends GetxController {
     }
 
     try {
-      final results = await _categoryRepo.searchCategories(query);
+      final storeId = Get.find<CurrentStoreService>().storeId;
+      final results = await _categoryRepo.searchCategories(query, storeId: storeId);
       searchResults.assignAll(results);
       debugPrint('✅ Found ${results.length} categories for "$query"');
     } catch (e) {

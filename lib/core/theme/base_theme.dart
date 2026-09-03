@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'base_colors.dart';
 import 'base_spacing.dart';
 import 'base_typography.dart';
+import 'package:book_store_app/config/resources/app_colors.dart';
 
 /// Material 3 `ThemeData` for both brightness modes — the single source of
 /// truth `AppTheme.lightTheme`/`AppTheme.darkTheme` delegate to, so existing
@@ -44,7 +45,7 @@ class BaseTheme {
         foregroundColor: onSurface,
         elevation: 0,
         centerTitle: false,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: AppColors.transparent,
         titleTextStyle: BaseTypography.headlineSmall(color: onSurface),
       ),
       cardTheme: CardThemeData(
@@ -55,10 +56,10 @@ class BaseTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: BaseColors.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: AppColors.white,
           minimumSize: const Size(double.infinity, 52),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BaseRadius.md)),
-          textStyle: BaseTypography.labelLarge(color: Colors.white),
+          textStyle: BaseTypography.labelLarge(color: AppColors.white),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(

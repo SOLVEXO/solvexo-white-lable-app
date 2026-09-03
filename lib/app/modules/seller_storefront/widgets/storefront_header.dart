@@ -202,7 +202,7 @@ class _Cover extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   colors: [
                     AppColors.black.withOpacity(0.28),
-                    Colors.transparent,
+                    AppColors.transparent,
                   ],
                   stops: const [0.0, 0.45],
                 ),

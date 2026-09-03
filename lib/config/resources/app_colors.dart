@@ -174,4 +174,25 @@ class AppColors {
 
   // Material color equivalents
   static const Color materialAmber = Color(0xFFFFC107);
+
+  // Order/payment status colors
+  static const Color statusCompleted = Color(0xFF22C55E);
+  static const Color statusShipped = Color(0xFF3B82F6);
+  static const Color statusProcessing = Color(0xFFF59E0B);
+  static const Color statusCancelled = Color(0xFFEF4444);
+  static const Color statusDefault = Color(0xFF6B7280);
+
+  // Low-confidence / warning banner
+  static const Color warningBannerBg = Color(0xFFFFF3CD);
+  static const Color warningBannerText = Color(0xFF8A6D3B);
+
+  // Message notification background
+  static const Color messageNotificationBg = Color(0xFFE8F1FF);
+
+  // Rating star
+  static const Color ratingStar = Color(0xFFFACC15);
+
+  // Manual transfer card gradient
+  static const Color transferCardGradientStart = Color(0xFF0D1117);
+  static const Color transferCardGradientEnd = Color(0xFF1C2333);
 }

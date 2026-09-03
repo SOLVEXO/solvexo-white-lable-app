@@ -1,45 +1,59 @@
 {
   "project_info": {
-    "project_number": "1232419360",
-    "project_id": "ecommerceapp-7f45d",
-    "storage_bucket": "ecommerceapp-7f45d.firebasestorage.app"
+    "project_number": "707145385701",
+    "project_id": "solvexo-cec1a",
+    "storage_bucket": "solvexo-cec1a.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1232419360:android:dab674012629346a6b5a45",
-        "android_client_info": {
-          "package_name": "com.example.book_store_app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDfMF4NDtKBG8RJo1_tYqvxOnD5b4a8iZk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1232419360:android:3a74d37616aeba4c6b5a45",
+        "mobilesdk_app_id": "1:707145385701:android:9402a5a036486f4c38360c",
         "android_client_info": {
           "package_name": "com.solvexo.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "707145385701-si9vgmalovmug4q75ruqe9s3kj2kpo1u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.solvexo.app",
+            "certificate_hash": "9e45e6dcae2f908626c9b7f4800df78759a1934b"
+          }
+        },
+        {
+          "client_id": "707145385701-utile119eic2h4tpabagorjn6eim4960.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.solvexo.app",
+            "certificate_hash": "262d042c917cfb2cc450c346d9989128857aca3e"
+          }
+        },
+        {
+          "client_id": "707145385701-24e0irbfrsvkqbv0i74o6araatqthptn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyDfMF4NDtKBG8RJo1_tYqvxOnD5b4a8iZk"
+          "current_key": "AIzaSyCTgAJRMcc3h8Cisd6XHbuyEp5kOcyvOfM"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707145385701-24e0irbfrsvkqbv0i74o6araatqthptn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "707145385701-8fq45ig5sadbpdgvr463du7r2migqn6t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.solvexo.ios"
+              }
+            }
+          ]
         }
       }
     }

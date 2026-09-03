@@ -9,8 +9,8 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 /// Single source of truth for this app build's white-label branding —
-/// `AppColors`'s tenant-swappable colors and the marketplace-name/logo call
-/// sites all read through here instead of hardcoded values.
+/// `AppColors`'s tenant-swappable colors and every store-name/logo call site
+/// all read through here instead of hardcoded values.
 ///
 /// `Get.put(BrandingService(), permanent: true)` before `runApp` in
 /// `main.dart` (mirrors this codebase's other early/global services); read
@@ -18,7 +18,9 @@ import 'package:get/get.dart';
 class BrandingService extends GetxController {
   final BrandingRepository _repository = BrandingRepository();
 
-  final Rx<BrandingConfigModel> config = Rx<BrandingConfigModel>(StoreConfig.toBrandingConfig());
+  final Rx<BrandingConfigModel> config = Rx<BrandingConfigModel>(
+    StoreConfig.toBrandingConfig(),
+  );
 
   /// Seeds from this build's compile-time [StoreConfig] first (so the very
   /// first frame already paints the right store's brand, synchronously, no
@@ -30,7 +32,9 @@ class BrandingService extends GetxController {
     final cachedJson = await AppPreferences.getBrandingConfigJson();
     if (cachedJson != null && cachedJson.isNotEmpty) {
       try {
-        config.value = BrandingConfigModel.fromJson(jsonDecode(cachedJson) as Map<String, dynamic>);
+        config.value = BrandingConfigModel.fromJson(
+          jsonDecode(cachedJson) as Map<String, dynamic>,
+        );
       } catch (e) {
         debugPrint('ℹ️ Cached branding config unreadable, using defaults: $e');
       }
@@ -43,6 +47,20 @@ class BrandingService extends GetxController {
     if (fetched == null) return;
     config.value = fetched;
     await AppPreferences.saveBrandingConfigJson(jsonEncode(fetched.toJson()));
+  }
+
+  /// Overlays this store's real, live name (resolved from the backend by
+  /// `CurrentStoreService`, see main.dart) onto whatever's already showing —
+  /// so the app never keeps displaying `StoreConfig`'s compile-time name
+  /// once the actual, current name is known (e.g. after the seller renames
+  /// their store, without needing a new app build).
+  void applyStoreName(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return;
+    config.value = config.value.copyWith(
+      appName: trimmed,
+      storeDisplayName: trimmed,
+    );
   }
 
   bool isFeatureEnabled(String key) => config.value.isFeatureEnabled(key);

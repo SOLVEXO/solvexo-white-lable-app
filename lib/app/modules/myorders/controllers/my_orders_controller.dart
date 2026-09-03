@@ -6,6 +6,7 @@ import 'package:book_store_app/app/components/custom_confirm_dialog.dart';
 import 'package:book_store_app/app/components/custom_text.dart';
 import 'package:book_store_app/app/data/models/orders/digital_download_file_model.dart';
 import 'package:book_store_app/app/data/repositories/order_repository.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/modules/myorders/models/my_order_model.dart';
 import 'package:book_store_app/app/modules/myorders/models/order_item_model.dart';
 import 'package:book_store_app/app/modules/myorders/models/order_timeline.dart';
@@ -29,6 +30,7 @@ class MyOrdersController extends BaseController {
       OrderDeliveryStatus.values.indexOf(currentStatus.value);
 
   final OrderRepository _orderRepository;
+  String? get _storeId => Get.find<CurrentStoreService>().storeId;
 
   @override
   RxBool isLoading = false.obs;
@@ -49,6 +51,7 @@ class MyOrdersController extends BaseController {
       final files = await _orderRepository.getDigitalDownloadLinks(
         orderId: orderId,
         productId: item.productId,
+        storeId: _storeId,
       );
       if (files.isEmpty) return;
       if (files.length == 1) {
@@ -124,7 +127,7 @@ class MyOrdersController extends BaseController {
       isLoading.value = true;
       debugPrint('🔄 Fetching orders...');
 
-      final fetchedOrders = await _orderRepository.getMyOrders();
+      final fetchedOrders = await _orderRepository.getMyOrders(storeId: _storeId);
       orders.value = fetchedOrders;
 
       debugPrint('✅ Fetched ${orders.length} orders');
@@ -154,6 +157,7 @@ class MyOrdersController extends BaseController {
       final success = await _orderRepository.cancelOrder(
         orderId,
         reason: reason,
+        storeId: _storeId,
       );
 
       if (success) {

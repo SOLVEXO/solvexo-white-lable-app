@@ -109,7 +109,10 @@ class NotificationsController extends GetxController {
       case 'subscription_renewal_reminder':
       case 'subscription_payment_failed':
       case 'subscription_cancelled':
-        Get.toNamed(Routes.myMemberships);
+        // No standalone membership-management screen any more — the
+        // storefront page's plans/benefits teaser is the closest live
+        // surface for a subscription-related notification to land on.
+        Get.toNamed(Routes.sellerStorefront);
         break;
       default:
         break;

@@ -74,7 +74,7 @@ class ReviewItemPickerSheet {
           ],
         ),
       ),
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       isScrollControlled: true,
     );
   }

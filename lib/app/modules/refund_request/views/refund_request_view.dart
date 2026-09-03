@@ -45,7 +45,7 @@ class RefundRequestView extends StatelessWidget {
                     text:
                         "No items on this order are eligible for a refund request.",
                     fontSize: AppFontSize.small,
-                    color: AppColors.grey,
+                    color: AppColors.greyDefault,
                   )
                 else if (store == null)
                   _storePicker()
@@ -171,7 +171,7 @@ class RefundRequestView extends StatelessWidget {
             text:
                 "No items from this store are currently eligible for a refund.",
             fontSize: AppFontSize.small,
-            color: AppColors.grey,
+            color: AppColors.greyDefault,
           )
         else
           ...items.map((item) => _itemTile(item)),
@@ -224,14 +224,14 @@ class RefundRequestView extends StatelessWidget {
                       text:
                           'Qty ${item.quantity} · \$${item.totalPrice.toStringAsFixed(2)}',
                       fontSize: AppFontSize.tiny,
-                      color: AppColors.grey,
+                      color: AppColors.greyDefault,
                     ),
                   ],
                 ),
               ),
               Icon(
                 selected ? Icons.check_box : Icons.check_box_outline_blank,
-                color: selected ? AppColors.primaryColor : AppColors.grey,
+                color: selected ? AppColors.primaryColor : AppColors.greyDefault,
               ),
             ],
           ),
@@ -276,7 +276,7 @@ class RefundRequestView extends StatelessWidget {
                         size: 27,
                         color: selected
                             ? AppColors.primaryColor
-                            : AppColors.grey,
+                            : AppColors.greyDefault,
                       ),
                     ],
                   ),
@@ -414,7 +414,7 @@ class RefundRequestView extends StatelessWidget {
             CustomText(
               text: 'Store note: ${r.resolutionNotes}',
               fontSize: AppFontSize.verySmall,
-              color: AppColors.grey,
+              color: AppColors.greyDefault,
             ),
           ],
         ],

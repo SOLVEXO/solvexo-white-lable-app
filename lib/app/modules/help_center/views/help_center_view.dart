@@ -102,7 +102,7 @@ class _HelpHero extends StatelessWidget {
                 SizedBox(height: BaseSpacing.xxs),
                 CustomText(
                   text: "Search common questions or browse everything we've written down for you.",
-                  color: AppColors.grey,
+                  color: AppColors.greyDefault,
                   fontSize: AppFontSize.tiny,
                 ),
               ],

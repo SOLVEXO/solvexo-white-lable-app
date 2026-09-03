@@ -2,9 +2,9 @@ import 'package:book_store_app/app/data/models/bookings/bookable_service_model.d
 import 'package:book_store_app/app/data/models/bookings/package_purchase_model.dart';
 import 'package:book_store_app/app/data/models/bookings/service_availability_model.dart';
 import 'package:book_store_app/app/data/models/bookings/service_package_model.dart';
+import 'package:book_store_app/app/components/custom_app_snack_bar.dart';
 import 'package:book_store_app/app/data/repositories/bookings_repository.dart';
 import 'package:book_store_app/app/data/services/auth_gate_service.dart';
-import 'package:book_store_app/app/routes/app_pages.dart';
 import 'package:book_store_app/shared_prefrences/app_prefrences.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -110,7 +110,7 @@ class StoreServiceDetailController extends GetxController {
       return;
     }
     isLoadingMyPackages.value = true;
-    final all = await _repo.listMyPackages();
+    final all = await _repo.listMyPackages(storeId: storeId);
     usablePackages.assignAll(all.where((p) => p.serviceId == serviceId && p.isUsable));
     isLoadingMyPackages.value = false;
   }
@@ -160,6 +160,7 @@ class StoreServiceDetailController extends GetxController {
       packagePurchaseId: selectedPackagePurchaseId.value.isEmpty ? null : selectedPackagePurchaseId.value,
       serviceAddress: serviceAddress,
       buyerNote: buyerNote,
+      storeId: storeId,
     );
     isBooking.value = false;
 
@@ -168,7 +169,10 @@ class StoreServiceDetailController extends GetxController {
       selectedSlot.value = null;
       selectedPackagePurchaseId.value = '';
       if (usedPackage) await _loadMyPackages();
-      Get.offAndToNamed(Routes.myBookings);
+      // There's no "My Bookings" management screen any more — confirm
+      // success here and return to the service page instead.
+      CustomAppSnackbar.success('Appointment booked!');
+      Get.back();
     }
     return booking != null;
   }
@@ -180,7 +184,7 @@ class StoreServiceDetailController extends GetxController {
     if (!allowed) return false;
 
     purchasingPackageId.value = package.id;
-    final purchase = await _repo.purchasePackage(package.id);
+    final purchase = await _repo.purchasePackage(package.id, storeId: storeId);
     purchasingPackageId.value = '';
     if (purchase != null) await _loadMyPackages();
     return purchase != null;

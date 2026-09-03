@@ -21,6 +21,7 @@ class ProductRepository {
     double? maxPrice,
     double? minRating,
     String? sortBy,
+    String? storeId,
   }) async {
     try {
       final url = ApiConstants.getProductsByCategory(
@@ -34,6 +35,7 @@ class ProductRepository {
         maxPrice: maxPrice,
         minRating: minRating,
         sortBy: sortBy,
+        storeId: storeId,
       );
       final response = await _baseClient.get(url);
       if (response.data['success'] == true) {
@@ -81,75 +83,11 @@ class ProductRepository {
     }
   }
 
-  /// Get all products with filters
-  Future<ProductListResponse?> getProducts({
-    String? search,
-    String? category,
-    double? minPrice,
-    double? maxPrice,
-    String? brand,
-    String? sort,
-    int page = 1,
-    int limit = 10,
-  }) async {
-    try {
-      final url = ApiConstants.getProductsWithFilters(
-        search: search,
-        category: category,
-        minPrice: minPrice,
-        maxPrice: maxPrice,
-        brand: brand,
-        sort: sort,
-        page: page,
-        limit: limit,
-      );
-
-      final response = await _baseClient.get(url);
-
-      debugPrint("Get Products Response --> ${response.data}");
-
-      if (response.statusCode == 200 && response.data['success'] == true) {
-        return ProductListResponse.fromJson(response.data);
-      }
-
-      return null;
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return null;
-    } catch (e) {
-      debugPrint("Get Products error --> $e");
-      return null;
-    }
-  }
-
-  // /// Get featured products
-  // Future<List<ProductModel>?> getFeaturedProducts() async {
-  //   try {
-  //     final response = await _baseClient.get(ApiConstants.featuredProducts);
-
-  //     debugPrint("Get Featured Products Response --> ${response.data}");
-
-  //     if (response.statusCode == 200 && response.data['success'] == true) {
-  //       return (response.data['data'] as List)
-  //           .map((product) => ProductModel.fromJson(product))
-  //           .toList();
-  //     }
-
-  //     return null;
-  //   } on DioException catch (e) {
-  //     DioExceptionHandler.handleDioException(e);
-  //     return null;
-  //   } catch (e) {
-  //     debugPrint("Get Featured Products error --> $e");
-  //     return null;
-  //   }
-  // }
-
   /// Get single product by ID
-  Future<ProductModel?> getProductById(String productId) async {
+  Future<ProductModel?> getProductById(String productId, {String? storeId}) async {
     try {
       final response = await _baseClient.get(
-        ApiConstants.getProductById(productId),
+        ApiConstants.getProductById(productId, storeId: storeId),
       );
 
       debugPrint("Get Product By ID Response --> ${response.data}");
@@ -168,9 +106,9 @@ class ProductRepository {
     }
   }
 
-  Future<ProductDetailResponse?> getProductDetailById(String id) async {
+  Future<ProductDetailResponse?> getProductDetailById(String id, {String? storeId}) async {
     try {
-      final response = await _baseClient.get(ApiConstants.getProductById(id));
+      final response = await _baseClient.get(ApiConstants.getProductById(id, storeId: storeId));
       if (response.data['success'] == true) {
         return ProductDetailResponse.fromJson(response.data);
       }
@@ -181,10 +119,10 @@ class ProductRepository {
     }
   }
 
-  Future<VariantDetailResponse?> getVariantById(String variantId) async {
+  Future<VariantDetailResponse?> getVariantById(String variantId, {String? storeId}) async {
     try {
       final response = await _baseClient.get(
-        ApiConstants.getVariantById(variantId),
+        ApiConstants.getVariantById(variantId, storeId: storeId),
       );
       if (response.data['success'] == true) {
         return VariantDetailResponse.fromJson(response.data);
@@ -198,10 +136,10 @@ class ProductRepository {
 
   /// Public, pre-purchase preview of a digital product — a watermarked/trimmed
   /// derivative only, never the original file.
-  Future<ProductPreviewModel?> getProductPreview(String productId) async {
+  Future<ProductPreviewModel?> getProductPreview(String productId, {String? storeId}) async {
     try {
       final response = await _baseClient.get(
-        ApiConstants.getProductPreview(productId),
+        ApiConstants.getProductPreview(productId, storeId: storeId),
       );
       if (response.data['success'] == true) {
         return ProductPreviewModel.fromJson(response.data['data']);
@@ -213,10 +151,16 @@ class ProductRepository {
     }
   }
 
-  /// Get all categories
-  Future<List<CategoryModel>?> getCategories() async {
+  /// Get all categories. Pass this build's [storeId] so the backend returns
+  /// this store's own tree instead of the legacy global/admin roots it falls
+  /// back to when storeId is omitted.
+  Future<List<CategoryModel>?> getCategories({String? storeId}) async {
     try {
-      final response = await _baseClient.get(ApiConstants.categories);
+      final response = await _baseClient.get(
+        storeId != null && storeId.isNotEmpty
+            ? ApiConstants.storeCategories(storeId)
+            : ApiConstants.categories,
+      );
 
       debugPrint("Get Categories Response --> ${response.data}");
 

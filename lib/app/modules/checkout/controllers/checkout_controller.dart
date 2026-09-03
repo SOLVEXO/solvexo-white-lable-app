@@ -82,6 +82,27 @@ class CheckoutController extends GetxController {
   // Allowed payment methods from the create-checkout API response
   final RxList<String> _allowedPaymentMethods = <String>[].obs;
 
+  /// The current store's own connected payment gateways (Safepay et al,
+  /// Stripe-via-Connect) — separate from [_allowedPaymentMethods] above,
+  /// which only ever covers the existing COD/Stripe/split/manual-transfer
+  /// rails. Empty for a multi-store cart or a store with none connected.
+  final RxList<GatewayPaymentMethod> gatewayPaymentMethods = <GatewayPaymentMethod>[].obs;
+
+  /// This checkout's store's own bound currency ('PKR'/'USD') — null until
+  /// resolved, or for a multi-store cart. Used to region-gate [canPayOnline]
+  /// (Stripe shows for non-Pakistan stores only) independently of whatever
+  /// gateways are actually connected — see [_loadGatewayPaymentMethods].
+  final Rx<String?> storeCurrency = Rx<String?>(null);
+
+  /// Buyer's chosen payment method for this checkout — a key from
+  /// `'cod'`/`'stripe'`/`'split'`/`'manual_bank_transfer'`, or a
+  /// [GatewayPaymentMethod.provider] value (e.g. `'safepay'`). Null until
+  /// the buyer picks one; the single bottom "Confirm Order" button stays
+  /// disabled until then and dispatches based on this value.
+  final Rx<String?> selectedPaymentMethod = Rx<String?>(null);
+
+  void selectPaymentMethod(String key) => selectedPaymentMethod.value = key;
+
   // Digital/physical split of the subtotal — only meaningful (non-zero) for
   // a mixed cart, where `canSplitPay` is true. Refreshed after coupon
   // apply/remove since coupon discounts are baked into `item.totalPrice`
@@ -110,9 +131,13 @@ class CheckoutController extends GetxController {
       _allowedPaymentMethods.isEmpty ||
       _allowedPaymentMethods.contains('cash_on_delivery');
 
+  /// Stripe ("Pay Online") only for a non-Pakistan store — Safepay (in
+  /// [gatewayPaymentMethods]) covers Pakistan. `storeCurrency == null`
+  /// (not yet resolved, or a multi-store cart) defaults to allowed, so this
+  /// never regresses a cart the region check can't actually evaluate.
   bool get canPayOnline =>
-      _allowedPaymentMethods.isEmpty ||
-      _allowedPaymentMethods.contains('stripe');
+      (_allowedPaymentMethods.isEmpty || _allowedPaymentMethods.contains('stripe')) &&
+      storeCurrency.value != 'PKR';
 
   /// True for a mixed (digital + physical) cart — the backend only ever
   /// returns `['split']` in that case, never alongside `'stripe'`/
@@ -160,6 +185,9 @@ class CheckoutController extends GetxController {
       digitalSubtotal.value = response.summary.digitalSubtotal;
       physicalSubtotal.value = response.summary.physicalSubtotal;
       savingsHints.assignAll(response.subscriptionSavingsHints);
+      // Fire-and-forget — an optional, additive set of buttons; never worth
+      // delaying the checkout screen's first paint for.
+      _loadGatewayPaymentMethods();
     }
 
     // Digital-only carts never ship — skip the zone fetch entirely so
@@ -259,7 +287,7 @@ class CheckoutController extends GetxController {
               text:
                   'Your order will be placed immediately on your one tap. The delivery agent will collect payment on arrival.',
               fontSize: AppFontSize.verySmall,
-              color: AppColors.grey,
+              color: AppColors.greyDefault,
               textAlign: TextAlign.center,
             ),
           ],
@@ -308,6 +336,51 @@ class CheckoutController extends GetxController {
       Routes.manualTransferView,
       arguments: {'checkoutId': _checkoutId, 'totalAmountUSD': total},
     );
+  }
+
+  Future<void> _loadGatewayPaymentMethods() async {
+    if (_checkoutId.isEmpty) return;
+    final result = await _checkoutRepository.getGatewayPaymentMethods(_checkoutId);
+    storeCurrency.value = result.currency;
+    gatewayPaymentMethods.assignAll(result.methods);
+  }
+
+  void goToGatewayPayment(GatewayPaymentMethod method) {
+    if (!validateAddressSelected()) return;
+    Get.toNamed(
+      Routes.gatewayPaymentView,
+      arguments: {'checkoutId': _checkoutId, 'method': method},
+    );
+  }
+
+  /// Single dispatcher the bottom "Confirm Order" button calls — routes to
+  /// whichever handler the buyer's [selectedPaymentMethod] maps to. Every
+  /// individual handler below already does its own address/loading-state
+  /// guarding, so this only has to route, not re-validate.
+  void confirmOrder(PaymentController paymentController) {
+    final key = selectedPaymentMethod.value;
+    if (key == null) return;
+    switch (key) {
+      case 'cod':
+        placeCodOrder();
+        return;
+      case 'stripe':
+        paymentController.payWithStripe();
+        return;
+      case 'split':
+        placeSplitOrder(paymentController);
+        return;
+      case 'manual_bank_transfer':
+        goToManualBankTransfer();
+        return;
+      default:
+        for (final method in gatewayPaymentMethods) {
+          if (method.provider == key) {
+            goToGatewayPayment(method);
+            return;
+          }
+        }
+    }
   }
 
   /// A mixed (digital + physical) cart's single "Place Order" action —
@@ -359,7 +432,7 @@ class CheckoutController extends GetxController {
                   "You'll pay ${CurrencyFormatter.amount(digitalSubtotal.value, currency.value)} now online for the digital items. "
                   "${CurrencyFormatter.amount(codAmountDue, currency.value)} will be collected in cash when your physical order is delivered.",
               fontSize: AppFontSize.verySmall,
-              color: AppColors.grey,
+              color: AppColors.greyDefault,
               textAlign: TextAlign.center,
             ),
           ],

@@ -21,6 +21,7 @@ class RatingRepository {
     double? rating,
     String? comment,
     bool? isAnonymous,
+    String? storeId,
   }) async {
     try {
       final response = await _client.post(
@@ -32,6 +33,7 @@ class RatingRepository {
           if (rating != null) 'rating': rating,
           if (comment != null && comment.isNotEmpty) 'comment': comment,
           if (isAnonymous != null) 'isAnonymous': isAnonymous,
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
         },
       );
       return response.data['success'] == true;
@@ -45,13 +47,14 @@ class RatingRepository {
     }
   }
 
-  Future<bool> editReview(String reviewId, {double? rating, String? comment}) async {
+  Future<bool> editReview(String reviewId, {double? rating, String? comment, String? storeId}) async {
     try {
       final response = await _client.patch(
         ApiConstants.editReview(reviewId),
         data: {
           if (rating != null) 'rating': rating,
           if (comment != null) 'comment': comment,
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
         },
       );
       return response.data['success'] == true;
@@ -64,9 +67,14 @@ class RatingRepository {
     }
   }
 
-  Future<bool> deleteReview(String reviewId) async {
+  Future<bool> deleteReview(String reviewId, {String? storeId}) async {
     try {
-      final response = await _client.delete(ApiConstants.deleteReview(reviewId));
+      final response = await _client.delete(
+        ApiConstants.deleteReview(reviewId),
+        queryParameters: {
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
+      );
       return response.data['success'] == true;
     } on DioException catch (e) {
       DioExceptionHandler.handleDioException(e);
@@ -77,12 +85,15 @@ class RatingRepository {
     }
   }
 
-  Future<({List<ReviewModel> reviews, int total, int totalPages})> getMyReviews({int page = 1}) async {
+  Future<({List<ReviewModel> reviews, int total, int totalPages})> getMyReviews({int page = 1, String? storeId}) async {
     try {
       final response = await _client.get(
         ApiConstants.myReviews,
         requiresAuth: true,
-        queryParameters: {'page': page},
+        queryParameters: {
+          'page': page,
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
       );
       final data = response.data['data'] as Map<String, dynamic>;
       final pagination = data['pagination'] as Map<String, dynamic>? ?? {};

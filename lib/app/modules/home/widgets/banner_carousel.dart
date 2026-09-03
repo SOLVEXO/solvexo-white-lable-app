@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:book_store_app/app/components/custom_catagory_header.dart';
+import 'package:book_store_app/app/data/models/store_banner/store_banner_model.dart';
 import 'package:book_store_app/app/data/repositories/promotions_repository.dart';
 import 'package:book_store_app/app/modules/home/controllers/home_controller.dart';
-import 'package:book_store_app/app/modules/home/models/banner_model.dart';
+import 'package:book_store_app/app/routes/app_pages.dart';
 import 'package:book_store_app/app/services/promotion_attribution_service.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/core/theme/base_spacing.dart';
@@ -54,15 +55,37 @@ class _BannerCarouselState extends State<BannerCarousel> {
     super.dispose();
   }
 
-  Future<void> _openBannerLink(BannerModel item) async {
+  Future<void> _openBannerLink(StoreBannerModel item) async {
     // Capture attribution + fire the click beacon regardless of whether the
     // banner actually has a link — a tap is a tap for tracking purposes.
-    PromotionAttributionService.instance.capture('banner', item.id);
-    PromotionsRepository().trackClick(entityType: 'banner', entityId: item.id);
+    PromotionAttributionService.instance.capture('store_banner', item.id);
+    PromotionsRepository().trackClick(entityType: 'store_banner', entityId: item.id, storeId: item.storeId);
 
-    final urlOnTap = item.urlOnTap;
-    if (urlOnTap == null || urlOnTap.trim().isEmpty) return;
-    final uri = Uri.tryParse(urlOnTap.trim());
+    final target = item.linkTarget;
+    switch (item.linkType) {
+      case 'product':
+        if (target != null && target.isNotEmpty) {
+          Get.toNamed(Routes.productDetailsView, arguments: {'productId': target});
+        }
+        break;
+      case 'category':
+        if (target != null && target.isNotEmpty) {
+          Get.toNamed(Routes.subCategoryView, arguments: {'categoryId': target});
+        }
+        break;
+      case 'external':
+      case 'collection':
+      // No dedicated collection screen exists yet — fall back to treating
+      // the target as an external link, same as 'external'.
+      default:
+        await _openExternalLink(target);
+        break;
+    }
+  }
+
+  Future<void> _openExternalLink(String? target) async {
+    if (target == null || target.trim().isEmpty) return;
+    final uri = Uri.tryParse(target.trim());
     if (uri == null) return;
     final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!launched) ToastUtil.showToast('Could not open this link.');
@@ -70,6 +93,12 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    // A store that hasn't set up any hero banners yet is common (unlike the
+    // old always-populated admin/platform banners) — once loading is done,
+    // render nothing instead of a shimmer skeleton stuck on-screen forever.
+    if (c.banners.isEmpty && !c.isLoadingBanners.value) {
+      return const SizedBox.shrink();
+    }
     if (c.banners.isEmpty) {
       return Shimmer.fromColors(
         baseColor: AppColors.gray600,
@@ -98,11 +127,12 @@ class _BannerCarouselState extends State<BannerCarousel> {
             itemCount: c.banners.length,
             itemBuilder: (_, i) {
               final item = c.banners[i];
+              final image = item.mobileImageUrl?.isNotEmpty == true ? item.mobileImageUrl! : item.imageUrl;
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: BaseSpacing.md),
                 child: GestureDetector(
                   onTap: () => _openBannerLink(item),
-                  child: CustomCatagoryHeader(productImage: item.image),
+                  child: CustomCatagoryHeader(productImage: image),
                 ),
               );
             },

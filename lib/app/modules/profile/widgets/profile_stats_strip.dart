@@ -92,7 +92,7 @@ class _StatCell extends StatelessWidget {
           SizedBox(height: BaseSpacing.xxs / 2),
           CustomText(
             text: label,
-            color: AppColors.grey,
+            color: AppColors.greyDefault,
             fontSize: AppFontSize.tiny,
             fontWeight: FontWeight.w400,
           ),

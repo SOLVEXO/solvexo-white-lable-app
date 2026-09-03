@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'base_colors.dart';
 import 'base_shadows.dart';
 import 'base_spacing.dart';
+import 'package:book_store_app/config/resources/app_colors.dart';
 
 /// Ready-made [BoxDecoration]s for the premium component library —
 /// `BaseDecorations.card(context)`, `.glass(context)`, `.gradient()` — so
@@ -49,7 +50,7 @@ class BaseDecorations {
     return BoxDecoration(
       color: _isDark(context) ? BaseColors.glassDark : BaseColors.glassLight,
       borderRadius: BorderRadius.circular(radius),
-      border: Border.all(color: Colors.white.withOpacity(_isDark(context) ? 0.08 : 0.5)),
+      border: Border.all(color: AppColors.white.withOpacity(_isDark(context) ? 0.08 : 0.5)),
     );
   }
 

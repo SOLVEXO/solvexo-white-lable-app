@@ -1,4 +1,5 @@
 import 'package:book_store_app/app/data/repositories/rating_repository.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/modules/myorders/models/order_item_model.dart';
 import 'package:book_store_app/utils/toast_util.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +51,7 @@ class ReviewsController extends GetxController {
       orderId: orderId.isNotEmpty ? orderId : null,
       rating: rating.value,
       comment: comment.isEmpty ? null : comment,
+      storeId: Get.find<CurrentStoreService>().storeId,
     );
     isSubmitting.value = false;
 

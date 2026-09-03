@@ -6,12 +6,17 @@ import 'package:flutter/material.dart';
 ///
 /// No backend endpoint for this exists yet (see `BrandingRepository`) — the
 /// shape below is what Phase 4 needs from the platform-config/tenant team;
-/// [BrandingConfigModel.defaults] is what the app renders until then, and is
-/// identical to today's hardcoded Solvexo branding so nothing visually
-/// changes before the backend field lands.
+/// [BrandingConfigModel.defaults] is a brand-neutral last resort, never any
+/// specific tenant's name — a build should never fall back to rendering a
+/// *different* store's (or the platform operator's own) brand.
 class BrandingConfigModel {
   final String appName;
-  final String marketplaceName;
+
+  /// This store's own display name (e.g. shown in "About {storeDisplayName}"
+  /// and the AI shopping-assistant's persona) — was named `marketplaceName`
+  /// before the single-store conversion; renamed since this app never spans
+  /// multiple sellers.
+  final String storeDisplayName;
 
   /// Empty string means "use the bundled default asset" — see `AppImages.logoImage`.
   final String logoUrl;
@@ -28,7 +33,7 @@ class BrandingConfigModel {
 
   const BrandingConfigModel({
     required this.appName,
-    required this.marketplaceName,
+    required this.storeDisplayName,
     required this.logoUrl,
     required this.primaryColor,
     required this.secondaryColor,
@@ -39,14 +44,34 @@ class BrandingConfigModel {
   bool isFeatureEnabled(String key) => featureFlags[key] ?? true;
 
   factory BrandingConfigModel.defaults() => const BrandingConfigModel(
-    appName: 'Solvexo',
-    marketplaceName: 'Solvexo',
+    appName: 'Store',
+    storeDisplayName: 'Store',
     logoUrl: '',
-    primaryColor: Color(0xFFd97757),
+    primaryColor: Color.fromARGB(255, 217, 120, 87),
     secondaryColor: Color(0xFF6FBF4A),
     accentColor: Color(0xFFd97757),
     featureFlags: {},
   );
+
+  BrandingConfigModel copyWith({
+    String? appName,
+    String? storeDisplayName,
+    String? logoUrl,
+    Color? primaryColor,
+    Color? secondaryColor,
+    Color? accentColor,
+    Map<String, bool>? featureFlags,
+  }) {
+    return BrandingConfigModel(
+      appName: appName ?? this.appName,
+      storeDisplayName: storeDisplayName ?? this.storeDisplayName,
+      logoUrl: logoUrl ?? this.logoUrl,
+      primaryColor: primaryColor ?? this.primaryColor,
+      secondaryColor: secondaryColor ?? this.secondaryColor,
+      accentColor: accentColor ?? this.accentColor,
+      featureFlags: featureFlags ?? this.featureFlags,
+    );
+  }
 
   /// Builds branding from this app build's compile-time [StoreConfig] values
   /// (Phase 8 of the white-label conversion — one app binary per store).
@@ -57,7 +82,7 @@ class BrandingConfigModel {
   /// STORE_ONBOARDING.md); a new store's logo is set by replacing that file.
   factory BrandingConfigModel.fromStoreConfig({
     required String appName,
-    required String marketplaceName,
+    required String storeDisplayName,
     required String? primaryColorHex,
     required String? secondaryColorHex,
     required String? accentColorHex,
@@ -65,7 +90,9 @@ class BrandingConfigModel {
     final defaults = BrandingConfigModel.defaults();
     return BrandingConfigModel(
       appName: appName.trim().isNotEmpty ? appName : defaults.appName,
-      marketplaceName: marketplaceName.trim().isNotEmpty ? marketplaceName : defaults.marketplaceName,
+      storeDisplayName: storeDisplayName.trim().isNotEmpty
+          ? storeDisplayName
+          : defaults.storeDisplayName,
       logoUrl: defaults.logoUrl,
       primaryColor: _parseColor(primaryColorHex) ?? defaults.primaryColor,
       secondaryColor: _parseColor(secondaryColorHex) ?? defaults.secondaryColor,
@@ -80,14 +107,17 @@ class BrandingConfigModel {
       appName: (json['appName'] as String?)?.trim().isNotEmpty == true
           ? json['appName'] as String
           : defaults.appName,
-      marketplaceName: (json['marketplaceName'] as String?)?.trim().isNotEmpty == true
-          ? json['marketplaceName'] as String
-          : defaults.marketplaceName,
+      storeDisplayName:
+          (json['storeDisplayName'] as String?)?.trim().isNotEmpty == true
+          ? json['storeDisplayName'] as String
+          : defaults.storeDisplayName,
       logoUrl: (json['logoUrl'] as String?) ?? defaults.logoUrl,
       primaryColor: _parseColor(json['primaryColor']) ?? defaults.primaryColor,
-      secondaryColor: _parseColor(json['secondaryColor']) ?? defaults.secondaryColor,
+      secondaryColor:
+          _parseColor(json['secondaryColor']) ?? defaults.secondaryColor,
       accentColor: _parseColor(json['accentColor']) ?? defaults.accentColor,
-      featureFlags: (json['featureFlags'] as Map?)?.map(
+      featureFlags:
+          (json['featureFlags'] as Map?)?.map(
             (k, v) => MapEntry(k.toString(), v == true),
           ) ??
           defaults.featureFlags,
@@ -96,11 +126,14 @@ class BrandingConfigModel {
 
   Map<String, dynamic> toJson() => {
     'appName': appName,
-    'marketplaceName': marketplaceName,
+    'storeDisplayName': storeDisplayName,
     'logoUrl': logoUrl,
-    'primaryColor': '#${primaryColor.value.toRadixString(16).padLeft(8, '0').substring(2)}',
-    'secondaryColor': '#${secondaryColor.value.toRadixString(16).padLeft(8, '0').substring(2)}',
-    'accentColor': '#${accentColor.value.toRadixString(16).padLeft(8, '0').substring(2)}',
+    'primaryColor':
+        '#${primaryColor.value.toRadixString(16).padLeft(8, '0').substring(2)}',
+    'secondaryColor':
+        '#${secondaryColor.value.toRadixString(16).padLeft(8, '0').substring(2)}',
+    'accentColor':
+        '#${accentColor.value.toRadixString(16).padLeft(8, '0').substring(2)}',
     'featureFlags': featureFlags,
   };
 

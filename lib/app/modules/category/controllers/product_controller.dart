@@ -57,7 +57,11 @@ class ProductController extends GetxController {
 
   Future<void> fetchCategories() async {
     try {
-      final fetchedCategories = await _productRepository.getCategories();
+      await Get.find<CurrentStoreService>().ensureResolved();
+      final storeId = Get.find<CurrentStoreService>().storeId;
+      final fetchedCategories = await _productRepository.getCategories(
+        storeId: storeId,
+      );
       if (fetchedCategories != null) {
         categories.assignAll(fetchedCategories);
         debugPrint('Fetched ${fetchedCategories.length} categories');
@@ -93,19 +97,26 @@ class ProductController extends GetxController {
     isFetchingProducts.value = true;
 
     try {
+      await Get.find<CurrentStoreService>().ensureResolved();
+      final storeId = Get.find<CurrentStoreService>().storeId;
+      if (!StoreConfig.isConfigured || storeId == null || storeId.isEmpty) {
+        products.clear();
+        hasMoreProducts.value = false;
+        return;
+      }
+
       final response = await _productRepository.getProductsByCategory(
         categoryId: _selectedCategoryId, // null → all products
         page: currentPage.value,
         limit: 20,
+        storeId: storeId,
       );
 
       if (response != null) {
-        // Stopgap store scoping — see _scopeToCurrentStore below.
-        final scoped = _scopeToCurrentStore(response.products);
         if (loadMore) {
-          products.addAll(scoped);
+          products.addAll(response.products);
         } else {
-          products.assignAll(scoped);
+          products.assignAll(response.products);
         }
 
         totalPages.value = response.pages;
@@ -145,7 +156,10 @@ class ProductController extends GetxController {
   Future<void> loadProductDetails(String productId) async {
     try {
       isLoading.value = true;
-      final product = await _productRepository.getProductById(productId);
+      final product = await _productRepository.getProductById(
+        productId,
+        storeId: Get.find<CurrentStoreService>().storeId,
+      );
       if (product != null) {
         selectedProduct.value = product;
         productQty.value = 1;
@@ -274,62 +288,7 @@ class ProductController extends GetxController {
     );
   }
 
-  // ─── Search ───────────────────────────────────────────────────────────────
-  RxString searchQuery = ''.obs;
-
-  Future<void> searchProducts(String query) async {
-    searchQuery.value = query;
-    if (query.isEmpty) {
-      await fetchProducts();
-      return;
-    }
-
-    isFetchingProducts.value = true;
-    try {
-      final response = await _productRepository.getProducts(
-        search: query,
-        page: 1,
-        limit: 50,
-      );
-      if (response != null) {
-        // Stopgap store scoping — see _scopeToCurrentStore below.
-        final scoped = _scopeToCurrentStore(response.products);
-        products.assignAll(scoped);
-        debugPrint('Search found ${scoped.length} products');
-      }
-    } catch (e) {
-      debugPrint('Error searching products: $e');
-      ToastUtil.showToast('Search failed');
-    } finally {
-      isFetchingProducts.value = false;
-    }
-  }
-
-  void clearSearch() {
-    searchQuery.value = '';
-    fetchProducts();
-  }
-
   Future<void> refreshData() async {
     await initializeData();
-  }
-
-  // ─── Helpers ──────────────────────────────────────────────────────────────
-  // Both `getProductsByCategory` (category browsing) and `getProducts`
-  // (search) are marketplace-wide endpoints — neither has a storeId param,
-  // so on a single-store build they can hand back other stores' products
-  // too. Until the backend adds a storeId filter to both, scope results
-  // down to this build's one store client-side. This only narrows whatever
-  // page the server already returned — it does not fix that page's
-  // reported totals/hasMore, which still reflect the unfiltered
-  // marketplace result set (same stopgap-limitation pattern as
-  // HomeController's _applyLocalFilters comment for getStoreProducts).
-  List<BackendModel.ProductModel> _scopeToCurrentStore(
-    List<BackendModel.ProductModel> list,
-  ) {
-    if (!StoreConfig.isConfigured) return list;
-    final storeId = Get.find<CurrentStoreService>().storeId;
-    if (storeId == null) return list;
-    return list.where((p) => p.storeId == storeId).toList();
   }
 }

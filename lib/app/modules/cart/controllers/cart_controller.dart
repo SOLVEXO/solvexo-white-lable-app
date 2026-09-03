@@ -445,7 +445,7 @@ class CartController extends BaseController {
             const CustomText(
               text: 'Add an address so we know where to ship your order.',
               fontSize: AppFontSize.verySmall,
-              color: AppColors.grey,
+              color: AppColors.greyDefault,
               textAlign: TextAlign.center,
             ),
           ],

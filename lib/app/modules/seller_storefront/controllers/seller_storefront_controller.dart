@@ -1,9 +1,11 @@
 import 'package:book_store_app/app/data/models/storefront/storefront_model.dart';
 import 'package:book_store_app/app/data/models/store_banner/store_banner_model.dart';
+import 'package:book_store_app/app/data/models/store_faq/store_faq_model.dart';
 import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/data/services/store_chat_launcher.dart';
 import 'package:book_store_app/app/data/repositories/promotions_repository.dart';
 import 'package:book_store_app/app/data/repositories/store_banner_repository.dart';
+import 'package:book_store_app/app/data/repositories/store_faq_repository.dart';
 import 'package:book_store_app/app/data/repositories/storefront_repository.dart';
 import 'package:book_store_app/app/modules/category/models/product_model.dart';
 import 'package:flutter/widgets.dart';
@@ -15,6 +17,7 @@ import 'package:share_plus/share_plus.dart';
 class SellerStorefrontController extends GetxController {
   final _repo = StorefrontRepository();
   final _storeBannerRepo = StoreBannerRepository();
+  final _storeFaqRepo = StoreFaqRepository();
   final RxBool isStartingChat = false.obs;
 
   final ScrollController scrollController = ScrollController();
@@ -42,6 +45,9 @@ class SellerStorefrontController extends GetxController {
 
   // ── Store banners (seller's free hero carousel) ──────────────────────────
   final RxList<StoreBannerModel> storeBanners = <StoreBannerModel>[].obs;
+
+  // ── Store FAQs (seller-authored, this store only) ────────────────────────
+  final RxList<StoreFaqModel> faqs = <StoreFaqModel>[].obs;
 
   // ── Merchandising sections (pinned / new arrivals / best sellers / trending) ─
   // Fetched in parallel alongside products once `storeId` is known. Every
@@ -127,6 +133,7 @@ class SellerStorefrontController extends GetxController {
         loadProducts(reset: true),
         _loadFilterTags(),
         _loadStoreBanners(),
+        _loadFaqs(),
         _loadMerchandisingSections(),
       ]);
     }
@@ -136,6 +143,12 @@ class SellerStorefrontController extends GetxController {
     final storeId = store.value?.storeId;
     if (storeId == null || storeId.isEmpty) return;
     storeBanners.assignAll(await _storeBannerRepo.getPublicBanners(storeId));
+  }
+
+  Future<void> _loadFaqs() async {
+    final storeId = store.value?.storeId;
+    if (storeId == null || storeId.isEmpty) return;
+    faqs.assignAll(await _storeFaqRepo.getPublicFaqs(storeId));
   }
 
   Future<void> _loadMerchandisingSections() async {
@@ -236,7 +249,11 @@ class SellerStorefrontController extends GetxController {
   void maybeTrackStoreBannerImpression(String bannerId) {
     if (bannerId.isEmpty) return;
     if (_impressedStoreBannerIds.add(bannerId)) {
-      PromotionsRepository().trackImpression(entityType: 'store_banner', entityId: bannerId);
+      PromotionsRepository().trackImpression(
+        entityType: 'store_banner',
+        entityId: bannerId,
+        storeId: store.value?.storeId,
+      );
     }
   }
 

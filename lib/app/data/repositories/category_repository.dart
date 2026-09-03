@@ -12,10 +12,16 @@ class CategoryRepository {
   // ─────────────────────────────────────────
   // 1. GET ALL CATEGORY TREES (Full Hierarchy)
   // ─────────────────────────────────────────
-  /// Get all categories
-  Future<List<CategoryModel>?> getCategories() async {
+  /// Get all categories. Pass this build's [storeId] so the backend returns
+  /// this store's own tree instead of the legacy global/admin roots it falls
+  /// back to when storeId is omitted.
+  Future<List<CategoryModel>?> getCategories({String? storeId}) async {
     try {
-      final response = await _baseClient.get(ApiConstants.categories);
+      final response = await _baseClient.get(
+        storeId != null && storeId.isNotEmpty
+            ? ApiConstants.storeCategories(storeId)
+            : ApiConstants.categories,
+      );
 
       debugPrint("Get Categories Response --> ${response.data}");
 
@@ -35,11 +41,15 @@ class CategoryRepository {
     }
   }
 
-  Future<List<CategoryModel>> getAllCategoryTrees() async {
+  Future<List<CategoryModel>> getAllCategoryTrees({String? storeId}) async {
     try {
       debugPrint('🔄 Fetching all category trees...');
 
-      final response = await _baseClient.get(ApiConstants.categories);
+      final response = await _baseClient.get(
+        storeId != null && storeId.isNotEmpty
+            ? ApiConstants.storeCategories(storeId)
+            : ApiConstants.categories,
+      );
 
       debugPrint('✅ Category Trees Response: ${response.data}');
 
@@ -137,13 +147,14 @@ class CategoryRepository {
   // ─────────────────────────────────────────
 
   Future<CategoryWithChildrenResponse?> getCategoryById(
-    String categoryId,
-  ) async {
+    String categoryId, {
+    String? storeId,
+  }) async {
     try {
       debugPrint('🔄 Fetching category with children: $categoryId');
 
       final response = await _baseClient.get(
-        ApiConstants.getCategoryById(categoryId),
+        ApiConstants.getCategoryById(categoryId, storeId: storeId),
       );
 
       debugPrint('✅ Category By ID Response: ${response.data}');
@@ -168,8 +179,8 @@ class CategoryRepository {
   // HELPER: Get only root categories (no children)
   // ─────────────────────────────────────────
 
-  Future<List<CategoryModel>> getRootCategories() async {
-    final allTrees = await getAllCategoryTrees();
+  Future<List<CategoryModel>> getRootCategories({String? storeId}) async {
+    final allTrees = await getAllCategoryTrees(storeId: storeId);
     return allTrees; // These are already root categories
   }
 
@@ -177,8 +188,8 @@ class CategoryRepository {
   // HELPER: Search categories by name (all levels)
   // ─────────────────────────────────────────
 
-  Future<List<CategoryModel>> searchCategories(String query) async {
-    final allTrees = await getAllCategoryTrees();
+  Future<List<CategoryModel>> searchCategories(String query, {String? storeId}) async {
+    final allTrees = await getAllCategoryTrees(storeId: storeId);
     final results = <CategoryModel>[];
 
     for (final tree in allTrees) {
@@ -198,8 +209,8 @@ class CategoryRepository {
   // HELPER: Get all categories as flat list
   // ─────────────────────────────────────────
 
-  Future<List<CategoryModel>> getAllCategoriesFlat() async {
-    final allTrees = await getAllCategoryTrees();
+  Future<List<CategoryModel>> getAllCategoriesFlat({String? storeId}) async {
+    final allTrees = await getAllCategoryTrees(storeId: storeId);
     final flatList = <CategoryModel>[];
 
     for (final tree in allTrees) {

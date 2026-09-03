@@ -5,6 +5,7 @@ import 'package:book_store_app/core/theme/base_colors.dart';
 import 'package:book_store_app/core/theme/base_spacing.dart';
 import 'package:book_store_app/utils/app_font_size.dart';
 import 'package:flutter/material.dart';
+import 'package:book_store_app/config/resources/app_colors.dart';
 
 /// The one empty-state screen every redesigned list/screen should use —
 /// icon, title, subtitle, and an optional call-to-action.
@@ -94,7 +95,7 @@ class BaseEmptyView extends StatelessWidget {
                 ),
                 child: CustomText(
                   text: actionLabel!,
-                  color: Colors.white,
+                  color: AppColors.white,
                   fontSize: AppFontSize.extraSmall,
                   fontWeight: FontWeight.w600,
                 ),

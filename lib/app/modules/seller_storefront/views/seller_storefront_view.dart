@@ -5,6 +5,7 @@ import 'package:book_store_app/app/modules/seller_storefront/controllers/seller_
 import 'package:book_store_app/app/modules/seller_storefront/widgets/product_horizontal_section.dart';
 import 'package:book_store_app/app/modules/seller_storefront/widgets/store_announcement_bar.dart';
 import 'package:book_store_app/app/modules/seller_storefront/widgets/store_banner_carousel.dart';
+import 'package:book_store_app/app/modules/seller_storefront/widgets/store_faq_section.dart';
 import 'package:book_store_app/app/modules/seller_storefront/widgets/storefront_filter_bar.dart';
 import 'package:book_store_app/app/modules/seller_storefront/widgets/storefront_header.dart';
 import 'package:book_store_app/app/modules/seller_storefront/widgets/storefront_plans_teaser.dart';
@@ -85,6 +86,11 @@ class SellerStorefrontView extends StatelessWidget {
               const SliverToBoxAdapter(child: SizedBox(height: 18)),
               SliverToBoxAdapter(child: _SectionHeader(c: c)),
               _ProductsSliver(c: c),
+              // Hidden entirely (renders nothing) when the store hasn't
+              // added any FAQs.
+              SliverToBoxAdapter(
+                child: StoreFaqSection(faqs: c.faqs),
+              ),
               SliverToBoxAdapter(
                 child: Obx(
                   () => c.isLoadingMore.value
@@ -239,7 +245,7 @@ class _EmptyState extends StatelessWidget {
             const CustomText(
               text: 'This store hasn\'t listed anything for this filter.',
               fontSize: AppFontSize.tiny,
-              color: AppColors.grey,
+              color: AppColors.greyDefault,
             ),
           ],
         ),
@@ -303,7 +309,7 @@ class _NotFoundState extends StatelessWidget {
               const CustomText(
                 text: 'This store may have been removed or is unavailable.',
                 fontSize: AppFontSize.verySmall,
-                color: AppColors.grey,
+                color: AppColors.greyDefault,
               ),
               const SizedBox(height: 20),
               GestureDetector(

@@ -40,7 +40,7 @@ StoreStatusStyle storeStatusStyle(String status) {
     case 'suspended':
       return const StoreStatusStyle('Suspended', 'Suspended', AppColors.red);
     default:
-      return const StoreStatusStyle('Inactive', 'Inactive', AppColors.grey);
+      return const StoreStatusStyle('Inactive', 'Inactive', AppColors.greyDefault);
   }
 }
 

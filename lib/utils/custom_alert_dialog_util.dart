@@ -73,7 +73,7 @@ Future<void> showCustomDialog({
                     ),
                     style: TextStyle(fontSize: AppFontSize.small2),
                     placeholderStyle: TextStyle(
-                      color: AppColors.grey,
+                      color: AppColors.greyDefault,
                       fontSize: AppFontSize.small2,
                     ),
                     decoration: null,
@@ -112,7 +112,7 @@ Future<void> showCustomDialog({
                       child: CustomText(
                         text: leftButtonName,
                         fontSize: AppFontSize.small,
-                        color: AppColors.grey,
+                        color: AppColors.greyDefault,
                       ),
                     ),
                     CupertinoDialogAction(

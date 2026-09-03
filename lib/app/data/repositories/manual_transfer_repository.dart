@@ -117,9 +117,15 @@ class ManualTransferRepository {
   }
 
   /// GET /api/payment/manual-transfer/:proofId — poll this to refresh status.
-  Future<ManualPaymentProof?> getProofStatus(String proofId) async {
+  Future<ManualPaymentProof?> getProofStatus(String proofId, {String? storeId}) async {
     try {
-      final response = await _client.get(ApiConstants.manualTransferProofById(proofId), requiresAuth: true);
+      final response = await _client.get(
+        ApiConstants.manualTransferProofById(proofId),
+        requiresAuth: true,
+        queryParameters: {
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
+      );
       if (response.data['success'] == true) {
         return ManualPaymentProof.fromJson(response.data['data'] as Map<String, dynamic>);
       }
@@ -134,9 +140,15 @@ class ManualTransferRepository {
   }
 
   /// GET /api/payment/manual-transfer — every proof the buyer has ever submitted.
-  Future<List<ManualPaymentProof>> getMyProofs() async {
+  Future<List<ManualPaymentProof>> getMyProofs({String? storeId}) async {
     try {
-      final response = await _client.get(ApiConstants.manualTransferMyProofs, requiresAuth: true);
+      final response = await _client.get(
+        ApiConstants.manualTransferMyProofs,
+        requiresAuth: true,
+        queryParameters: {
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
+      );
       if (response.data['success'] == true) {
         return (response.data['data'] as List).cast<Map<String, dynamic>>().map(ManualPaymentProof.fromJson).toList();
       }

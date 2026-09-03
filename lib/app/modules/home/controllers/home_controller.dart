@@ -1,12 +1,13 @@
 import 'package:book_store_app/core/base/base_controller.dart';
 import 'package:book_store_app/app/components/product_filter_bottom_sheet.dart';
 import 'package:book_store_app/app/data/repositories/announcements_repository.dart';
-import 'package:book_store_app/app/data/repositories/banners_repository.dart';
 import 'package:book_store_app/app/data/repositories/cart_repository.dart';
 import 'package:book_store_app/app/data/repositories/category_repository.dart';
 import 'package:book_store_app/app/data/repositories/product_repository.dart';
 import 'package:book_store_app/app/data/repositories/promotions_repository.dart';
 import 'package:book_store_app/app/data/repositories/storefront_repository.dart';
+import 'package:book_store_app/app/data/repositories/store_banner_repository.dart';
+import 'package:book_store_app/app/data/models/store_banner/store_banner_model.dart';
 import 'package:book_store_app/app/data/services/auth_gate_service.dart';
 import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/data/models/announcement_model.dart';
@@ -16,7 +17,6 @@ import 'package:book_store_app/app/modules/category/models/category_model.dart';
 import 'package:book_store_app/app/modules/category/models/product_model.dart';
 import 'package:book_store_app/app/modules/cart/controllers/cart_controller.dart';
 import 'package:book_store_app/app/modules/cart/models/cart_response_model.dart';
-import 'package:book_store_app/app/modules/home/models/banner_model.dart';
 import 'package:book_store_app/app/modules/address/models/address_model.dart';
 import 'package:book_store_app/app/modules/wishlist/controllers/wishlist_controller.dart';
 import 'package:book_store_app/shared_prefrences/app_prefrences.dart';
@@ -29,7 +29,7 @@ class HomeController extends BaseController {
   HomeController({
     ProductRepository? productRepository,
     CategoryRepository? categoryRepository,
-    BannersRepository? bannersRepository,
+    StoreBannerRepository? storeBannerRepository,
     CartRepository? cartRepository,
     StorefrontRepository? storefrontRepository,
     AnnouncementsRepository? announcementsRepository,
@@ -37,7 +37,7 @@ class HomeController extends BaseController {
     CategoryController? categoryController,
   }) : _productRepository = productRepository ?? ProductRepository(),
        _categoryRepository = categoryRepository ?? CategoryRepository(),
-       _bannersRepository = bannersRepository ?? BannersRepository(),
+       _storeBannerRepository = storeBannerRepository ?? StoreBannerRepository(),
        _cartRepository = cartRepository ?? CartRepository(),
        _storefrontRepository = storefrontRepository ?? StorefrontRepository(),
        _announcementsRepository =
@@ -55,7 +55,7 @@ class HomeController extends BaseController {
 
   final ProductRepository _productRepository;
   final CategoryRepository _categoryRepository;
-  final BannersRepository _bannersRepository;
+  final StoreBannerRepository _storeBannerRepository;
   final CartRepository _cartRepository;
   final StorefrontRepository _storefrontRepository;
   final AnnouncementsRepository _announcementsRepository;
@@ -65,7 +65,7 @@ class HomeController extends BaseController {
   CurrentStoreService get _currentStore => Get.find<CurrentStoreService>();
 
   // ─── UI State ─────────────────────────────────────────────────────────────
-  final RxList<BannerModel> banners = <BannerModel>[].obs;
+  final RxList<StoreBannerModel> banners = <StoreBannerModel>[].obs;
   final RxInt bannerIndex = 0.obs;
   final RxBool isLoadingBanners = false.obs;
   // Impression beacons are per-banner-id, once per session — a page that
@@ -151,10 +151,21 @@ class HomeController extends BaseController {
 
   // ─── 1. Banners ───────────────────────────────────────────────────────────
 
+  /// This store's own hero carousel — was `BannersRepository.fetchBanners()`
+  /// (the admin-managed, platform-wide `/api/banners`, with no storeId
+  /// concept at all), which meant a single-store build's homepage could show
+  /// another tenant's promoted banner. `StoreBannerRepository` is the same
+  /// per-store carousel already used on the seller storefront page.
   Future<void> fetchBanners() async {
     try {
       isLoadingBanners.value = true;
-      final result = await _bannersRepository.fetchBanners();
+      await _currentStore.ensureResolved();
+      final storeId = _currentStore.storeId;
+      if (storeId == null || storeId.isEmpty) {
+        banners.clear();
+        return;
+      }
+      final result = await _storeBannerRepository.getPublicBanners(storeId);
       banners.assignAll(result);
       debugPrint('✅ Banners loaded: ${banners.length}');
     } catch (e) {
@@ -165,13 +176,17 @@ class HomeController extends BaseController {
     }
   }
 
-  /// Fires the platform-banner impression beacon at most once per banner id
+  /// Fires the store-banner impression beacon at most once per banner id
   /// per session — call from the carousel for whichever page is currently
   /// visible (index 0 on load, then again on every `onPageChanged`).
   void maybeTrackBannerImpression(String bannerId) {
     if (bannerId.isEmpty) return;
     if (_impressedBannerIds.add(bannerId)) {
-      PromotionsRepository().trackImpression(entityType: 'banner', entityId: bannerId);
+      PromotionsRepository().trackImpression(
+        entityType: 'store_banner',
+        entityId: bannerId,
+        storeId: _currentStore.storeId,
+      );
     }
   }
 
@@ -214,7 +229,10 @@ class HomeController extends BaseController {
 
   Future<void> fetchCategories() async {
     try {
-      final trees = await _categoryRepository.getAllCategoryTrees();
+      await _currentStore.ensureResolved();
+      final trees = await _categoryRepository.getAllCategoryTrees(
+        storeId: _currentStore.storeId,
+      );
       categories.assignAll(trees);
       debugPrint('✅ Fetched ${trees.length} category trees for home');
     } catch (e) {
@@ -241,9 +259,10 @@ class HomeController extends BaseController {
   // ─── 5. Products ──────────────────────────────────────────────────────────
   // A configured build (`StoreConfig.isConfigured`) shows only this app's
   // one store's catalog, via the same per-store endpoint `seller_storefront`
-  // uses (`StorefrontRepository.getStoreProducts`). An unconfigured/default
-  // build falls back to the original marketplace-wide `getProductsByCategory`
-  // (same endpoint as `SubCategoryController`), unchanged from before.
+  // uses (`StorefrontRepository.getStoreProducts`). If no store is bound
+  // (`StoreConfig.isConfigured == false`) this shows an empty state —
+  // never the old marketplace-wide `getProductsByCategory` fallback, so a
+  // misconfigured build can't silently show other stores' products.
   // When tab is "All Products" no categoryId is sent and the backend returns
   // everything. When a tab is selected the root category ID is passed.
 
@@ -260,78 +279,51 @@ class HomeController extends BaseController {
     isFetchingProducts.value = true;
 
     try {
-      final String? categoryId = _categoryIdForCurrentTab();
-
-      if (StoreConfig.isConfigured) {
-        await _currentStore.ensureResolved();
-        final storeId = _currentStore.storeId;
-        if (storeId == null || storeId.isEmpty) {
-          if (!loadMore) products.clear();
-          totalProductsCount.value = 0;
-          hasMoreProducts.value = false;
-          _applyLocalFilters();
-          return;
-        }
-
-        final result = await _storefrontRepository.getStoreProducts(
-          storeId: storeId,
-          page: currentPage.value,
-          limit: 10,
-          categoryId: categoryId,
-          sort: selectedSort.value,
-        );
-
-        if (loadMore) {
-          products.addAll(result.products);
-        } else {
-          products.assignAll(result.products);
-        }
-
-        totalPages.value = result.totalPages;
-        totalProductsCount.value = result.total;
-        hasMoreProducts.value = result.hasMore;
-
-        _updateFavouriteMap(result.products);
-        // getStoreProducts has no price/rating params — applied client-side
-        // over whatever page(s) are already loaded (see _applyLocalFilters).
+      if (!StoreConfig.isConfigured) {
+        if (!loadMore) products.clear();
+        totalProductsCount.value = 0;
+        hasMoreProducts.value = false;
         _applyLocalFilters();
-
-        debugPrint(
-          '✅ Fetched ${result.products.length} store products '
-          '(page ${currentPage.value})',
-        );
         return;
       }
 
-      final response = await _productRepository.getProductsByCategory(
-        categoryId: categoryId,
+      await _currentStore.ensureResolved();
+      final storeId = _currentStore.storeId;
+      if (storeId == null || storeId.isEmpty) {
+        if (!loadMore) products.clear();
+        totalProductsCount.value = 0;
+        hasMoreProducts.value = false;
+        _applyLocalFilters();
+        return;
+      }
+
+      final result = await _storefrontRepository.getStoreProducts(
+        storeId: storeId,
         page: currentPage.value,
         limit: 10,
-        minPrice: currentMinFilter.value > priceBoundMin ? currentMinFilter.value : null,
-        maxPrice: currentMaxFilter.value < priceBoundMax ? currentMaxFilter.value : null,
-        minRating: selectedRating.value > 0 ? selectedRating.value : null,
-        sortBy: selectedSort.value == 'newest' ? null : selectedSort.value,
+        categoryId: _categoryIdForCurrentTab(),
+        sort: selectedSort.value,
       );
 
-      if (response != null) {
-        if (loadMore) {
-          products.addAll(response.products);
-        } else {
-          products.assignAll(response.products);
-        }
-
-        totalPages.value = response.pages;
-        totalProductsCount.value = response.total;
-        hasMoreProducts.value = currentPage.value < totalPages.value;
-
-        _updateFavouriteMap(response.products);
-        _applyLocalFilters(); // search / sort filtering done client-side
-
-        debugPrint(
-          '✅ Fetched ${response.products.length} products '
-          '(Page ${currentPage.value}/${totalPages.value})',
-        );
+      if (loadMore) {
+        products.addAll(result.products);
+      } else {
+        products.assignAll(result.products);
       }
+
+      totalPages.value = result.totalPages;
+      totalProductsCount.value = result.total;
+      hasMoreProducts.value = result.hasMore;
+
+      _updateFavouriteMap(result.products);
+      // getStoreProducts has no price/rating params — applied client-side
+      // over whatever page(s) are already loaded (see _applyLocalFilters).
+      _applyLocalFilters();
+
+      debugPrint(
+        '✅ Fetched ${result.products.length} store products '
+        '(page ${currentPage.value})',
+      );
     } catch (e) {
       debugPrint('❌ Error fetching products: $e');
       ToastUtil.showToast('Failed to load products');
@@ -356,12 +348,10 @@ class HomeController extends BaseController {
 
   // ─── 6. Local filtering ───────────────────────────────────────────────────
   // Applied after every fetch so the displayed list is always up to date.
-  // Search is always client-side. Price/rating are handled server-side for
-  // an unconfigured/marketplace build (see fetchProducts) — reapplying them
-  // here is then a harmless no-op. For a store-configured build,
-  // `getStoreProducts` has no price/rating params, so this is the only place
-  // they're enforced — meaning they only narrow whatever page(s) are already
-  // loaded, not the store's full catalog, until the backend adds support.
+  // Search is always client-side. `getStoreProducts` has no price/rating
+  // params, so this is the only place they're enforced — meaning they only
+  // narrow whatever page(s) are already loaded, not the store's full
+  // catalog, until the backend adds support.
   void _applyLocalFilters() {
     final query = searchQuery.value.trim().toLowerCase();
 
@@ -549,7 +539,7 @@ class HomeController extends BaseController {
   /// Fetch single product by ID
   Future<ProductModel?> getProductById(String productId) async {
     try {
-      final product = await _productRepository.getProductById(productId);
+      final product = await _productRepository.getProductById(productId, storeId: _currentStore.storeId);
       if (product != null) {
         debugPrint('✅ Fetched product: ${product.name}');
       }

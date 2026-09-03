@@ -11,11 +11,16 @@ class PromotionsRepository {
 
   // ─── Public tracking beacons — fire-and-forget, never surfaced to the user ──
 
-  Future<void> trackImpression({required String entityType, required String entityId, String? device}) async {
+  Future<void> trackImpression({required String entityType, required String entityId, String? device, String? storeId}) async {
     try {
       await _client.post(
         ApiConstants.promotionTrackImpression,
-        data: {'entityType': entityType, 'entityId': entityId, if (device != null) 'device': device},
+        data: {
+          'entityType': entityType,
+          'entityId': entityId,
+          if (device != null) 'device': device,
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
         // `OptionalJwtAuthGuard` on the backend — attaching the token when a
         // buyer happens to be logged in costs nothing and never forces a
         // logout (that only fires on a genuine 401 with `requiresAuth`), but
@@ -27,11 +32,16 @@ class PromotionsRepository {
     }
   }
 
-  Future<void> trackClick({required String entityType, required String entityId, String? device}) async {
+  Future<void> trackClick({required String entityType, required String entityId, String? device, String? storeId}) async {
     try {
       await _client.post(
         ApiConstants.promotionTrackClick,
-        data: {'entityType': entityType, 'entityId': entityId, if (device != null) 'device': device},
+        data: {
+          'entityType': entityType,
+          'entityId': entityId,
+          if (device != null) 'device': device,
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
         requiresAuth: true,
       );
     } catch (_) {

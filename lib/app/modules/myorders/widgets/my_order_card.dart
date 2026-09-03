@@ -27,7 +27,7 @@ class MyOrderCard extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: Material(
-        color: Colors.transparent,
+        color: AppColors.transparent,
         child: InkWell(
           onTap: onTap,
           child: Column(
@@ -262,12 +262,12 @@ class _StoreSection extends StatelessWidget {
 
   Color get _storeStatusColor {
     switch (store.status) {
-      case 'shipped':    return const Color(0xFF3B82F6);
+      case 'shipped':    return AppColors.statusShipped;
       case 'delivered':
-      case 'completed':  return const Color(0xFF22C55E);
-      case 'processing': return const Color(0xFFF59E0B);
-      case 'cancelled':  return const Color(0xFFEF4444);
-      default:           return const Color(0xFF6B7280);
+      case 'completed':  return AppColors.statusCompleted;
+      case 'processing': return AppColors.statusProcessing;
+      case 'cancelled':  return AppColors.statusCancelled;
+      default:           return AppColors.statusDefault;
     }
   }
 

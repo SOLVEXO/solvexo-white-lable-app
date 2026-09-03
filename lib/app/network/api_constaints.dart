@@ -5,7 +5,7 @@ class ApiConstants {
   // Omitting it keeps today's behavior (staging) unchanged for both apps.
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://staging.solvexo.store',
+    defaultValue: 'https://api.solvexo.store',
   );
 
   static const String apiPrefix = "$baseUrl/api";
@@ -14,7 +14,7 @@ class ApiConstants {
   // ⚠️ Backend does NOT implement this endpoint yet — requested from the
   // backend team as part of the white-label transformation. Expected shape:
   // GET, public or JWT-optional, response `{ success, data: { appName,
-  // marketplaceName, logoUrl, primaryColor, secondaryColor, accentColor,
+  // storeDisplayName, logoUrl, primaryColor, secondaryColor, accentColor,
   // featureFlags: { [key: string]: boolean } } }`. Until it exists,
   // `BrandingRepository` calls this, gets a 404, and silently falls back to
   // `BrandingConfigModel.defaults()` — see that class's doc comment.
@@ -25,9 +25,15 @@ class ApiConstants {
   static const int receiveTimeout = 30000;
 
   // ============ Auth Endpoints ============
-  // Google Sign-In is the only auth method (Phase 10 of the white-label
-  // conversion) — email/password register/login/OTP/forgot/reset-password
-  // endpoints were removed along with their Dart call sites.
+  // Email/password (register/login/OTP/forgot/reset-password) sits alongside
+  // Google Sign-In — both create/resolve a buyer account scoped to this
+  // build's storeId (see AuthRepository).
+  static const String register = '$apiPrefix/auth/register';
+  static const String login = '$apiPrefix/auth/login';
+  static const String resendOtp = '$apiPrefix/auth/resend-otp';
+  static const String verifyOtp = '$apiPrefix/auth/verifyOtp';
+  static const String forgotPassword = '$apiPrefix/auth/forgot-password';
+  static const String resetPassword = '$apiPrefix/auth/reset-password';
   static const String socialLogin = '$apiPrefix/auth/social-login';
   static const String getMe = "$apiPrefix/auth/getprofile";
   static const String logout = "$apiPrefix/auth/logout";
@@ -45,24 +51,33 @@ class ApiConstants {
   // ============ Category Endpoints ============
   static const String categories = "$apiPrefix/categories/category-tree";
   static const String addCategory = "$apiPrefix/categories/add-category";
-  static String getCategoryTree(String id) =>
-      "$apiPrefix/categories/category-tree?id=$id";
-  static String getCategoryById(String id) =>
-      "$apiPrefix/categories/category/$id";
+  static String getCategoryTree(String id, {String? storeId}) =>
+      "$apiPrefix/categories/category-tree?id=$id"
+      "${storeId != null && storeId.isNotEmpty ? '&storeId=$storeId' : ''}";
+  // This build's own category tree — never the legacy global/admin roots the
+  // backend falls back to when storeId is omitted.
+  static String storeCategories(String storeId) =>
+      "$apiPrefix/categories/category-tree?storeId=$storeId";
+  static String getCategoryById(String id, {String? storeId}) =>
+      "$apiPrefix/categories/category/$id"
+      "${storeId != null && storeId.isNotEmpty ? '?storeId=$storeId' : ''}";
   // static String updateCategory(String id) => "$apiPrefix/categories/$id";
   // static String deleteCategory(String id) => "$apiPrefix/categories/$id";
 
   // ============ Product Endpoints ============
-  static const String products = "$apiPrefix/products";
-  static const String featuredProducts = "$apiPrefix/products/featured";
-  static String getProductById(String id) =>
-      '$apiPrefix/products/getProductById/$id';
-  static String getVariantById(String id) =>
-      '$apiPrefix/products/getVariantById/$id';
+  // storeId scopes the lookup to this build's own store — without it, a raw
+  // product/variant id from another store would otherwise still resolve.
+  static String getProductById(String id, {String? storeId}) =>
+      '$apiPrefix/products/getProductById/$id'
+      '${storeId != null && storeId.isNotEmpty ? '?storeId=$storeId' : ''}';
+  static String getVariantById(String id, {String? storeId}) =>
+      '$apiPrefix/products/getVariantById/$id'
+      '${storeId != null && storeId.isNotEmpty ? '?storeId=$storeId' : ''}';
   // Public digital-product preview — watermarked/trimmed derivative only,
   // never the original file (see solvexo-api ProductsService.getProductPreview).
-  static String getProductPreview(String productId) =>
-      '$apiPrefix/products/preview/$productId';
+  static String getProductPreview(String productId, {String? storeId}) =>
+      '$apiPrefix/products/preview/$productId'
+      '${storeId != null && storeId.isNotEmpty ? '?storeId=$storeId' : ''}';
   // ============ Product by Category Endpoint ============
   static String getProductsByCategory({
     String? categoryId,
@@ -75,12 +90,16 @@ class ApiConstants {
     double? maxPrice,
     double? minRating,
     String? sortBy,
+    String? storeId,
   }) {
     String url = '$apiPrefix/products/products-by-category';
     List<String> queryParams = [];
 
     if (categoryId != null && categoryId.isNotEmpty) {
       queryParams.add('id=$categoryId');
+    }
+    if (storeId != null && storeId.isNotEmpty) {
+      queryParams.add('storeId=$storeId');
     }
     queryParams.add('page=$page');
     queryParams.add('limit=$limit');
@@ -203,6 +222,16 @@ class ApiConstants {
   static const String initiatePayment = "$apiPrefix/payment/initiate-payment";
   static const String paymentStatus = "$apiPrefix/payment/status";
   static const String getShippingZones = "$apiPrefix/checkout/getShippingZones";
+
+  // ============ Store Integration Payment Gateways (Safepay, Stripe-via-Connect) ============
+  // Store-scoped payment methods resolved server-side from the checkout's
+  // own storeId — never client-passed. See solvexo-api/docs/integrations-api-reference.md.
+  static String checkoutPaymentMethods(String checkoutId) =>
+      "$apiPrefix/checkout/$checkoutId/payment-methods";
+  static String initiateCheckoutPaymentMethod(String checkoutId, String provider) =>
+      "$apiPrefix/checkout/$checkoutId/payment-methods/$provider/initiate";
+  static String confirmCheckoutPaymentMethod(String checkoutId, String provider) =>
+      "$apiPrefix/checkout/$checkoutId/payment-methods/$provider/confirm";
 
   // ============ Manual Bank Transfer Endpoints (Pakistan) ============
   // The buyer's "pay into the platform's own bank account, upload proof"
@@ -612,69 +641,16 @@ class ApiConstants {
   static String seoProductsExport(String storeId) =>
       '$apiPrefix/store/$storeId/seo/products/export';
 
-  // ============ Query Parameters Helper ============
-  // For product filtering and search
-  static String getProductsWithFilters({
-    String? search,
-    String? category,
-    double? minPrice,
-    double? maxPrice,
-    String? brand,
-    String? sort, // price_asc, price_desc, rating, newest
-    int page = 1,
-    int limit = 10,
-  }) {
-    String url = products;
-    List<String> queryParams = [];
-
-    if (search != null && search.isNotEmpty) {
-      queryParams.add('search=$search');
-    }
-    if (category != null && category.isNotEmpty) {
-      queryParams.add('category=$category');
-    }
-    if (minPrice != null) {
-      queryParams.add('minPrice=$minPrice');
-    }
-    if (maxPrice != null) {
-      queryParams.add('maxPrice=$maxPrice');
-    }
-    if (brand != null && brand.isNotEmpty) {
-      queryParams.add('brand=$brand');
-    }
-    if (sort != null && sort.isNotEmpty) {
-      queryParams.add('sort=$sort');
-    }
-    queryParams.add('page=$page');
-    queryParams.add('limit=$limit');
-
-    if (queryParams.isNotEmpty) {
-      url += '?${queryParams.join('&')}';
-    }
-
-    return url;
-  }
-
   // ============ Buyer membership endpoints ============
   // Buyer side of store memberships (`src/subscriptions`) — browse a store's
-  // public plans, subscribe, and self-manage subscriptions/credits.
+  // public plans and subscribe. There's no "My Memberships" management
+  // screen any more — only the storefront's plans/benefits teaser uses these.
   static String buyerStorePlans(String storeId) =>
       '$apiPrefix/subscriptions/public/$storeId/plans';
   static const String buyerMembershipSubscribe =
       '$apiPrefix/subscriptions/subscribe';
-  static const String buyerMyMemberships = '$apiPrefix/subscriptions/my';
-  static String buyerMyMembershipById(String id) =>
-      '$apiPrefix/subscriptions/my/$id';
-  static String buyerMembershipPause(String id) =>
-      '$apiPrefix/subscriptions/my/$id/pause';
-  static String buyerMembershipResume(String id) =>
-      '$apiPrefix/subscriptions/my/$id/resume';
-  static String buyerMembershipCancel(String id, {bool atPeriodEnd = false}) =>
-      '$apiPrefix/subscriptions/my/$id/cancel?atPeriodEnd=$atPeriodEnd';
   static String buyerMembershipBenefits(String storeId) =>
       '$apiPrefix/subscriptions/my/benefits/$storeId';
-  static const String buyerMembershipCredits =
-      '$apiPrefix/subscriptions/my/credits';
 
   // ============ Services & Bookings Endpoints — seller (store-scoped) ============
   // Backed by `src/bookings` on the API — sellers sell bookable appointments
@@ -723,13 +699,7 @@ class ApiConstants {
   static const String bookAppointment = '$apiPrefix/bookings/book';
   static String purchasePackage(String packageId) =>
       '$apiPrefix/bookings/packages/$packageId/purchase';
-  static const String myBookings = '$apiPrefix/bookings/my';
   static const String myPackages = '$apiPrefix/bookings/my/packages';
-  static String myBookingById(String id) => '$apiPrefix/bookings/my/$id';
-  static String myBookingCancel(String id) =>
-      '$apiPrefix/bookings/my/$id/cancel';
-  static String myBookingReschedule(String id) =>
-      '$apiPrefix/bookings/my/$id/reschedule';
 
   // ============ Promotions Endpoints — seller (paid ad placements) ============
   static const String promotionsPreviewPrice =
@@ -768,6 +738,10 @@ class ApiConstants {
   // ============ Store Banner Endpoints — public (buyer storefront) ============
   static String publicStoreBanners(String storeId) =>
       '$apiPrefix/public/store-banners/$storeId';
+
+  // ============ Store FAQ Endpoints — public (buyer storefront) ===============
+  static String publicStoreFaqs(String storeId) =>
+      '$apiPrefix/public/store-faqs/$storeId';
 
   // ============ Store: Pinned Products + Announcement Bar — seller ============
   static String storePinnedProducts(String storeId) =>

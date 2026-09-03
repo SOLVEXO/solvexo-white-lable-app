@@ -105,14 +105,16 @@ class SplashView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // Brand name
-                          CustomText(
-                            text: Get.find<BrandingService>().config.value.appName,
-                            textAlign: TextAlign.center,
-                            color: AppColors.white,
-                            fontFamily: AppTextStyles.headingFontFamily,
-                            fontSize: AppFontSize.large,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 1.5,
+                          Obx(
+                            () => CustomText(
+                              text: Get.find<BrandingService>().config.value.appName,
+                              textAlign: TextAlign.center,
+                              color: AppColors.white,
+                              fontFamily: AppTextStyles.headingFontFamily,
+                              fontSize: AppFontSize.large,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.5,
+                            ),
                           ),
 
                           SizedBox(height: BaseSpacing.xxs + 2),

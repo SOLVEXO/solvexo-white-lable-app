@@ -119,17 +119,17 @@ class AiPickerTile extends StatelessWidget {
             Expanded(
               child: CustomText(
                 text: value ?? placeholder,
-                color: value != null ? AppColors.black2 : AppColors.grey,
+                color: value != null ? AppColors.black2 : AppColors.greyDefault,
                 fontSize: AppFontSize.verySmall,
               ),
             ),
             if (value != null && onClear != null)
               GestureDetector(
                 onTap: onClear,
-                child: const Icon(Icons.close_rounded, size: 18, color: AppColors.grey),
+                child: const Icon(Icons.close_rounded, size: 18, color: AppColors.greyDefault),
               )
             else
-              const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.grey),
+              const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.greyDefault),
           ],
         ),
       ),

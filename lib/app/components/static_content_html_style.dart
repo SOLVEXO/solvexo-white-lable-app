@@ -32,5 +32,5 @@ final Map<String, Style> staticContentHtmlStyle = {
   "li": Style(margin: Margins.only(bottom: BaseSpacing.xxs)),
   "a": Style(color: AppColors.primaryColor, textDecoration: TextDecoration.none),
   "strong": Style(fontWeight: FontWeight.w700),
-  "em": Style(color: AppColors.grey),
+  "em": Style(color: AppColors.greyDefault),
 };

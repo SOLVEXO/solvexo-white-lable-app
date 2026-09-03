@@ -11,10 +11,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('BrandingConfigModel.defaults', () {
-    test('matches the hardcoded Solvexo branding so nothing visually changes before a backend config exists', () {
+    test('is a brand-neutral fallback, never a specific tenant name, before a backend config exists', () {
       final defaults = BrandingConfigModel.defaults();
-      expect(defaults.appName, 'Solvexo');
-      expect(defaults.marketplaceName, 'Solvexo');
+      expect(defaults.appName, 'Store');
+      expect(defaults.storeDisplayName, 'Store');
       expect(defaults.logoUrl, '');
       expect(defaults.primaryColor, const Color(0xFFd97757));
       expect(defaults.featureFlags, isEmpty);
@@ -32,7 +32,7 @@ void main() {
     test('parses a full, well-formed response', () {
       final config = BrandingConfigModel.fromJson({
         'appName': 'Acme',
-        'marketplaceName': 'Acme Market',
+        'storeDisplayName': 'Acme Store',
         'logoUrl': 'https://cdn.example.com/logo.png',
         'primaryColor': '#112233',
         'secondaryColor': '#AABBCC',
@@ -41,7 +41,7 @@ void main() {
       });
 
       expect(config.appName, 'Acme');
-      expect(config.marketplaceName, 'Acme Market');
+      expect(config.storeDisplayName, 'Acme Store');
       expect(config.logoUrl, 'https://cdn.example.com/logo.png');
       expect(config.primaryColor, const Color(0xFF112233));
       expect(config.secondaryColor, const Color(0xFFAABBCC));
@@ -54,12 +54,12 @@ void main() {
       final config = BrandingConfigModel.fromJson({
         'appName': '',
         'primaryColor': 'not-a-color',
-        // marketplaceName, logoUrl, secondaryColor, accentColor, featureFlags all omitted
+        // storeDisplayName, logoUrl, secondaryColor, accentColor, featureFlags all omitted
       });
       final defaults = BrandingConfigModel.defaults();
 
       expect(config.appName, defaults.appName);
-      expect(config.marketplaceName, defaults.marketplaceName);
+      expect(config.storeDisplayName, defaults.storeDisplayName);
       expect(config.primaryColor, defaults.primaryColor);
       expect(config.secondaryColor, defaults.secondaryColor);
       expect(config.accentColor, defaults.accentColor);
@@ -69,7 +69,7 @@ void main() {
   test('toJson round-trips through fromJson without losing color/flag data', () {
     final original = BrandingConfigModel.fromJson({
       'appName': 'Acme',
-      'marketplaceName': 'Acme Market',
+      'storeDisplayName': 'Acme Store',
       'logoUrl': 'https://cdn.example.com/logo.png',
       'primaryColor': '#112233',
       'secondaryColor': '#aabbcc',
@@ -80,7 +80,7 @@ void main() {
     final roundTripped = BrandingConfigModel.fromJson(original.toJson());
 
     expect(roundTripped.appName, original.appName);
-    expect(roundTripped.marketplaceName, original.marketplaceName);
+    expect(roundTripped.storeDisplayName, original.storeDisplayName);
     expect(roundTripped.logoUrl, original.logoUrl);
     expect(roundTripped.primaryColor, original.primaryColor);
     expect(roundTripped.secondaryColor, original.secondaryColor);
@@ -92,14 +92,14 @@ void main() {
     test('uses the store-config values when all are present', () {
       final config = BrandingConfigModel.fromStoreConfig(
         appName: 'Acme',
-        marketplaceName: 'Acme Market',
+        storeDisplayName: 'Acme Store',
         primaryColorHex: '#112233',
         secondaryColorHex: '#AABBCC',
         accentColorHex: '#FF00FF',
       );
 
       expect(config.appName, 'Acme');
-      expect(config.marketplaceName, 'Acme Market');
+      expect(config.storeDisplayName, 'Acme Store');
       // Logo is never sourced from store config — always the bundled
       // AppImages.logoImage asset, regardless of build.
       expect(config.logoUrl, '');
@@ -111,7 +111,7 @@ void main() {
     test('falls back to defaults field-by-field for an unconfigured build (blank strings/null colors)', () {
       final config = BrandingConfigModel.fromStoreConfig(
         appName: '',
-        marketplaceName: '',
+        storeDisplayName: '',
         primaryColorHex: null,
         secondaryColorHex: null,
         accentColorHex: null,
@@ -119,11 +119,24 @@ void main() {
       final defaults = BrandingConfigModel.defaults();
 
       expect(config.appName, defaults.appName);
-      expect(config.marketplaceName, defaults.marketplaceName);
+      expect(config.storeDisplayName, defaults.storeDisplayName);
       expect(config.logoUrl, '');
       expect(config.primaryColor, defaults.primaryColor);
       expect(config.secondaryColor, defaults.secondaryColor);
       expect(config.accentColor, defaults.accentColor);
+    });
+  });
+
+  group('BrandingConfigModel.copyWith', () {
+    test('overlays only the given fields, keeping everything else', () {
+      final base = BrandingConfigModel.defaults();
+      final updated = base.copyWith(appName: 'Jewelery store', storeDisplayName: 'Jewelery store');
+
+      expect(updated.appName, 'Jewelery store');
+      expect(updated.storeDisplayName, 'Jewelery store');
+      expect(updated.primaryColor, base.primaryColor);
+      expect(updated.logoUrl, base.logoUrl);
+      expect(updated.featureFlags, base.featureFlags);
     });
   });
 }

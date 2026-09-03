@@ -12,18 +12,24 @@ import 'package:book_store_app/app/data/models/branding/branding_config_model.da
 /// [storeSlug] is the one store this app serves — the same slug
 /// `StorefrontRepository.getStoreBySlug` resolves to a `storeId` for every
 /// subsequent per-store call, so it's the only identifier needed up front.
-/// Leaving it blank (the default in this template repo) makes the app
-/// behave as an unconfigured/generic demo build — see [isConfigured].
+/// Leaving it blank means this repo has no store bound — see [isConfigured]
+/// — which now shows an empty "no store configured" state everywhere
+/// content would otherwise load, never a marketplace-wide fallback.
 class StoreConfig {
   const StoreConfig._();
 
-  static const String storeSlug = '';
+  static const String storeSlug = 'jewelery-store';
 
-  static const String appName = 'Solvexo';
-  static const String marketplaceName = 'Solvexo';
-  static const String primaryColorHex = '#d97757';
+  // Compile-time fallback only — shown for the brief window before
+  // CurrentStoreService resolves this store's real, live name from the
+  // backend (see main.dart, which pushes that resolved name into
+  // BrandingService once available). Keep this in sync with the store's
+  // actual registered name so the fallback never looks wrong either.
+  static const String appName = 'Jewelery store';
+  static const String storeDisplayName = 'Jewelery store';
+  static const String primaryColorHex = '#57D9D5';
   static const String secondaryColorHex = '#6FBF4A';
-  static const String accentColorHex = '#d97757';
+  static const String accentColorHex = '#57D9D5';
 
   /// True once a real store has been bound to this repo. False for the
   /// unconfigured template — callers that require a store (Home content,
@@ -33,7 +39,7 @@ class StoreConfig {
 
   static BrandingConfigModel toBrandingConfig() => BrandingConfigModel.fromStoreConfig(
     appName: appName,
-    marketplaceName: marketplaceName,
+    storeDisplayName: storeDisplayName,
     primaryColorHex: primaryColorHex,
     secondaryColorHex: secondaryColorHex,
     accentColorHex: accentColorHex,

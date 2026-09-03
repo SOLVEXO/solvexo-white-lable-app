@@ -74,6 +74,7 @@ class CheckoutView extends StatelessWidget {
                 _orderList(),
                 _subscriptionUpsell(),
                 if (!controller.isAllDigital) shippingSection(size),
+                _paymentMethodSection(),
                 _summary(),
                 SizedBox(height: BaseSpacing.xl),
               ],
@@ -414,6 +415,62 @@ class CheckoutView extends StatelessWidget {
 
   // ── Summary ───────────────────────────────────────────────────────────────
 
+  // ── Payment Method ───────────────────────────────────────────────────────
+
+  /// Selectable list (radio-style) rather than the old row of action
+  /// buttons — picking one just sets `selectedPaymentMethod`; the single
+  /// "Confirm Order" button in `_BottomBar` does the actual dispatch.
+  /// `canPayOnline` (Stripe) is already store-region-gated (non-Pakistan
+  /// only) in the controller; the new gateways in `gatewayPaymentMethods`
+  /// (Safepay et al) are Pakistan-only by construction on the backend side.
+  Widget _paymentMethodSection() {
+    return _section(
+      title: "Payment Method",
+      child: Obx(() {
+        final selected = controller.selectedPaymentMethod.value;
+        return Column(
+          children: [
+            if (controller.canPayCOD)
+              _PaymentOptionTile(
+                label: "Cash on Delivery",
+                icon: Icons.local_shipping_outlined,
+                selected: selected == 'cod',
+                onTap: () => controller.selectPaymentMethod('cod'),
+              ),
+            if (controller.canPayOnline)
+              _PaymentOptionTile(
+                label: "Pay Online",
+                icon: Icons.lock_outline_rounded,
+                selected: selected == 'stripe',
+                onTap: () => controller.selectPaymentMethod('stripe'),
+              ),
+            if (controller.canSplitPay)
+              _PaymentOptionTile(
+                label: "Split Payment",
+                icon: Icons.call_split_rounded,
+                selected: selected == 'split',
+                onTap: () => controller.selectPaymentMethod('split'),
+              ),
+            if (controller.canPayManualBankTransfer)
+              _PaymentOptionTile(
+                label: "Bank Transfer",
+                icon: Icons.account_balance_outlined,
+                selected: selected == 'manual_bank_transfer',
+                onTap: () => controller.selectPaymentMethod('manual_bank_transfer'),
+              ),
+            for (final method in controller.gatewayPaymentMethods)
+              _PaymentOptionTile(
+                label: method.displayName,
+                icon: Icons.payment_rounded,
+                selected: selected == method.provider,
+                onTap: () => controller.selectPaymentMethod(method.provider),
+              ),
+          ],
+        );
+      }),
+    );
+  }
+
   Widget _summary() {
     return _section(
       title: "Summary",
@@ -513,6 +570,63 @@ class CheckoutView extends StatelessWidget {
   }
 }
 
+// ── Payment method option tile ──────────────────────────────────────────────
+
+class _PaymentOptionTile extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _PaymentOptionTile({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: BaseSpacing.xs),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(BaseRadius.lg),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: BaseSpacing.sm, vertical: BaseSpacing.sm),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: selected ? AppColors.primaryColor : AppColors.lightGrey11,
+              width: selected ? 1.5 : 0.3,
+            ),
+            borderRadius: BorderRadius.circular(BaseRadius.lg),
+            color: selected ? AppColors.primaryColor.withOpacity(0.06) : null,
+          ),
+          child: Row(
+            children: [
+              Icon(icon, size: 18, color: selected ? AppColors.primaryColor : AppColors.greyDefault),
+              SizedBox(width: BaseSpacing.xs),
+              Expanded(
+                child: CustomText(
+                  text: label,
+                  fontSize: AppFontSize.extraSmall,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                  color: selected ? AppColors.primaryColor : AppColors.black,
+                ),
+              ),
+              Icon(
+                selected ? Icons.radio_button_checked : Icons.radio_button_off,
+                size: 18,
+                color: selected ? AppColors.primaryColor : AppColors.greyDefault,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // ── Bottom bar ────────────────────────────────────────────────────────────────
 
 class _BottomBar extends StatelessWidget {
@@ -538,52 +652,24 @@ class _BottomBar extends StatelessWidget {
       final isPlacing = controller.isPlacingOrder.value;
       final isPaying = paymentController.isProcessing.value;
       final busy = isPlacing || isPaying;
+      final hasSelection = controller.selectedPaymentMethod.value != null;
 
       return Container(
         padding: EdgeInsets.fromLTRB(BaseSpacing.xl, BaseSpacing.sm + 2, BaseSpacing.xl, BaseSpacing.xxl - 8),
         decoration: BoxDecoration(
           color: AppColors.white,
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, -3)),
+            BoxShadow(color: AppColors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, -3)),
           ],
         ),
-        child: Row(
-          spacing: BaseSpacing.sm,
-          children: [
-            if (controller.canPayCOD)
-              Expanded(
-                child: OutlineButton(
-                  label: "Cash on Delivery",
-                  isLoading: isPlacing,
-                  onPressed: busy ? null : controller.placeCodOrder,
-                ),
-              ),
-            if (controller.canPayOnline)
-              Expanded(
-                child: PrimaryButton(
-                  label: isPaying ? "Processing..." : "Pay Online",
-                  icon: isPaying ? null : const Icon(Icons.lock_outline_rounded),
-                  isLoading: isPaying,
-                  onPressed: busy ? null : paymentController.payWithStripe,
-                ),
-              ),
-            if (controller.canSplitPay)
-              Expanded(
-                child: OutlineButton(
-                  label: "Split Payment",
-                  isLoading: isPaying,
-                  onPressed: busy ? null : () => controller.placeSplitOrder(paymentController),
-                ),
-              ),
-            if (controller.canPayManualBankTransfer)
-              Expanded(
-                child: OutlineButton(
-                  label: "Bank Transfer",
-                  icon: const Icon(Icons.account_balance_outlined),
-                  onPressed: busy ? null : controller.goToManualBankTransfer,
-                ),
-              ),
-          ],
+        // A single dispatcher button — pick a method above first, then this
+        // routes to whichever handler that method needs (CheckoutController
+        // .confirmOrder). Disabled until something's selected.
+        child: PrimaryButton(
+          label: busy ? "Processing..." : "Confirm Order",
+          icon: busy ? null : const Icon(Icons.lock_outline_rounded),
+          isLoading: busy,
+          onPressed: (busy || !hasSelection) ? null : () => controller.confirmOrder(paymentController),
         ),
       );
     });

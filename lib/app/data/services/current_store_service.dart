@@ -19,19 +19,23 @@ class CurrentStoreService extends GetxController {
 
   final Rx<StorefrontModel?> store = Rx(null);
 
-  bool _resolveAttempted = false;
   Future<void>? _resolving;
 
   String? get storeId => store.value?.storeId;
   String? get storeName => store.value?.name;
 
-  /// Idempotent — safe to call from multiple screens; only the first call
-  /// actually hits the network, every other call awaits the same result.
+  /// Idempotent — safe to call from multiple screens; concurrent callers
+  /// await the same in-flight network call. Only caches a *successful*
+  /// resolution — a transient failure (e.g. a network hiccup at cold start)
+  /// must not permanently block every storeId-scoped call for the rest of
+  /// the app session (login/register, search, categories, banners, ...); the
+  /// next caller gets a fresh attempt instead of silently no-op-ing forever.
   Future<void> ensureResolved() {
-    if (_resolveAttempted) return _resolving ?? Future.value();
+    if (store.value != null) return Future.value();
     if (!StoreConfig.isConfigured) return Future.value();
-    _resolveAttempted = true;
-    return _resolving = _resolve();
+    return _resolving ??= _resolve().whenComplete(() {
+      if (store.value == null) _resolving = null;
+    });
   }
 
   Future<void> _resolve() async {

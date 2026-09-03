@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:book_store_app/app/data/repositories/product_repository.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/modules/product_preview/models/product_preview_model.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,10 @@ class ProductPreviewController extends GetxController {
     hasError.value = false;
     _disposeVideo();
 
-    final result = await _productRepository.getProductPreview(productId);
+    final result = await _productRepository.getProductPreview(
+      productId,
+      storeId: Get.find<CurrentStoreService>().storeId,
+    );
     if (result == null) {
       hasError.value = true;
       isLoading.value = false;

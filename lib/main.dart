@@ -1,5 +1,7 @@
+import 'package:book_store_app/app/data/repositories/auth_repository.dart';
 import 'package:book_store_app/app/data/services/branding_service.dart';
 import 'package:book_store_app/app/data/services/current_store_service.dart';
+import 'package:book_store_app/app/modules/profile/controllers/profile_controller.dart';
 import 'package:book_store_app/app/network/dio_service.dart';
 import 'package:book_store_app/app/notification/fcm_background_handler.dart';
 import 'package:book_store_app/app/notification/local_notification_service.dart';
@@ -18,7 +20,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  DioService.clearSessionOnForceLogout = () =>
+      AuthRepository().clearLocalSession();
   DioService.onForceLogout = () {
+    // Same stale-permanent-singleton issue as the normal logout/login paths
+    // (see AuthController) — without this, the expired session's name/
+    // avatar keeps showing on Home/Profile until an app restart.
+    if (Get.isRegistered<ProfileController>()) {
+      Get.find<ProfileController>().user.value = null;
+    }
     if (Get.currentRoute != Routes.mainHome) {
       Get.offAllNamed(Routes.mainHome);
     }
@@ -43,7 +53,16 @@ void main() async {
   // Resolves this build's one store in the background — every screen that
   // needs it (Home, Search, Category, the store info page, direct-chat)
   // awaits the same cached result instead of each re-resolving its own.
-  Get.put(CurrentStoreService(), permanent: true).ensureResolved();
+  // Once resolved, push its real name into BrandingService so the splash/
+  // app-bar/auth-screen brand text shows this store's actual name rather
+  // than StoreConfig's compile-time fallback for longer than the first
+  // frame or two.
+  Get.put(CurrentStoreService(), permanent: true).ensureResolved().then((_) {
+    final storeName = Get.find<CurrentStoreService>().storeName;
+    if (storeName != null) {
+      Get.find<BrandingService>().applyStoreName(storeName);
+    }
+  });
   if (StripeConfig.isConfigured) {
     Stripe.publishableKey = StripeConfig.publishableKey;
     await Stripe.instance.applySettings();

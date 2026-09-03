@@ -119,7 +119,7 @@ class ProductGridItem extends StatelessWidget {
                 //       child: Text(
                 //         '-${product.discountPercentage}%',
                 //         style: const TextStyle(
-                //           color: Colors.white,
+                //           color: AppColors.white,
                 //           fontSize: 12,
                 //           fontWeight: FontWeight.bold,
                 //         ),
@@ -208,7 +208,7 @@ class ProductGridItem extends StatelessWidget {
                       //     '\$${product.price.toStringAsFixed(2)}',
                       //     style: TextStyle(
                       //       fontSize: 14,
-                      //       color: Colors.grey[600],
+                      //       color: AppColors.greyDefault[600],
                       //       decoration: TextDecoration.lineThrough,
                       //     ),
                       //   ),

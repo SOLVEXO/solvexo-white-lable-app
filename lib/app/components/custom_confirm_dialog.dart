@@ -79,12 +79,12 @@ class CustomConfirmDialog extends StatelessWidget {
           CustomText(
             text: message!,
             fontSize: AppFontSize.verySmall,
-            color: AppColors.grey,
+            color: AppColors.greyDefault,
           ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: CustomText(text: cancelLabel, fontSize: AppFontSize.verySmall, color: AppColors.grey),
+          child: CustomText(text: cancelLabel, fontSize: AppFontSize.verySmall, color: AppColors.greyDefault),
         ),
         GestureDetector(
           onTap: onConfirm,

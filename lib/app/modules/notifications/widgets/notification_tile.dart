@@ -78,7 +78,7 @@ class NotificationTile extends StatelessWidget {
                   CustomText(
                     text: notification.body,
                     fontSize: AppFontSize.tiny,
-                    color: AppColors.grey,
+                    color: AppColors.greyDefault,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -108,7 +108,7 @@ class NotificationTile extends StatelessWidget {
       case NotificationType.order:
         return AppColors.languageBg;
       case NotificationType.message:
-        return const Color(0xFFE8F1FF);
+        return AppColors.messageNotificationBg;
       case NotificationType.promo:
         return AppColors.yellowBg;
       case NotificationType.system:
@@ -191,7 +191,7 @@ class _TypeBadge extends StatelessWidget {
       case NotificationType.order:
         return AppColors.primaryColor.withOpacity(0.1);
       case NotificationType.message:
-        return const Color(0xFFE8F1FF);
+        return AppColors.messageNotificationBg;
       case NotificationType.promo:
         return AppColors.yellowBg;
       case NotificationType.system:

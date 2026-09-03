@@ -17,7 +17,7 @@ class IncDicrQuantityWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: BaseSpacing.xxs, horizontal: BaseSpacing.xxs + 1),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.grey),
+        border: Border.all(color: AppColors.greyDefault),
         borderRadius: BorderRadius.circular(BaseRadius.xl),
       ),
       child: Row(
@@ -38,7 +38,7 @@ class IncDicrQuantityWidget extends StatelessWidget {
                 onTap: () => controller.decreaseQuantity(item.productId, item.productVariantId),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: BaseSpacing.xs),
-                  child: Icon(Icons.remove, color: AppColors.grey, size: 18),
+                  child: Icon(Icons.remove, color: AppColors.greyDefault, size: 18),
                 ),
               ),
             ),

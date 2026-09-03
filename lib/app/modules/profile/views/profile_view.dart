@@ -22,8 +22,9 @@ class ProfileView extends BaseView<ProfileController> {
   // `Get.put(ProfileController())` field-initializer behaviour.
   @override
   ProfileController get controller {
-    if (!Get.isRegistered<ProfileController>())
+    if (!Get.isRegistered<ProfileController>()) {
       Get.put(ProfileController(), permanent: true);
+    }
     return Get.find<ProfileController>();
   }
 

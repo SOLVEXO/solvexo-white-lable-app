@@ -8,8 +8,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 /// A seller's public-facing storefront — profile, product catalog, filters,
-/// and follow/unfollow. Distinct from [SellerRepository], which is the
-/// seller's own store *management* API.
+/// and follow/unfollow. This buyer app has no seller store *management* API
+/// (that lives in the separate seller/POS app), so this is the only
+/// store-shaped repository here.
 class StorefrontRepository {
   final BaseClient _client = BaseClient();
 

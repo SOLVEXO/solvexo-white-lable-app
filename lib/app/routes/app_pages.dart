@@ -13,20 +13,22 @@ import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/loyalty_rewards/bindings/loyalty_rewards_binding.dart';
 import '../modules/loyalty_rewards/views/loyalty_rewards_view.dart';
-import '../modules/my_memberships/bindings/my_memberships_binding.dart';
-import '../modules/my_memberships/views/my_memberships_view.dart';
 import '../modules/store_services/bindings/store_services_binding.dart';
 import '../modules/store_services/bindings/store_service_detail_binding.dart';
 import '../modules/store_services/views/store_services_view.dart';
 import '../modules/store_services/views/store_service_detail_view.dart';
-import '../modules/my_bookings/bindings/my_bookings_binding.dart';
-import '../modules/my_bookings/views/my_bookings_view.dart';
 import '../modules/about/bindings/about_binding.dart';
 import '../modules/about/views/about_view.dart';
 import '../modules/address/bindings/address_binding.dart';
 import '../modules/address/views/add_address_view.dart';
 import '../modules/address/views/address_view.dart';
 import '../modules/auth/auth_tabs_view.dart';
+import '../modules/otp_verification/bindings/otp_verification_binding.dart';
+import '../modules/otp_verification/views/otp_verification_view.dart';
+import '../modules/forgot_password/bindings/forgot_password_binding.dart';
+import '../modules/forgot_password/views/forgot_password_view.dart';
+import '../modules/reset_password/bindings/reset_password_binding.dart';
+import '../modules/reset_password/views/reset_password_view.dart';
 import '../modules/cart/bindings/cart_binding.dart';
 import '../modules/cart/views/cart_view.dart';
 import '../modules/category/bindings/category_binding.dart';
@@ -35,6 +37,8 @@ import '../modules/ai_assistant_chat/bindings/ai_assistant_chat_binding.dart';
 import '../modules/ai_assistant_chat/views/ai_assistant_chat_view.dart';
 import '../modules/checkout/bindings/checkout_binding.dart';
 import '../modules/checkout/views/checkout_view.dart';
+import '../modules/gateway_payment/bindings/gateway_payment_binding.dart';
+import '../modules/gateway_payment/views/gateway_payment_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
 import '../modules/edit_profile/views/edit_profile_view.dart';
 import '../modules/help_center/bindings/faq_binding.dart';
@@ -103,6 +107,21 @@ class AppPages {
       binding: LoginBinding(),
     ),
     GetPage(
+      name: Routes.otpVerification,
+      page: () => const OtpVerificationView(),
+      binding: OtpVerificationBinding(),
+    ),
+    GetPage(
+      name: Routes.forgotPassword,
+      page: () => const ForgotPasswordView(),
+      binding: ForgotPasswordBinding(),
+    ),
+    GetPage(
+      name: Routes.resetPassword,
+      page: () => const ResetPasswordView(),
+      binding: ResetPasswordBinding(),
+    ),
+    GetPage(
       name: Routes.categoryView,
       page: () => CategoryView(),
       binding: CategoryBinding(),
@@ -154,6 +173,11 @@ class AppPages {
       binding: ManualTransferStatusBinding(),
     ),
     GetPage(
+      name: Routes.gatewayPaymentView,
+      page: () => GatewayPaymentView(),
+      binding: GatewayPaymentBinding(),
+    ),
+    GetPage(
       name: Routes.profileView,
       page: () => ProfileView(),
       binding: ProfileBinding(),
@@ -173,15 +197,9 @@ class AppPages {
       page: () => MyOrdersView(),
       binding: ProfileMyordersBinding(),
     ),
-    // GetPage(
-    //   name: Routes.orderTrackingView,
-    //   page: () => OrderTrackingView(),
-    //   binding: ProfileMyordersBinding(),
-    // ),
     GetPage(
       name: Routes.reviewsView,
       page: () => ReviewsView(),
-      binding: ProfileMyordersBinding(),
     ),
     GetPage(
       name: Routes.addressView,
@@ -233,11 +251,6 @@ class AppPages {
       page: () => const EditProfileView(),
       binding: EditProfileBinding(),
     ),
-    // GetPage(
-    //   name: Routes.SETTINGS,
-    //   page: () => const SettingsView(),
-    //   binding: SettingsBinding(),
-    // ),
     GetPage(
       name: Routes.PRIVACY_POLICY,
       page: () => const PrivacyPolicyView(),
@@ -273,11 +286,6 @@ class AppPages {
       binding: LoyaltyRewardsBinding(),
     ),
     GetPage(
-      name: Routes.myMemberships,
-      page: () => MyMembershipsView(),
-      binding: MyMembershipsBinding(),
-    ),
-    GetPage(
       name: Routes.storeServices,
       page: () => StoreServicesView(),
       binding: StoreServicesBinding(),
@@ -286,11 +294,6 @@ class AppPages {
       name: Routes.storeServiceDetail,
       page: () => StoreServiceDetailView(),
       binding: StoreServiceDetailBinding(),
-    ),
-    GetPage(
-      name: Routes.myBookings,
-      page: () => MyBookingsView(),
-      binding: MyBookingsBinding(),
     ),
     GetPage(
       name: Routes.notifications,

@@ -9,6 +9,15 @@ class DioService {
   /// guest-mode home; POS: its PIN/login screen) — set once at app startup.
   static void Function()? onForceLogout;
 
+  /// Clears the expired session's local state — FCM topic subscription,
+  /// realtime sockets, cached prefs — the same teardown an explicit logout
+  /// does. Wired from `main.dart` to `AuthRepository.clearLocalSession()`;
+  /// kept as an injectable callback (rather than importing FcmService/socket
+  /// services directly here) to avoid a network-layer file depending on the
+  /// notification/repository layers. Falls back to a bare prefs clear if
+  /// never wired, so a session still can't be left half-valid.
+  static Future<void> Function()? clearSessionOnForceLogout;
+
   static Future<Dio> getDio({Map<String, dynamic>? headers}) async {
     final dio = Dio();
 
@@ -54,9 +63,14 @@ class DioService {
           // returned to the caller normally, not treated as a session drop.
           final requiresAuth = e.requestOptions.extra['requiresAuth'] ?? false;
           if (e.response?.statusCode == 401 && requiresAuth) {
-            // Session expired or token invalid — clear local data and let
-            // the host app route to its own post-logout destination.
-            await AppPreferences.clearPreference();
+            // Session expired or token invalid — clear local data (FCM
+            // topic, sockets, prefs) and let the host app route to its own
+            // post-logout destination.
+            if (clearSessionOnForceLogout != null) {
+              await clearSessionOnForceLogout!();
+            } else {
+              await AppPreferences.clearPreference();
+            }
             onForceLogout?.call();
           }
 

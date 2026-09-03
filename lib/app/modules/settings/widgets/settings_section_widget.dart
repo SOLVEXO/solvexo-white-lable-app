@@ -1,5 +1,5 @@
 import 'package:book_store_app/app/components/custom_text.dart';
-import 'package:book_store_app/app/modules/settings/controllers/settings_controller.dart';
+import 'package:book_store_app/app/modules/settings/models/settings_section_model.dart';
 import 'package:book_store_app/app/modules/settings/widgets/settings_tile_widget.dart';
 import 'package:book_store_app/config/resources/app_colors.dart';
 import 'package:book_store_app/utils/app_font_size.dart';
@@ -21,7 +21,7 @@ class SettingsSectionWidget extends StatelessWidget {
             text: section.header,
             fontSize: AppFontSize.tiny,
             fontWeight: FontWeight.w700,
-            color: AppColors.grey,
+            color: AppColors.greyDefault,
             letterSpacing: 0.8,
           ),
         ),

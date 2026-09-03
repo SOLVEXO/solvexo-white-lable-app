@@ -74,7 +74,7 @@ class StorefrontFilterBar extends StatelessWidget {
                               color: selected ? null : AppColors.background,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: selected ? Colors.transparent : AppColors.lightGrey2,
+                                color: selected ? AppColors.transparent : AppColors.lightGrey2,
                               ),
                             ),
                             alignment: Alignment.center,
@@ -84,14 +84,14 @@ class StorefrontFilterBar extends StatelessWidget {
                                 Icon(
                                   _typeIcons[type],
                                   size: 14,
-                                  color: selected ? AppColors.white : AppColors.grey,
+                                  color: selected ? AppColors.white : AppColors.greyDefault,
                                 ),
                                 const SizedBox(width: 6),
                                 CustomText(
                                   text: _typeLabels[type]!,
                                   fontSize: AppFontSize.tiny,
                                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                                  color: selected ? AppColors.white : AppColors.grey,
+                                  color: selected ? AppColors.white : AppColors.greyDefault,
                                 ),
                               ],
                             ),
@@ -152,7 +152,7 @@ class StorefrontFilterBar extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
-                          color: selected ? AppColors.primaryColor.withOpacity(0.1) : Colors.transparent,
+                          color: selected ? AppColors.primaryColor.withOpacity(0.1) : AppColors.transparent,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: selected ? AppColors.primaryColor : AppColors.lightGrey2,
@@ -163,7 +163,7 @@ class StorefrontFilterBar extends StatelessWidget {
                           text: i == 0 ? 'All tags' : '#$tag',
                           fontSize: AppFontSize.tiny,
                           fontWeight: FontWeight.w600,
-                          color: selected ? AppColors.primaryColor : AppColors.grey,
+                          color: selected ? AppColors.primaryColor : AppColors.greyDefault,
                         ),
                       ),
                     );
@@ -217,7 +217,7 @@ class StorefrontFilterBar extends StatelessWidget {
                       color: selected ? AppColors.primaryColor.withOpacity(0.08) : AppColors.background,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: selected ? AppColors.primaryColor : Colors.transparent,
+                        color: selected ? AppColors.primaryColor : AppColors.transparent,
                       ),
                     ),
                     child: Row(

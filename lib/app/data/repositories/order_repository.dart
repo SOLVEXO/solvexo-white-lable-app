@@ -11,13 +11,17 @@ class OrderRepository {
   final BaseClient _baseClient = BaseClient();
 
   /// GET /api/orders/my-orders
-  Future<List<OrderModel>> getMyOrders({int page = 1, int limit = 20}) async {
+  Future<List<OrderModel>> getMyOrders({int page = 1, int limit = 20, String? storeId}) async {
     try {
       debugPrint('🔄 Fetching my orders (page $page)...');
 
       final response = await _baseClient.get(
         ApiConstants.myOrders,
-        queryParameters: {'page': page, 'limit': limit},
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
         requiresAuth: true,
       );
 
@@ -42,13 +46,19 @@ class OrderRepository {
 
 
   /// Get single order by ID
-  Future<OrderModel?> getOrderById(String orderId) async {
+  Future<OrderModel?> getOrderById(String orderId, {String? storeId}) async {
     try {
       // final token = await AppPreferences.getAccessTokenAsync();
 
       debugPrint('🔄 Fetching order: $orderId');
 
-      final response = await _baseClient.get('${ApiConstants.orders}/$orderId');
+      final response = await _baseClient.get(
+        '${ApiConstants.orders}/$orderId',
+        queryParameters: {
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
+        requiresAuth: true,
+      );
 
       debugPrint('✅ Get Order Response: ${response.data}');
 
@@ -64,13 +74,16 @@ class OrderRepository {
   }
 
   /// Cancel order — POST /api/orders/cancel/:orderId, body: { reason }
-  Future<bool> cancelOrder(String orderId, {required String reason}) async {
+  Future<bool> cancelOrder(String orderId, {required String reason, String? storeId}) async {
     try {
       debugPrint('🔄 Cancelling order: $orderId');
 
       final response = await _baseClient.post(
         ApiConstants.cancelOrder(orderId),
-        data: {'reason': reason},
+        data: {
+          'reason': reason,
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
       );
 
       debugPrint('✅ Cancel Order Response: ${response.data}');
@@ -88,6 +101,7 @@ class OrderRepository {
     required String orderId,
     required String reason,
     List<String>? itemIds,
+    String? storeId,
   }) async {
     try {
       debugPrint('🔄 Requesting return for order: $orderId');
@@ -97,6 +111,7 @@ class OrderRepository {
         data: {
           'reason': reason,
           if (itemIds != null && itemIds.isNotEmpty) 'itemIds': itemIds,
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
         },
       );
 
@@ -159,11 +174,16 @@ class OrderRepository {
   Future<List<DigitalDownloadFile>> getDigitalDownloadLinks({
     required String orderId,
     required String productId,
+    String? storeId,
   }) async {
     try {
       final response = await _baseClient.get(
         ApiConstants.ordersDownloadUrl,
-        queryParameters: {'orderId': orderId, 'productId': productId},
+        queryParameters: {
+          'orderId': orderId,
+          'productId': productId,
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
         requiresAuth: true,
       );
 

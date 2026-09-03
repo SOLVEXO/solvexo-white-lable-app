@@ -125,12 +125,14 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           CommonImageView(imagePath: AppImages.logoImage, width: 26),
           SizedBox(width: BaseSpacing.xxs + 2),
-          CustomText(
-            text: Get.find<BrandingService>().config.value.appName,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.5,
-            color: AppColors.acceptedBg,
-            fontSize: AppFontSize.medium,
+          Obx(
+            () => CustomText(
+              text: Get.find<BrandingService>().config.value.appName,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.5,
+              color: AppColors.acceptedBg,
+              fontSize: AppFontSize.medium,
+            ),
           ),
         ],
       ),

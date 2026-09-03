@@ -1,4 +1,3 @@
-import 'package:book_store_app/app/data/models/subscriptions/buyer_credit_wallet_model.dart';
 import 'package:book_store_app/app/data/models/subscriptions/buyer_store_benefits_model.dart';
 import 'package:book_store_app/app/data/models/subscriptions/buyer_store_plan_model.dart';
 import 'package:book_store_app/app/data/models/subscriptions/buyer_subscription_model.dart';
@@ -40,11 +39,16 @@ class BuyerMembershipsRepository {
   Future<BuyerSubscriptionModel?> subscribe({
     required String planId,
     required String billingInterval, // 'monthly' | 'yearly'
+    String? storeId,
   }) async {
     try {
       final response = await _client.post(
         ApiConstants.buyerMembershipSubscribe,
-        data: {'planId': planId, 'billingInterval': billingInterval},
+        data: {
+          'planId': planId,
+          'billingInterval': billingInterval,
+          if (storeId != null && storeId.isNotEmpty) 'storeId': storeId,
+        },
         requiresAuth: true,
       );
       if (response.data['success'] == true) {
@@ -60,134 +64,6 @@ class BuyerMembershipsRepository {
     } catch (e) {
       debugPrint('❌ subscribe error: $e');
       ToastUtil.showToast('Failed to subscribe.');
-      return null;
-    }
-  }
-
-  /// The buyer's memberships across every store.
-  Future<List<BuyerSubscriptionModel>> getMyMemberships({
-    int page = 1,
-    int limit = 50,
-    String? status,
-  }) async {
-    try {
-      final response = await _client.get(
-        ApiConstants.buyerMyMemberships,
-        queryParameters: {
-          'page': page,
-          'limit': limit,
-          if (status != null && status.isNotEmpty) 'status': status,
-        },
-        requiresAuth: true,
-      );
-      if (response.data['success'] == true) {
-        final data = response.data['data'] as Map<String, dynamic>;
-        return (data['subscriptions'] as List)
-            .cast<Map<String, dynamic>>()
-            .map(BuyerSubscriptionModel.fromJson)
-            .toList();
-      }
-      return [];
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return [];
-    } catch (e) {
-      debugPrint('❌ getMyMemberships error: $e');
-      ToastUtil.showToast('Failed to load memberships.');
-      return [];
-    }
-  }
-
-  /// Full detail for a single membership — includes its invoice history.
-  Future<BuyerSubscriptionModel?> getMembershipById(String id) async {
-    try {
-      final response = await _client.get(
-        ApiConstants.buyerMyMembershipById(id),
-        requiresAuth: true,
-      );
-      if (response.data['success'] == true) {
-        return BuyerSubscriptionModel.fromJson(response.data['data'] as Map<String, dynamic>);
-      }
-      return null;
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return null;
-    } catch (e) {
-      debugPrint('❌ getMembershipById error: $e');
-      ToastUtil.showToast('Failed to load membership details.');
-      return null;
-    }
-  }
-
-  Future<BuyerSubscriptionModel?> pauseMembership(String id) async {
-    try {
-      final response = await _client.patch(
-        ApiConstants.buyerMembershipPause(id),
-        requiresAuth: true,
-      );
-      if (response.data['success'] == true) {
-        ToastUtil.showToast(response.data['message'] ?? 'Membership paused');
-        return BuyerSubscriptionModel.fromJson(response.data['data'] as Map<String, dynamic>);
-      }
-      ToastUtil.showToast(response.data['message'] ?? 'Failed to pause membership');
-      return null;
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return null;
-    } catch (e) {
-      debugPrint('❌ pauseMembership error: $e');
-      ToastUtil.showToast('Failed to pause membership.');
-      return null;
-    }
-  }
-
-  Future<BuyerSubscriptionModel?> resumeMembership(String id) async {
-    try {
-      final response = await _client.patch(
-        ApiConstants.buyerMembershipResume(id),
-        requiresAuth: true,
-      );
-      if (response.data['success'] == true) {
-        ToastUtil.showToast(response.data['message'] ?? 'Membership resumed');
-        return BuyerSubscriptionModel.fromJson(response.data['data'] as Map<String, dynamic>);
-      }
-      ToastUtil.showToast(response.data['message'] ?? 'Failed to resume membership');
-      return null;
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return null;
-    } catch (e) {
-      debugPrint('❌ resumeMembership error: $e');
-      ToastUtil.showToast('Failed to resume membership.');
-      return null;
-    }
-  }
-
-  /// Cancels a membership — immediately, or at the end of the current period
-  /// when [atPeriodEnd] is true.
-  Future<BuyerSubscriptionModel?> cancelMembership(
-    String id, {
-    bool atPeriodEnd = false,
-    String? reason,
-  }) async {
-    try {
-      final response = await _client.patch(
-        ApiConstants.buyerMembershipCancel(id, atPeriodEnd: atPeriodEnd),
-        data: {if (reason != null && reason.isNotEmpty) 'reason': reason},
-        requiresAuth: true,
-      );
-      if (response.data['success'] == true) {
-        ToastUtil.showToast(response.data['message'] ?? 'Membership canceled');
-        return BuyerSubscriptionModel.fromJson(response.data['data'] as Map<String, dynamic>);
-      }
-      ToastUtil.showToast(response.data['message'] ?? 'Failed to cancel membership');
-      return null;
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return null;
-    } catch (e) {
-      debugPrint('❌ cancelMembership error: $e');
-      ToastUtil.showToast('Failed to cancel membership.');
       return null;
     }
   }
@@ -212,30 +88,6 @@ class BuyerMembershipsRepository {
     } catch (e) {
       debugPrint('❌ getStoreBenefits error: $e');
       return BuyerStoreBenefitsModel.empty;
-    }
-  }
-
-  /// Every credit wallet the buyer holds, across all stores.
-  Future<List<BuyerCreditWalletModel>> getCreditWallets() async {
-    try {
-      final response = await _client.get(
-        ApiConstants.buyerMembershipCredits,
-        requiresAuth: true,
-      );
-      if (response.data['success'] == true) {
-        return (response.data['data'] as List)
-            .cast<Map<String, dynamic>>()
-            .map(BuyerCreditWalletModel.fromJson)
-            .toList();
-      }
-      return [];
-    } on DioException catch (e) {
-      DioExceptionHandler.handleDioException(e);
-      return [];
-    } catch (e) {
-      debugPrint('❌ getCreditWallets error: $e');
-      ToastUtil.showToast('Failed to load credits.');
-      return [];
     }
   }
 }

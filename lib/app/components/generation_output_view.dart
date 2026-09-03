@@ -75,7 +75,7 @@ class _FieldCard extends StatelessWidget {
               if (copyable)
                 GestureDetector(
                   onTap: () => _copy(label, value),
-                  child: const Icon(Icons.copy_rounded, size: 16, color: AppColors.grey),
+                  child: const Icon(Icons.copy_rounded, size: 16, color: AppColors.greyDefault),
                 ),
             ],
           ),
@@ -98,15 +98,15 @@ class _LowConfidenceBanner extends StatelessWidget {
       margin: EdgeInsets.only(bottom: BaseSpacing.sm),
       padding: EdgeInsets.symmetric(horizontal: BaseSpacing.sm, vertical: BaseSpacing.xs),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF3CD),
+        color: AppColors.warningBannerBg,
         borderRadius: BorderRadius.circular(BaseSpacing.xs + 2),
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline_rounded, size: 16, color: Color(0xFF8A6D3B)),
+          const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.warningBannerText),
           SizedBox(width: BaseSpacing.xs),
           Expanded(
-            child: CustomText(text: text, color: const Color(0xFF8A6D3B), fontSize: AppFontSize.tiny),
+            child: CustomText(text: text, color: AppColors.warningBannerText, fontSize: AppFontSize.tiny),
           ),
         ],
       ),
@@ -178,7 +178,7 @@ class _SeoBoosterOutput extends StatelessWidget {
                     CustomText(text: tag, color: AppColors.black2, fontSize: AppFontSize.tiny),
                     if (!verified) ...[
                       SizedBox(width: 4),
-                      const Icon(Icons.psychology_alt_outlined, size: 11, color: AppColors.grey),
+                      const Icon(Icons.psychology_alt_outlined, size: 11, color: AppColors.greyDefault),
                     ],
                   ],
                 ),

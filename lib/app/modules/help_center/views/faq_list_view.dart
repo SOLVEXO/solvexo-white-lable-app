@@ -68,7 +68,7 @@ class _ContactFooterCard extends StatelessWidget {
           SizedBox(height: BaseSpacing.xxs),
           CustomText(
             text: "Can't find what you're looking for? Our support team is happy to help.",
-            color: AppColors.grey,
+            color: AppColors.greyDefault,
             fontSize: AppFontSize.tiny,
           ),
           SizedBox(height: BaseSpacing.md),

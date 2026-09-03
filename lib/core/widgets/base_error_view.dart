@@ -3,6 +3,7 @@ import 'package:book_store_app/core/theme/base_colors.dart';
 import 'package:book_store_app/core/theme/base_spacing.dart';
 import 'package:book_store_app/utils/app_font_size.dart';
 import 'package:flutter/material.dart';
+import 'package:book_store_app/config/resources/app_colors.dart';
 
 /// The one error screen every redesigned view should use instead of a bare
 /// `Text('Error: $e')` — icon, message, and an optional retry action.
@@ -53,7 +54,7 @@ class BaseErrorView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: BaseSpacing.xl, vertical: BaseSpacing.md),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BaseRadius.md)),
                 ),
-                child: CustomText(text: retryLabel, color: Colors.white, fontSize: AppFontSize.extraSmall, fontWeight: FontWeight.w600),
+                child: CustomText(text: retryLabel, color: AppColors.white, fontSize: AppFontSize.extraSmall, fontWeight: FontWeight.w600),
               ),
             ],
           ],

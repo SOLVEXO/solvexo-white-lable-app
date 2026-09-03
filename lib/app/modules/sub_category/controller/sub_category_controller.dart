@@ -1,8 +1,10 @@
 import 'package:book_store_app/app/components/product_filter_bottom_sheet.dart';
 import 'package:book_store_app/app/data/repositories/product_repository.dart';
+import 'package:book_store_app/app/data/services/current_store_service.dart';
 import 'package:book_store_app/app/modules/category/controllers/category_controller.dart';
 import 'package:book_store_app/app/modules/category/models/category_model.dart';
 import 'package:book_store_app/app/modules/category/models/product_model.dart';
+import 'package:book_store_app/config/store_config.dart';
 import 'package:book_store_app/utils/toast_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -161,6 +163,19 @@ class SubCategoryController extends GetxController {
     isLoadingProducts.value = true;
 
     try {
+      if (!StoreConfig.isConfigured) {
+        products.clear();
+        hasMoreProducts.value = false;
+        return;
+      }
+      await Get.find<CurrentStoreService>().ensureResolved();
+      final storeId = Get.find<CurrentStoreService>().storeId;
+      if (storeId == null || storeId.isEmpty) {
+        products.clear();
+        hasMoreProducts.value = false;
+        return;
+      }
+
       final effectiveCategoryId = _activeSubCategoryId ?? categoryId;
 
       final response = await _productRepository.getProductsByCategory(
@@ -173,6 +188,7 @@ class SubCategoryController extends GetxController {
         maxPrice: currentMaxFilter.value < priceBoundMax ? currentMaxFilter.value : null,
         minRating: selectedRating.value > 0 ? selectedRating.value : null,
         sortBy: selectedSort.value == 'newest' ? null : selectedSort.value,
+        storeId: storeId,
       );
 
       if (response != null) {

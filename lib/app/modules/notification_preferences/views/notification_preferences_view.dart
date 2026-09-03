@@ -198,7 +198,7 @@ class _NotifSection extends StatelessWidget {
             text: header,
             fontSize: AppFontSize.tiny,
             fontWeight: FontWeight.w700,
-            color: AppColors.grey,
+            color: AppColors.greyDefault,
             letterSpacing: 0.8,
           ),
         ),
@@ -282,7 +282,7 @@ class _NotifItem extends StatelessWidget {
                 CustomText(
                   text: subtitle,
                   fontSize: AppFontSize.tiny,
-                  color: AppColors.grey,
+                  color: AppColors.greyDefault,
                 ),
               ],
             ),
